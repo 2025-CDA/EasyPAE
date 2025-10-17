@@ -8,12 +8,13 @@ export default function Button({
     className,
     ...props
 }) {
+    console.log(variant)
     // Définition des variantes et des couleurs
     const colorVariants = {
         blue: {
             solid: "bg-primary text-white hover:bg-blue-700",
             outline:
-                "border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white",
+                "border border-blue-600 bg-white text-blue-500 hover:bg-blue-600 hover:text-white",
         },
         red: {
             solid: "bg-red-600 text-white hover:bg-red-700",
@@ -28,7 +29,7 @@ export default function Button({
         white: {
             solid: "bg-background text-primary-text",
             outline:
-                "border border-black-600 text-primary-text",
+                "border border-black-600 text-red-500",
         },
     };
 
@@ -39,7 +40,7 @@ export default function Button({
         circle: "rounded-full p-2", // pour icônes
     };
     const baseButton =
-        "inline-flex items-center justify-center gap-2 font-medium rounded-lg transition duration-200 focus:outline-none w-full p-2 text-white";
+        "inline-flex items-center justify-center gap-2 font-medium transition duration-200 focus:outline-none p-2 text-blue-600";
 
     const colorVariantClass =
         colorVariants[color] && colorVariants[color][variant]
@@ -49,7 +50,6 @@ export default function Button({
     const shapeClass = shapes[shape] || "";
 
     return (
-        <div>
             <button
                 type="button"
                 className={`
@@ -63,6 +63,5 @@ export default function Button({
                 {icon}
                 {children}
             </button>
-        </div>
     );
 }

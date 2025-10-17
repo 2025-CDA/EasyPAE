@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Stepper from "./ui/stepper/Stepper"
 
 export default function App() {
     const [showAlert, setShowAlert] = useState(true);
@@ -18,7 +19,10 @@ export default function App() {
         // };
         // fetchData();
     }, []);
-
+   
     // console.log(data[0])
-    return <div></div>;
+    return <div className="w-full">
+            <Stepper />
+            {/* <StepContent /> */}
+    </div>;
 }
