@@ -11,7 +11,7 @@ function Checkbox({
     //onChange = setCheckValue;
     // value = checkValue
     return (
-        <div className="flex items-start">
+        <div className="flex items-center">
             <input
                 type="checkbox"
                 className="shrink-0 mt-0.5 accent-primary  rounded-sm text-primary focus:ring-primary checked:border-primary disabled:opacity-50 disabled:pointer-events-none"

@@ -4,3 +4,6 @@
     -moz-appearance: none;
     appearance: none
 }
+.xxs {
+    font-size: 11px;
+}

@@ -41,7 +41,7 @@ final class JWTCreatedListener
 
         // 4. REMOVE data from the payload
         // For example, you might decide not to expose the roles directly in the token.
-        unset($payload['roles']);
+        $payload['roles'];
 
         // 5. CHANGE existing data in the payload
         // The default "username" key is the user identifier. Let's make it more explicit.

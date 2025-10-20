@@ -2,10 +2,10 @@ import React from 'react'
 
 
 
-export default function Container({children}) {
+export default function Container({children, className}) {
 
   return (
-    <div className="flex rounded-lg  border border-[#B9B9B9] p-2">{children}
+    <div className={`flex rounded-lg  border border-[#B9B9B9] p-2 ${className}`}>{children}
     </div>
   )
 }

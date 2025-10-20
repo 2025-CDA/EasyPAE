@@ -13,4 +13,9 @@ enum InfoFormStatus: string
     case FULLY_COMPLETED = 'fully_completed';
 
     case REJECTED = 'rejected';
+
+    public function toString(): string
+    {
+        return $this->value;
+    }
 }

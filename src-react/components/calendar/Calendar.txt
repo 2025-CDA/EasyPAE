@@ -1,6 +1,87 @@
-<CalendarSimple
-    periodStart={new Date(2025, 9, 10)} // ATTENTION EN JAVASCRIPT, IL FAUT SUCRER UN MOIS ICI
-    periodEnd={new Date(2025, 11, 25)} // ATTENTION EN JAVASCRIPT, IL FAUT SUCRER UN MOIS ICI
-/>
+Guide d'utilisation des composants calendrier
+---------------------------------------------
 
-import CalendarSimple from "./components/calendar/calendarSimple";
+Les composants ci-contre permettent d'afficher et de gérer des calendriers pour la gestion des périodes de stage.
+Rappel IMPORTANT: En JavaScript, les mois commencent à 0 (janvier = 0, décembre = 11).
+
+1. CalendarSimpleGET
+   - Affiche un calendrier en lecture seule (période surlignée, pas de modification possible).
+   - Props :
+       - dates : { periodStart: Date, periodEnd: Date }
+       - shrinkable : (optionnel) permet de réduire/agrandir le calendrier.
+
+2. CalendarSimplePUT
+   - Affiche un calendrier éditable pour une ou plusieurs formations.
+   - Props :
+       - single : { id, periodStart: Date, periodEnd: Date } (mode édition d'une seule formation)
+       - onSaveSingle : callback pour sauvegarder une formation (single)
+       - multi : [ { id, title, periodStart: Date, periodEnd: Date }, ... ] (mode multi-formations)
+       - onSaveMulti : callback pour sauvegarder une formation (multi)
+
+3. CalendarDouble
+   - Affiche deux mois côte à côte, pour lire et éditer les dates de formations, dynamique avec liste des formations sur la gauche.
+   - Props :
+       - multi : [ { id, title, periodStart: Date, periodEnd: Date }, ... ]
+       - onSaveMulti : callback pour sauvegarder une formation
+
+Exemples d'utilisation :
+
+    dans le jsx souhaité :
+
+        // choisir son calendrier
+        import CalendarSimpleGET from "./components/calendar/CalendarSimpleGET";
+        import CalendarSimplePUT from "./components/calendar/CalendarSimplePUT";
+        import CalendarDouble from "./components/calendar/CalendarDouble";
+
+        const [currentFormation, setCurrentFormation] = useState({
+            periodStart: new Date(2026, 0, 5),  // 5 janvier 2026
+            periodEnd: new Date(2026, 2, 27),   // 27 mars 2026
+        });
+
+        const [multiCalendar, setMultiCalendar] = useState([
+            {
+                id: 1,
+                title: "Formation Développeur Web",
+                periodStart: new Date(2025, 2, 10), // 10 mars 2025
+                periodEnd: new Date(2025, 4, 25),   // 25 mai 2025
+            },
+            {
+                id: 2,
+                title: "Formation Data Analyst",
+                periodStart: new Date(2025, 5, 1),  // 1 juin 2025
+                periodEnd: new Date(2025, 6, 15),   // 15 juillet 2025
+            },
+            {
+                id: 3,
+                title: "Formation DevOps",
+                periodStart: new Date(2025, 8, 5),  // 5 septembre 2025
+                periodEnd: new Date(2025, 9, 20),   // 20 octobre 2025
+            },
+            {
+                id: 4,
+                title: "CDA",
+                periodStart: new Date(2026, 0, 5),  // 5 janvier 2025
+                periodEnd: new Date(2026, 2, 27),   // 27 Mars 2025
+            }
+        ]);
+
+    dans le return :
+        <CalendarSimpleGET
+                dates={currentFormation}
+                shrinkable={true} // optionnel, si vous ne souhaitez pas qu'il ait l'option rétractable, supprimer la ligne, pas besoin de la mettre en false
+                />
+            <CalendarSimplePUT  // au choix, ajouter soit en multi, soit en single, ne renseigner que les deux props correspondantes multi/single.
+                multi={multiCalendar}
+                onSaveMulti={setMultiCalendar}
+                // single={currentFormation}
+                // onSaveSingle={setCurrentFormation}
+            />
+            <CalendarDouble
+                multi={multiCalendar}
+                onSaveMulti={setMultiCalendar}
+            />
+
+Résumé :
+- CalendarSimpleGET : affichage simple, lecture seule.
+- CalendarSimplePUT : édition d'une ou plusieurs périodes.
+- CalendarDouble : double calendrier, édition multi-formations.

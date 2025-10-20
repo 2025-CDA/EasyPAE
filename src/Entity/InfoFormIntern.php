@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Enum\Gender;
+use App\Enum\InfoFormInternStatus;
 use App\Enum\OrganizationRole;
 use App\Repository\InfoFormInternRepository;
 use Doctrine\Common\Collections\Collection;
@@ -126,8 +127,9 @@ class InfoFormIntern
     ])]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(length: 500, nullable: true)]
-    private ?string $status = null;
+    #[ORM\Column(nullable: true, enumType: InfoFormInternStatus::class)]
+    private ?InfoFormInternStatus $status = null;
+
 
     #[Groups([
         'read:info_form_intern',
@@ -306,20 +308,20 @@ class InfoFormIntern
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatusLabels(): ?string
     {
         return $this->status;
     }
 
-    public function setStatus(?string $status): static
+    public function getStatus(): ?InfoFormInternStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?InfoFormInternStatus $status): static
     {
         $this->status = $status;
 
         return $this;
-    }
-
-    public function getStatusLabels(): ?string
-    {
-        return $this->status;
     }
 }

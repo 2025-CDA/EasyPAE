@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Stepper from "./ui/stepper/Stepper"
-import StepperTest from "./ui/stepper/StepperTest"
+import Label from "./ui/Label";
+import { LogIn , Mail, LockKeyhole, MoveRight } from "lucide-react";
+import LoginForm from './ui/LoginForm';
 
 export default function App() {
     const [showAlert, setShowAlert] = useState(true);
@@ -20,11 +21,13 @@ export default function App() {
         // };
         // fetchData();
     }, []);
-   
+
+
     // console.log(data[0])
-    return <div className="w-full">
-            {/* <StepperTest /> */}
-            <Stepper />
-            {/* <StepContent /> */}
-    </div>;
+
+    return (
+      <div>
+        <LoginForm initialStep='login'/>
+      </div>
+           );
 }
