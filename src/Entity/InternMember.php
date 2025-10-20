@@ -19,13 +19,27 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: InternMemberRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(order: ['createdAt' => 'DESC'])]
-#[Get(normalizationContext: ['groups' => ['read:intern_member']])]
-#[GetCollection(normalizationContext: ['groups' => ['read:intern_member_collection']])]
-#[Post(denormalizationContext: ['groups' => ['create:intern_member']])]
-#[Patch(denormalizationContext: ['groups' => ['update:intern_member']])]
-#[Put(denormalizationContext: ['groups' => ['update:intern_member']])]
-#[Delete]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['read:intern_member']]
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['read:intern_member_collection']]
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['create:intern_member']]
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['update:intern_member']]
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['update:intern_member']]
+        ),
+        new Delete()
+    ],
+    order: ['createdAt' => 'DESC']
+)]
 class InternMember
 {
     #[ORM\PrePersist]
@@ -53,7 +67,8 @@ class InternMember
     ])]
     private ?int $id = null;
 
-    #[ORM\OneToOne(mappedBy: 'internMember', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'internMember', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     #[MaxDepth(1)]
     #[Groups([
         'read:intern_member',

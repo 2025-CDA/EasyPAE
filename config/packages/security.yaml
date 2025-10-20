@@ -14,41 +14,29 @@ security:
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: email
-
-
+                # property: email
     firewalls:
         dev:
             pattern: ^/_(profiler|wdt)
             security: false
+
         main:
+            pattern: ^/api #non présent sur dev branch
             stateless: true
-            provider: app_user_provider
             json_login:
-                check_path: /auth
-                username_path: email
-                password_path: password
+              # check_path: /auth #présent sur dev branch
+                check_path: /api/login_check        # Route exposée pour la connexion
+                username_path: email                # Chemin dans le JSON pour le nom d'utilisateur/email
+                password_path: password             # Chemin dans le JSON pour le mot de passe
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-            jwt: ~
 
-        # Your existing API firewall, now responsible for validating the JWT on all other API routes.
         api:
             pattern:   ^/api
-            stateless: true
+            stateless: true # <-- This is the setting causing the error if a session is used
             jwt: ~
 
-        # Your existing firewall for the main website (if you have one).
-        # This should come last as it has a broad pattern.
-#        main:
-#            lazy: true
-#            provider: app_user_provider
-#            form_login:
-#                login_path: app_login
-#                check_path: app_login
-#                enable_csrf: true
-#            logout:
-#                path: app_logout
+
 
     # Access control rules are also crucial.
     access_control:
@@ -66,6 +54,8 @@ security:
 
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        # - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
 
 
 

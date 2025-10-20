@@ -1,0 +1,9 @@
+/* --------------------------- utile pour calendrier --------------------------- */
+.no-arrow {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none
+}
+.xxs {
+    font-size: 11px;
+}

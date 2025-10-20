@@ -40,4 +40,13 @@ class InternMemberRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findByTrainingSessionId(int $sessionId): array
+    {
+        return $this->createQueryBuilder('im')
+            ->join('im.trainingSession', 'ts')
+            ->andWhere('ts.id = :sessionId')
+            ->setParameter('sessionId', $sessionId)
+            ->getQuery()
+            ->getResult();
+    }
 }

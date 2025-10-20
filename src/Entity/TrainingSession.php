@@ -2,31 +2,54 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Repository\TrainingSessionRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Controller\User\CreateUserController;
+use App\Repository\TrainingSessionRepository;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 
 #[ORM\Entity(repositoryClass: TrainingSessionRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(order: ['createdAt' => 'DESC'])]
-#[Get(normalizationContext: ['groups' => ['read:training_session']])]
-#[GetCollection(normalizationContext: ['groups' => ['read:training_session_collection']])]
-#[Post(denormalizationContext: ['groups' => ['create:training_session']])]
-#[Patch(denormalizationContext: ['groups' => ['update:training_session']])]
-#[Put(denormalizationContext: ['groups' => ['update:training_session']])]
-#[Delete]
+#[ApiResource(
+    operations: [
+        new Get(
+            uriTemplate: '/training_session/{id}/trainingPeriod',
+            controller: CreateUserController::class,
+            normalizationContext: ['groups' => ['read:training_period']],
+            name: 'trainingSessionPeriod',
+        ),
+        new Get(normalizationContext: ['groups' => ['read:training_session']]),
+        new Post(
+            uriTemplate: '/training_session',
+            denormalizationContext: ['groups' => ['create:training_session']],
+            name: 'addTrainingSession',
+        ),
+        new GetCollection(
+            paginationItemsPerPage: 1,
+            paginationMaximumItemsPerPage: 1,
+            paginationClientItemsPerPage: true,
+            normalizationContext: ['groups' => ['read:training_session_collection']]
+        ),
+        new Patch(denormalizationContext: ['groups' => ['update:training_session']]),
+        new Put(denormalizationContext: ['groups' => ['update:training_session']]),
+        new Delete()
+    ],
+
+)]
+#[ApiFilter(DateFilter::class, properties: ['createdAt', 'updatedAt'])]
 class TrainingSession
 {
     #[ORM\PrePersist]
@@ -155,6 +178,26 @@ class TrainingSession
         'read:training_session_collection'
     ])]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[MaxDepth(1)]
+    #[Groups([
+        'read:training_period',
+
+    ])]
+    public function getInternshipPeriod(): ?array
+    {
+
+        $internshipPeriodStart = $this->getInternShipPeriodStart();
+        $internshipPeriodEnd = $this->getInternshipPeriodEnd();
+
+        // Regrouper les dates dans un tableau
+        $internshipData = [
+            'start' => $internshipPeriodStart ? $internshipPeriodStart->format('Y-m-d') : null,
+            'end' => $internshipPeriodEnd ? $internshipPeriodEnd->format('Y-m-d') : null,
+        ];
+
+        return $internshipData;
+    }
 
     public function __construct()
     {

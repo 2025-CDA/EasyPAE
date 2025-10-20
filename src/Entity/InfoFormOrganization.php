@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Enum\InfoFormOrganizationStatus;
 use App\Repository\InfoFormOrganizationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,13 +18,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: InfoFormOrganizationRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(order: ['createdAt' => 'DESC'])]
-#[Get(normalizationContext: ['groups' => ['read:info_form_organization']])]
-#[GetCollection(normalizationContext: ['groups' => ['read:info_form_organization_collection']])]
-#[Post(denormalizationContext: ['groups' => ['create:info_form_organization']])]
-#[Patch(denormalizationContext: ['groups' => ['update:info_form_organization']])]
-#[Put(denormalizationContext: ['groups' => ['update:info_form_organization']])]
-#[Delete]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['read:info_form_organization']]
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['read:info_form_organization_collection']]
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['create:info_form_organization']]
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['update:info_form_organization']]
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['update:info_form_organization']]
+        ),
+        new Delete()
+    ],
+    order: ['createdAt' => 'DESC']
+)]
 class InfoFormOrganization
 {
     #[ORM\PrePersist]
@@ -81,6 +96,10 @@ class InfoFormOrganization
     #[ORM\Column(nullable: true)]
     #[Groups(['read:info_form_organization', 'read:info_form_organization_collection'])]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(nullable: true, enumType: InfoFormOrganizationStatus::class)]
+    private ?InfoFormOrganizationStatus $status = null;
+
 
     public function getId(): ?int
     {
@@ -156,4 +175,17 @@ class InfoFormOrganization
 
         return $this;
     }
+
+    public function getStatus(): ?InfoFormOrganizationStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?InfoFormOrganizationStatus $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
 }

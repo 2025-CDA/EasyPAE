@@ -5,6 +5,10 @@ framework:
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 
+    # session:
+    #     cookie_lifetime: 1800      # Durée de vie du cookie de session en secondes (ici, 30 minutes)
+    #     gc_maxlifetime: 1800       # Durée maximale de session côté serveur, en secondes
+
     #esi: true
     #fragments: true
 
@@ -19,3 +23,4 @@ when@test:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+

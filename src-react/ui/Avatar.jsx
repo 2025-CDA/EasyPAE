@@ -1,11 +1,10 @@
-function Avatar({
-    url = "https://avatar.iran.liara.run/public/7",
-    size = 8,
-    color = "primary",
-}) {
+import placeholder from "../assets/profile.jpg";
+
+function Avatar({ url = placeholder, size = 8, color = "red" }) {
     return (
         <img
-            className={`my-3 inline-block size-${size} rounded-full outline-2 outline-${color}`}
+            className={`my-3 inline-block w-${size} h-${size} rounded-full outline-3`}
+            style={{ outlineColor: color }}
             src={url}
             alt="Avatar"
         />

@@ -19,13 +19,28 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: TrainingRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(order: ['createdAt' => 'DESC'])]
-#[Get(normalizationContext: ['groups' => ['read:training']])]
-#[GetCollection(normalizationContext: ['groups' => ['read:training_collection']])]
-#[Post(denormalizationContext: ['groups' => ['create:training']])]
-#[Patch(denormalizationContext: ['groups' => ['update:training']])]
-#[Put(denormalizationContext: ['groups' => ['update:training']])]
-#[Delete]
+
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['read:training']]
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['read:training_collection']]
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['create:training']]
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['update:training']]
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['update:training']]
+        ),
+        new Delete()
+    ],
+    order: ['createdAt' => 'DESC']
+)]
 class Training
 {
     #[ORM\PrePersist]

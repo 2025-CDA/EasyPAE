@@ -40,4 +40,5 @@ class TrainingSessionRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    
 }
