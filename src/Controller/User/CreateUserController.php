@@ -36,8 +36,8 @@ final class CreateUserController extends AbstractController
             $user->eraseCredentials();
         }
 
-//        $user->setRole(UserRole::INTERN);
-//        $user->setRole('Stagiaire');
+       $user->setRole(UserRole::INTERN);
+    //    $user->setRole('Stagiaire');
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
