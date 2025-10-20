@@ -14,7 +14,8 @@ use App\State\TestProvider;
         new Get(
             uriTemplate: '/test/{id}',
             uriVariables: [
-                'id' => new Link(fromClass: self::class, identifiers: ['id'])
+                'id' => new Link(fromClass: self::class, identifiers: ['id']),
+//                'sessionId' => new Link(fromClass: self::class, identifiers: ['sessionId'])
             ]
         ),
         new GetCollection(
