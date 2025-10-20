@@ -30,7 +30,7 @@ export default function Input({
                             : type
                     }
                     id={id}
-                    className={`py-2.5 sm:py-3 px-4 block w-full border-1 border-gray-200  placeholder-secondary-text rounded-lg sm:text-sm focus:border-secondary focus:ring-secondary disabled:opacity-50  ${
+                    className={`py-2.5 sm:py-3 px-4 block w-full border-1 border-gray-200 outline-gray-200 rounded-lg sm:text-sm focus:border-secondary focus:ring-secondary disabled:opacity-50  ${
                         icon && "ps-11"
                     } ${withShowPassword && "pe-11"} ${className}`}
                     placeholder={placeholder}

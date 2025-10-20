@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Enum\Gender;
+use App\Enum\InfoFormCompanyStatus;
 use App\Enum\WorkLocation;
 use App\Repository\InfoFormCompanyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,13 +22,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: InfoFormCompanyRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(order: ['createdAt' => 'DESC'])]
-#[Get(normalizationContext: ['groups' => ['read:info_form_company']])]
-#[GetCollection(normalizationContext: ['groups' => ['read:info_form_company_collection']])]
-#[Post(denormalizationContext: ['groups' => ['create:info_form_company']])]
-#[Patch(denormalizationContext: ['groups' => ['update:info_form_company']])]
-#[Put(denormalizationContext: ['groups' => ['update:info_form_company']])]
-#[Delete]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['read:info_form_company']]
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['read:info_form_company_collection']]
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['create:info_form_company']]
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['update:info_form_company']]
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['update:info_form_company']]
+        ),
+        new Delete()
+    ],
+    order: ['createdAt' => 'DESC']
+)]
 class InfoFormCompany
 {
     #[ORM\PrePersist]
@@ -251,8 +266,15 @@ class InfoFormCompany
     ])]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(length: 500, nullable: true)]
-    private ?string $status = null;
+    #[ORM\Column(nullable: true, enumType: InfoFormCompanyStatus::class)]
+    #[Groups([
+        'read:info_form_company',
+        'read:info_form_company_collection',
+        'create:info_form_company',
+        'update:info_form_company'
+    ])]
+    private ?InfoFormCompanyStatus $status = null;
+
 
     #[Groups([
         'read:info_form_company',
@@ -590,12 +612,12 @@ class InfoFormCompany
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?InfoFormCompanyStatus
     {
         return $this->status;
     }
 
-    public function setStatus(?string $status): static
+    public function setStatus(?InfoFormCompanyStatus $status): static
     {
         $this->status = $status;
 

@@ -7,7 +7,7 @@ import {
     ArrowRightFromLine,
 } from "lucide-react";
 import Avatar from "../../ui/Avatar";
-import logo2 from "../../assets/Frame93.png";
+import logo from "../../assets/Logo-light.png";
 
 export default function DesktopSidebar() {
     // ------------------------------------ Gérer l'affichache de la Sidbar etendu ou compact ------------------------------------
@@ -68,7 +68,7 @@ export default function DesktopSidebar() {
 
             {/* ----------- Logo custom bas ----------- */}
             <div className="flex justify-center items-center w-[80%] m-auto">
-                <img src={logo2} alt="logo" />
+                <img src={logo} alt="logo" />
             </div>
 
             {/* ----------- Bouton collapse ----------- */}

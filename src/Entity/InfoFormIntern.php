@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Enum\Gender;
+use App\Enum\InfoFormInternStatus;
 use App\Enum\OrganizationRole;
 use App\Repository\InfoFormInternRepository;
 use Doctrine\Common\Collections\Collection;
@@ -20,13 +21,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: InfoFormInternRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(order: ['createdAt' => 'DESC'])]
-#[Get(normalizationContext: ['groups' => ['read:info_form_intern']])]
-#[GetCollection(normalizationContext: ['groups' => ['read:info_form_intern_collection']])]
-#[Post(denormalizationContext: ['groups' => ['create:info_form_intern']])]
-#[Patch(denormalizationContext: ['groups' => ['update:info_form_intern']])]
-#[Put(denormalizationContext: ['groups' => ['update:info_form_intern']])]
-#[Delete]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['read:info_form_intern']]
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['read:info_form_intern_collection']]
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['create:info_form_intern']]
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['update:info_form_intern']]
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['update:info_form_intern']]
+        ),
+        new Delete()
+    ],
+    order: ['createdAt' => 'DESC']
+)]
 class InfoFormIntern
 {
     #[ORM\PrePersist]
@@ -112,8 +127,9 @@ class InfoFormIntern
     ])]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(length: 500, nullable: true)]
-    private ?string $status = null;
+    #[ORM\Column(nullable: true, enumType: InfoFormInternStatus::class)]
+    private ?InfoFormInternStatus $status = null;
+
 
     #[Groups([
         'read:info_form_intern',
@@ -292,12 +308,17 @@ class InfoFormIntern
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatusLabels(): ?string
     {
         return $this->status;
     }
 
-    public function setStatus(?string $status): static
+    public function getStatus(): ?InfoFormInternStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?InfoFormInternStatus $status): static
     {
         $this->status = $status;
 

@@ -10,4 +10,9 @@ enum WeekDay: string
     case THURSDAY = 'Jeudi';
     case FRIDAY = 'Vendredi';
     case SATURDAY = 'Samedi';
+
+    public function toString(): string
+    {
+        return $this->value;
+    }
 }

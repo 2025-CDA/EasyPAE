@@ -2,28 +2,68 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\Enum\InfoFormStatus;
-use App\Repository\InfoFormRepository;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use App\Enum\InfoFormInternStatus;
+use App\Enum\InfoFormCompanyStatus;
 use ApiPlatform\Metadata\ApiResource;
+use App\Repository\InfoFormRepository;
+use ApiPlatform\Metadata\GetCollection;
+use App\Enum\InfoFormOrganizationStatus;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[ORM\Entity(repositoryClass: InfoFormRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(order: ['createdAt' => 'DESC'])]
-#[Get(normalizationContext: ['groups' => ['read:info_form']])]
-#[GetCollection(normalizationContext: ['groups' => ['read:info_form_collection']])]
-#[Post(denormalizationContext: ['groups' => ['create:info_form']])]
-#[Patch(denormalizationContext: ['groups' => ['update:info_form']])]
-#[Put(denormalizationContext: ['groups' => ['update:info_form']])]
-#[Delete]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['read:info_form']]
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['read:info_form_collection']]
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['create:info_form']]
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['update:info_form']]
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['update:info_form']]
+        ),
+        new Delete(),
+
+        new Get(
+            uriTemplate: '/info_forms/{id}/status',
+            normalizationContext: ['groups' => ['read:info_form-status']],
+            name: 'info_form-status'
+        ),
+        new Get(
+            uriTemplate: '/info_form/{id}/status/company',
+            normalizationContext: ['groups' => ['read:info_form-status-company']],
+            name: 'info_form-status-company'
+        ),
+
+        new Get(
+            uriTemplate: '/info_form/{id}/status/organization',
+            normalizationContext: ['groups' => ['read:info_form-status-organization']],
+            name: 'info_form-status-organization'
+        ),
+        new Get(
+            uriTemplate: '/info_form/{id}/status/intern',
+            normalizationContext: ['groups' => ['read:info_form-status-intern']],
+            name: 'info_form-status-intern'
+        ),
+
+    ],
+    order: ['createdAt' => 'DESC']
+)]
 class InfoForm
 {
     #[ORM\PrePersist]
@@ -52,12 +92,11 @@ class InfoForm
 
     #[ORM\Column(nullable: true, enumType: InfoFormStatus::class)]
     #[Groups([
-        'read:info_form',
-        'read:info_form_collection',
-        'create:info_form',
-        'update:info_form'
+        'read:info_form-status'
     ])]
     private ?InfoFormStatus $status = null;
+
+
 
     #[ORM\ManyToOne(inversedBy: 'infoForm')]
     #[Groups([
@@ -95,6 +134,34 @@ class InfoForm
     ])]
     private ?InfoFormCompany $infoFormCompany = null;
 
+    #[Groups([
+        'read:info_form-status-company'
+    ])]
+    public function getStatusCompany(): ?string
+    {
+        return $this->getInfoFormCompany()->getStatus()->toString();
+    }
+
+
+    #[Groups([
+        'read:info_form-status-intern'
+    ])]
+    public function getStatusIntern(): ?string
+    {
+        return $this->getInfoFormIntern()->getStatus()->toString();
+    }
+
+
+    #[Groups([
+        'read:info_form-status-organization'
+    ])]
+    public function getStatusOrganization(): ?string
+    {
+        return $this->getInfoFormOrganization()->getStatus()->toString();
+    }
+
+
+
     #[ORM\ManyToOne(inversedBy: 'infoForms')]
     #[Groups([
         'read:info_form',
@@ -126,6 +193,9 @@ class InfoForm
         'read:info_form_collection'
     ])]
     private ?\DateTimeImmutable $createdAt = null;
+
+
+
 
     public function getId(): ?int
     {

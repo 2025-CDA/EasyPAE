@@ -19,13 +19,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: OrganizationMemberRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(order: ['createdAt' => 'DESC'])]
-#[Get(normalizationContext: ['groups' => ['read:organization_member']])]
-#[GetCollection(normalizationContext: ['groups' => ['read:organization_member_collection']])]
-#[Post(denormalizationContext: ['groups' => ['create:organization_member']])]
-#[Patch(denormalizationContext: ['groups' => ['update:organization_member']])]
-#[Put(denormalizationContext: ['groups' => ['update:organization_member']])]
-#[Delete]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['read:organization_member']]
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['read:organization_member_collection']]
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['create:organization_member']]
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['update:organization_member']]
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['update:organization_member']]
+        ),
+        new Delete()
+    ],
+    order: ['createdAt' => 'DESC']
+)]
 class OrganizationMember
 {
     #[ORM\PrePersist]

@@ -26,34 +26,29 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 #[ApiResource(
     operations: [
         new Get(
-            name: 'trainingSessionPeriod',
             uriTemplate: '/training_session/{id}/trainingPeriod',
-            normalizationContext: ['groups' => ['read:training_period']],
             controller: CreateUserController::class,
+            normalizationContext: ['groups' => ['read:training_period']],
+            name: 'trainingSessionPeriod',
         ),
         new Get(normalizationContext: ['groups' => ['read:training_session']]),
-
         new Post(
-            name: 'addTrainingSession',
             uriTemplate: '/training_session',
             denormalizationContext: ['groups' => ['create:training_session']],
+            name: 'addTrainingSession',
         ),
-
         new GetCollection(
             paginationItemsPerPage: 1,
             paginationMaximumItemsPerPage: 1,
             paginationClientItemsPerPage: true,
             normalizationContext: ['groups' => ['read:training_session_collection']]
         ),
-
-        ],
-            
+        new Patch(denormalizationContext: ['groups' => ['update:training_session']]),
+        new Put(denormalizationContext: ['groups' => ['update:training_session']]),
+        new Delete()
+    ],
 
 )]
-
-#[Patch(denormalizationContext: ['groups' => ['update:training_session']])]
-#[Put(denormalizationContext: ['groups' => ['update:training_session']])]
-#[Delete]
 #[ApiFilter(DateFilter::class, properties: ['createdAt', 'updatedAt'])]
 class TrainingSession
 {

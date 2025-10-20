@@ -19,13 +19,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: InfoFormCompanyCalendarRowRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(order: ['createdAt' => 'DESC'])]
-#[Get(normalizationContext: ['groups' => ['read:info_form_company_calendar_row']])]
-#[GetCollection(normalizationContext: ['groups' => ['read:info_form_company_calendar_row_collection']])]
-#[Post(denormalizationContext: ['groups' => ['create:info_form_company_calendar_row']])]
-#[Patch(denormalizationContext: ['groups' => ['update:info_form_company_calendar_row']])]
-#[Put(denormalizationContext: ['groups' => ['update:info_form_company_calendar_row']])]
-#[Delete]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['read:info_form_company_calendar_row']]
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['read:info_form_company_calendar_row_collection']]
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['create:info_form_company_calendar_row']]
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['update:info_form_company_calendar_row']]
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['update:info_form_company_calendar_row']]
+        ),
+        new Delete()
+    ],
+    order: ['createdAt' => 'DESC']
+)]
 class InfoFormCompanyCalendarRow
 {
     #[ORM\PrePersist]

@@ -3,6 +3,7 @@
 namespace App\Controller\User;
 
 use App\Entity\User;
+use App\Enum\UserRole;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,6 +35,9 @@ final class CreateUserController extends AbstractController
             $user->setPassword($hashedPassword);
             $user->eraseCredentials();
         }
+
+//        $user->setRole(UserRole::INTERN);
+//        $user->setRole('Stagiaire');
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
