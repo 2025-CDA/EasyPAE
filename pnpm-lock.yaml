@@ -17,6 +17,9 @@ importers:
       '@mui/material':
         specifier: ^7.3.4
         version: 7.3.4(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@types/react@19.1.13)(react@19.1.1))(@types/react@19.1.13)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@preline/combobox':
+        specifier: ^3.2.3
+        version: 3.2.3
       axios:
         specifier: ^1.12.2
         version: 1.12.2
@@ -568,6 +571,9 @@ packages:
 
   '@popperjs/core@2.11.8':
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
+
+  '@preline/combobox@3.2.3':
+    resolution: {integrity: sha512-mcCdhW7ilJm2sqJhjdurLlnx0Ju8lEt7TgCrp+c7CdIrRca0bVr1XnHrmkyMfUjK1SOHl1XIxf3iFRLR09OG5g==}
 
   '@rolldown/pluginutils@1.0.0-beta.35':
     resolution: {integrity: sha512-slYrCpoxJUqzFDDNlvrOYRazQUNRvWPjXA17dAOISY3rDMxX6k8K4cj2H+hEYMHF81HO3uNd5rHVigAWRM5dSg==}
@@ -2240,6 +2246,8 @@ snapshots:
       '@types/react': 19.1.13
 
   '@popperjs/core@2.11.8': {}
+
+  '@preline/combobox@3.2.3': {}
 
   '@rolldown/pluginutils@1.0.0-beta.35': {}
 
