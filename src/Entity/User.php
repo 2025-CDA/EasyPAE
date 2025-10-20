@@ -22,6 +22,7 @@ use App\Enum\UserRole;
 use App\Repository\UserRepository;
 
 //use App\State\UserStateProcessor;
+use App\State\UserStateProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -46,17 +47,20 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             normalizationContext: ['groups' => ['read:user_collection']]
         ),
         new Post(
-            controller: CreateUserController::class,
+//            controller: CreateUserController::class,
             denormalizationContext: ['groups' => ['create:user']],
-        // When using a custom controller that handles persistence,
-        // you should disable API Platform's default writer.
-            write: false
+//            write: false,
+            // When using a custom controller that handles persistence,
+            // you should disable API Platform's default writer.
+            processor: UserStateProcessor::class
         ),
         new Patch(
-            controller: UpdateUserController::class,
+//            controller: UpdateUserController::class,
             denormalizationContext: ['groups' => ['update:user']],
-        // Also disable the writer here for the same reason.
-            write: false
+            // Also disable the writer here for the same reason.
+//            write: false
+            processor: UserStateProcessor::class
+
         ),
         new Put(
             denormalizationContext: ['groups' => ['update:user']]

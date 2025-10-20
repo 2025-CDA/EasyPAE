@@ -27,7 +27,6 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
     operations: [
         new Get(
             uriTemplate: '/training_session/{id}/trainingPeriod',
-            controller: CreateUserController::class,
             normalizationContext: ['groups' => ['read:training_period']],
             name: 'trainingSessionPeriod',
         ),
