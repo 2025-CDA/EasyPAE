@@ -53,19 +53,22 @@ function Stepper({content= [
         }))} 
         currentStep={step} 
         nextStep={step + 1} 
+        isInactive={step === 0}
         />
 
            <StepContent index={step} description={content[step].description}  /> 
 
            <div className="flex w-full flex-row my-2 gap-4 items-center justify-center">
-                <Button
+              { withBack && step > 1 &&
+              (<Button
                 className="flex-1"
                 color="blue"
                 variant="outline"
                 onClick={handlePrevious}
             >
                 {step < 3 ? 'Précédent' : 'Terminer'}
-            </Button>
+            </Button>)}  
+
           { withBack &&  <Button
                 className="flex-1"              
                 color="blue"
