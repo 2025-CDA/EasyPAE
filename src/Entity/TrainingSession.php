@@ -190,12 +190,10 @@ class TrainingSession
         $internshipPeriodEnd = $this->getInternshipPeriodEnd();
 
         // Regrouper les dates dans un tableau
-        $internshipData = [
-            'start' => $internshipPeriodStart ? $internshipPeriodStart->format('Y-m-d') : null,
-            'end' => $internshipPeriodEnd ? $internshipPeriodEnd->format('Y-m-d') : null,
+        return [
+            'start' => $internshipPeriodStart?->format('Y-m-d'),
+            'end' => $internshipPeriodEnd?->format('Y-m-d'),
         ];
-
-        return $internshipData;
     }
 
     public function __construct()
