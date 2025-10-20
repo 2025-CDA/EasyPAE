@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Enum\Gender;
+use App\Enum\InfoFormCompanyStatus;
 use App\Enum\WorkLocation;
 use App\Repository\InfoFormCompanyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -265,8 +266,15 @@ class InfoFormCompany
     ])]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(length: 500, nullable: true)]
-    private ?string $status = null;
+    #[ORM\Column(nullable: true, enumType: InfoFormCompanyStatus::class)]
+    #[Groups([
+        'read:info_form_company',
+        'read:info_form_company_collection',
+        'create:info_form_company',
+        'update:info_form_company'
+    ])]
+    private ?InfoFormCompanyStatus $status = null;
+
 
     #[Groups([
         'read:info_form_company',
@@ -604,12 +612,12 @@ class InfoFormCompany
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?InfoFormCompanyStatus
     {
         return $this->status;
     }
 
-    public function setStatus(?string $status): static
+    public function setStatus(?InfoFormCompanyStatus $status): static
     {
         $this->status = $status;
 

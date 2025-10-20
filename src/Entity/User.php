@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\User\CreateUserController;
 use App\Controller\User\UpdateUserController;
+use App\Enum\UserRole;
 use App\Repository\UserRepository;
 
 //use App\State\UserStateProcessor;
@@ -79,6 +80,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 //#[ApiFilter(BooleanFilter::class, properties: ['isTrue'])]
 //#[ApiFilter(RangeFilter::class, properties: ['price'])]
 #[ApiFilter(ExistsFilter::class, properties: ['firstName', 'lastName', 'login', 'password'])]
+//class User implements PasswordAuthenticatedUserInterface
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\PrePersist]
@@ -94,6 +96,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // Set the updatedAt value on every update
         $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    /**
+     * 4. This is the COMPATIBILITY method for Symfony Security.
+     * It satisfies the UserInterface contract.
+     *
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = ['ROLE_USER']; // Always grant the basic role.
+
+        // If a specific role is set, add its string value to the array.
+        if ($this->role !== null) {
+            $roles[] = $this->role->value;
+        }
+
+        return array_unique($roles);
     }
 
     #[ORM\Id]
@@ -114,17 +134,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     ])]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
-    #[ORM\Column]
-    #[Groups([
-        'read:user',
-        'read:user_collection',
-        'create:user',
-        'update:user'
-    ])]
-    private array $roles = [];
+//    /**
+//     * @var list<string> The user roles
+//     */
+//    #[ORM\Column]
+//    #[Groups([
+//        'read:user',
+//        'read:user_collection',
+//        'create:user',
+//        'update:user'
+//    ])]
+//    private array $roles = [];
 
     /**
      * @var string|null The hashed password
@@ -227,6 +247,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     ])]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column(nullable: true, enumType: UserRole::class)]
+    private ?UserRole $role = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -254,27 +277,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string)$this->email;
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    /**
-     * @param list<string> $roles
-     */
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
+//    /**
+//     * @see UserInterface
+//     */
+//    public function getRoles(): array
+//    {
+//        $roles = $this->roles;
+//        // guarantee every user at least has ROLE_USER
+//        $roles[] = 'ROLE_USER';
+//
+//        return array_unique($roles);
+//    }
+//
+//    /**
+//     * @param list<string> $roles
+//     */
+//    public function setRoles(array $roles): static
+//    {
+//        $this->roles = $roles;
+//
+//        return $this;
+//    }
 
     /**
      * @see PasswordAuthenticatedUserInterface
@@ -418,6 +441,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(?\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getRole(): ?UserRole
+    {
+        return $this->role;
+    }
+
+    public function setRole(?UserRole $role): static
+    {
+        $this->role = $role;
 
         return $this;
     }

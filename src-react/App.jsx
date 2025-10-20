@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Label from "./ui/Label";
-import { LogIn, Search } from "lucide-react";
-import SearchBar from "./ui/SearchBar";
+import { LogIn , Mail, LockKeyhole, MoveRight } from "lucide-react";
+import LoginForm from './ui/LoginForm';
 
 export default function App() {
     const [showAlert, setShowAlert] = useState(true);
@@ -22,8 +22,13 @@ export default function App() {
         // fetchData();
     }, []);
 
+
     // console.log(data[0])
-    return <div>
-        <SearchBar/>
-    </div>;
+
+    return (
+      <div>
+        <LoginForm initialStep='login'/>
+      </div>
+           );
 }
+

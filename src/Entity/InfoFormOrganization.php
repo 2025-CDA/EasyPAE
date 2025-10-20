@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Enum\InfoFormOrganizationStatus;
 use App\Repository\InfoFormOrganizationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -96,8 +97,9 @@ class InfoFormOrganization
     #[Groups(['read:info_form_organization', 'read:info_form_organization_collection'])]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(length: 500, nullable: true)]
-    private ?string $status = null;
+    #[ORM\Column(nullable: true, enumType: InfoFormOrganizationStatus::class)]
+    private ?InfoFormOrganizationStatus $status = null;
+
 
     public function getId(): ?int
     {
@@ -174,15 +176,16 @@ class InfoFormOrganization
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?InfoFormOrganizationStatus
     {
         return $this->status;
     }
 
-    public function setStatus(?string $status): static
+    public function setStatus(?InfoFormOrganizationStatus $status): static
     {
         $this->status = $status;
 
         return $this;
     }
+
 }

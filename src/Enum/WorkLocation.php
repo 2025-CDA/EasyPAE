@@ -9,4 +9,9 @@ enum WorkLocation: string
     case REMOTE = 'Distanciel';
 
     case HYBRID = 'Hybrid';
+
+    public function toString(): string
+    {
+        return $this->value;
+    }
 }
