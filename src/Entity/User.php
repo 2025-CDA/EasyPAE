@@ -80,8 +80,8 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 //#[ApiFilter(BooleanFilter::class, properties: ['isTrue'])]
 //#[ApiFilter(RangeFilter::class, properties: ['price'])]
 #[ApiFilter(ExistsFilter::class, properties: ['firstName', 'lastName', 'login', 'password'])]
-class User implements PasswordAuthenticatedUserInterface
-//class User implements UserInterface, PasswordAuthenticatedUserInterface
+//class User implements PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\PrePersist]
     public function onPrePersist(): void
@@ -96,6 +96,24 @@ class User implements PasswordAuthenticatedUserInterface
     {
         // Set the updatedAt value on every update
         $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    /**
+     * 4. This is the COMPATIBILITY method for Symfony Security.
+     * It satisfies the UserInterface contract.
+     *
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = ['ROLE_USER']; // Always grant the basic role.
+
+        // If a specific role is set, add its string value to the array.
+        if ($this->role !== null) {
+            $roles[] = $this->role->value;
+        }
+
+        return array_unique($roles);
     }
 
     #[ORM\Id]

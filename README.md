@@ -10,8 +10,6 @@ failure_handler: lexik_jwt_authentication.handler.authentication_failureOf cours
 
 Here is the updated `README.md` file.
 
-TEST
-
 ---
 
 # Project Setup and Usage

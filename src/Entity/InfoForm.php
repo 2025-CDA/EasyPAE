@@ -40,25 +40,25 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Delete(),
 
         new Get(
+            uriTemplate: '/info_forms/{id}/status',
             normalizationContext: ['groups' => ['read:info_form-status']],
-            name: 'info_form-status',
-            uriTemplate: '/info_forms/{id}/status'
+            name: 'info_form-status'
         ),
         new Get(
+            uriTemplate: '/info_form/{id}/status/company',
             normalizationContext: ['groups' => ['read:info_form-status-company']],
-            name: 'info_form-status-company',
-            uriTemplate: '/info_form/{id}/status/company'
+            name: 'info_form-status-company'
         ),
 
         new Get(
+            uriTemplate: '/info_form/{id}/status/organization',
             normalizationContext: ['groups' => ['read:info_form-status-organization']],
-            name: 'info_form-status-organization',
-            uriTemplate: '/info_form/{id}/status/organization'
+            name: 'info_form-status-organization'
         ),
         new Get(
+            uriTemplate: '/info_form/{id}/status/intern',
             normalizationContext: ['groups' => ['read:info_form-status-intern']],
-            name: 'info_form-status-intern',
-            uriTemplate: '/info_form/{id}/status/intern'
+            name: 'info_form-status-intern'
         ),
 
     ],
