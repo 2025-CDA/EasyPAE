@@ -3,6 +3,7 @@ export default function TimeLineRightContent({
     description,
     avatarUrl,
     userName,
+    fileLink,
 }) {
     console.log(avatarUrl);
     return (
@@ -11,6 +12,9 @@ export default function TimeLineRightContent({
                 {title}
             </h5>
             <p className="mt-1 text-xs text-gray-600">{description}</p>
+            {fileLink && (
+                <a href={fileLink}>CONSULTER LA FICHE DE RENSEIGNEMENT</a>
+            )}
             <button
                 type="button"
                 className="mt-1 -ms-1 p-1 inline-flex items-center gap-x-2 text-xs rounded-lg border border-transparent text-gray-900 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none"
