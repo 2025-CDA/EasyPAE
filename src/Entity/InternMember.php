@@ -33,10 +33,13 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
         new Patch(
             denormalizationContext: ['groups' => ['update:intern_member']]
         ),
-        new Put(
-            denormalizationContext: ['groups' => ['update:intern_member']]
-        ),
-        new Delete()
+        new Delete(),
+        new Get(
+            uriTemplate: "/intern/form/{id}/summary",
+            name: "Juan Pedro",
+            normalizationContext: ['groups' => ['read:intern_member_info']]
+        )
+
     ],
     order: ['createdAt' => 'DESC']
 )]
@@ -100,7 +103,7 @@ class InternMember
         'read:intern_member',
         'read:intern_member_collection',
         'create:intern_member',
-        'update:intern_member'
+        'update:intern_member',
     ])]
     private Collection $infoForm;
 
@@ -229,5 +232,27 @@ class InternMember
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    #[Groups([
+        'read:intern_member_info'
+    ])]
+    public function getInfoFormIntern(): array
+    {
+
+            $infoFormsData = [];
+    foreach ($this->infoForm as $infoForm) {
+        $infoFormsData[] = [
+            'someData' => $infoForm->getInfoFormIntern(), 
+            'firstName' => $this->user->getFirstName(),
+            'lastName' => $this->user->getLastName(),
+            'email' => $this->user->getEmail(),
+            'trainingSessionName' => $infoForm->getInternMember()->getTrainingSession()->first()->getTraining()->getName(),
+            'trainingSessionNumber' => $infoForm->getInternMember()->getTrainingSession()->first()->getOfferNumber(),
+
+        ];
+    }
+
+    return $infoFormsData;
     }
 }
