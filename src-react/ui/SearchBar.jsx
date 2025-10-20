@@ -43,45 +43,31 @@ function SearchBar() {
     <div className="max-w-sm relative mt-8">
       <div className="flex">
         <div className="relative flex-grow">
-          <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-3.5">
-            
-          </div>
-          {/* <input
+
+         <Input
             type="text"
             role="combobox"
+            label=""
+            withCopy={false}
             aria-expanded={open}
             aria-controls="search-results"
             aria-autocomplete="list"
             placeholder="Recherche (formation, stagiaire....)"
-            className="py-3 ps-10 pe-4 block w-100 h-10 border border-gray-200 rounded-l-lg sm:text-sm focus:border-1"
+            className="py-3 ps-10 pe-4 w-full h-10 border border-gray-200 rounded-l-lg sm:text-sm focus:border-1"
             value={search}
-            onChange={e => setSearch(e.target.value)} //Mise à jour du state search à chaque frappe.
-            onBlur={() => setTimeout(() => setOpen(false), 150)} // laisse le temps pour un clic avant fermeture
-          /> */}
-         <Input
-  type="text"
-  role="combobox"
-  label=""
-  withCopy={false}
-  aria-expanded={open}
-  aria-controls="search-results"
-  aria-autocomplete="list"
-  placeholder="Recherche (formation, stagiaire....)"
-  className="py-3 ps-10 pe-4 w-full h-10 border border-gray-200 rounded-l-lg sm:text-sm focus:border-1"
-  value={search}
-  onChange={e => setSearch(e.target.value)}
-  onBlur={() => setTimeout(() => setOpen(false), 150)}
-></Input>
+            onChange={e => setSearch(e.target.value)}
+            onBlur={() => setTimeout(() => setOpen(false), 150)}
+          ></Input>
         </div>
 
         {/* Bouton de recherche */}
         <Button
-  onClick={handleSearch}
-  className="bg-blue-600 text-white px-4 rounded-r-lg w-12 h-11 flex items-center justify-center"
-  shape="square"
->
-  <Search size={15} color={"white"} />
-</Button>
+          onClick={handleSearch}
+          className="bg-blue-600 text-white px-4 rounded-r-lg w-12 h-11 flex items-center justify-center"
+          shape="square"
+        >
+            <Search size={15} color={"white"} />
+        </Button>
       </div>
 
       {/* Dropdown suggestions */}
