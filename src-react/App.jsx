@@ -1,60 +1,36 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import Button from "./ui/Button";
-import Label from "./ui/Label";
-import Alert from "./ui/Alerts";
-import Select from "./ui/Select";
-import Checkbox from "./ui/Checkbox";
-import Textarea from "./ui/TextArea";
-import Avatar from "./ui/Avatar";
-import Badge from "./ui/Badge";
-import Notification from "./ui/Notification";
-import CardFormation from "./ui/CardFormation"
-
+import React from "react";
+import Table from "./ui/Table/Table";
 export default function App() {
-    const [showAlert, setShowAlert] = useState(true);
+  const columns = [
+    { header: "Nom", accessor: "name" },
+    { header: "Âge", accessor: "age" },
+    { header: "Adresse", accessor: "address" },
+  ];
 
-    useEffect(() => {
+  const data = [
+    { name: "Edward King", age: 16, address: "LA No. 1 Lake Park" },
+    { name: "Jim Red", age: 45, address: "Melbourne No. 1 Lake Park" },
+    { name: "Marie Dupont", age: 32, address: "Paris 7e" },
+    { name: "Paul Laurent", age: 29, address: "Lyon" },
+    { name: "Sophie Legrand", age: 40, address: "Toulouse" },
+  ];
 
-        const fetchData = async () => {
-            try {
-                // Await the response from the GET request
-                const response = await axios.get("http://127.0.0.1:8000/");
-                // Access the data directly from response.data
-                setData(response.data);
-            } catch (error) {
-                // This single block catches both network errors and bad HTTP statuses (like 404 or 500)
-                console.error("Failed to fetch data:", error);
-            }
-        };
-        fetchData();
-    }, []);
+  const actions = [
+    {
+      label: "Modifier",
+      color: "green",
+      onClick: (row) => console.log("Modifier :", row),
+    },
+    {
+      label: "Supprimer",
+      color: "red",
+      onClick: (row) => console.log("Supprimer :", row),
+    },
+  ];
 
-    // console.log(data[0])
-
-    return (   
-        <div>
-            {/* <h1 className={"bg-amber-500"}>Test Array</h1>
-            <h1 className={"bg-primary"}>Test Array</h1>
-            <h1 className={"bg-secondary"}>Test Array</h1>
-            <h1 className={"bg-logo"}>Test Array</h1>
-            <h1 className={"bg-amber-500"}>Test Array</h1>
-            <h1 className={"bg-amber-500"}>Test Array</h1>
-            <ul>
-                {
-                    data.map((item) => (
-                        <li style={{color:"var(--primary-text)"}} key={item.id}> {item.name} </li>   
-                    ))
-                }
-            </ul>
-            <Button/>   
-            <Label
-                labelFor={"input"} //textaria, select, checkbox, 
-                text= {"Email"} // Le contenu du label
-                weight= {"black"} // light, normal, medium etc.
-                color= {"secondary-text"} //secondary-text ou primary-tex
-                size={"base"} //sm, base, xl, 2xl etc.
-            />      
-        </div>
-    );
+  return (
+    <div className="p-6">  
+      <Table></Table>  
+    </div>
+  );
 }
