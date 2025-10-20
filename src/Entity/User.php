@@ -2,32 +2,30 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use App\Enum\UserRole;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
+use App\State\UserStateProcessor;
+use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
-use App\Controller\User\CreateUserController;
-use App\Controller\User\UpdateUserController;
-use App\Enum\UserRole;
-use App\Repository\UserRepository;
-
-//use App\State\UserStateProcessor;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -37,7 +35,8 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 #[ApiResource(
     operations: [
         new Get(
-            normalizationContext: ['groups' => ['read:user']]
+            normalizationContext: ['groups' => ['read:user']],
+            security: "is_granted('ROLE_ADMIN')"
         ),
         new GetCollection(
             paginationItemsPerPage: 10,
@@ -46,17 +45,20 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
             normalizationContext: ['groups' => ['read:user_collection']]
         ),
         new Post(
-            controller: CreateUserController::class,
+//            controller: CreateUserController::class,
             denormalizationContext: ['groups' => ['create:user']],
-        // When using a custom controller that handles persistence,
-        // you should disable API Platform's default writer.
-            write: false
+//            write: false,
+            // When using a custom controller that handles persistence,
+            // you should disable API Platform's default writer.
+            processor: UserStateProcessor::class
         ),
         new Patch(
-            controller: UpdateUserController::class,
+//            controller: UpdateUserController::class,
             denormalizationContext: ['groups' => ['update:user']],
-        // Also disable the writer here for the same reason.
-            write: false
+            // Also disable the writer here for the same reason.
+//            write: false
+            processor: UserStateProcessor::class
+
         ),
         new Put(
             denormalizationContext: ['groups' => ['update:user']]
@@ -80,6 +82,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 //#[ApiFilter(BooleanFilter::class, properties: ['isTrue'])]
 //#[ApiFilter(RangeFilter::class, properties: ['price'])]
 #[ApiFilter(ExistsFilter::class, properties: ['firstName', 'lastName', 'login', 'password'])]
+
 //class User implements PasswordAuthenticatedUserInterface
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -249,6 +252,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true, enumType: UserRole::class)]
     private ?UserRole $role = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $notification = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $darkMode = null;
 
     public function getId(): ?int
     {
@@ -453,6 +462,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRole(?UserRole $role): static
     {
         $this->role = $role;
+
+        return $this;
+    }
+
+    public function isNotification(): ?bool
+    {
+        return $this->notification;
+    }
+
+    public function setNotification(?bool $notification): static
+    {
+        $this->notification = $notification;
+
+        return $this;
+    }
+
+    public function isDarkMode(): ?bool
+    {
+        return $this->darkMode;
+    }
+
+    public function setDarkMode(?bool $darkMode): static
+    {
+        $this->darkMode = $darkMode;
 
         return $this;
     }

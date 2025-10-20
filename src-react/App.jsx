@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Label from "./ui/Label";
 import { LogIn, Mail, LockKeyhole, MoveRight } from "lucide-react";
-import Table from "../src-react/components/ui/Table/AppTable"
+import LoginForm from "./ui/LoginForm";
+
 export default function App() {
     const [showAlert, setShowAlert] = useState(true);
 
@@ -24,8 +26,7 @@ export default function App() {
 
     return (
         <div>
-            {/* <LoginForm initialStep="login" /> */}
-            <Table></Table>
+            <LoginForm initialStep="login" />
         </div>
     );
 }

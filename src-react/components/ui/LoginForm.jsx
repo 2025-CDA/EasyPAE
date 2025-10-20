@@ -120,7 +120,7 @@ function LoginForm({ initialStep = "login", className }) {
                                 </a>
                                 {/* Checkbox */}
                                 <div className="font-semibold flex items-center text-sm xl:order-1">
-                                    <CheckBox
+                                    <Checkbox
                                         className="text-xs text-primary-text"
                                         label="Se souvenir de moi"
                                         checked={remember}
@@ -136,7 +136,7 @@ function LoginForm({ initialStep = "login", className }) {
                             color="blue"
                             variant="solid"
                             type="submit"
-                            className="mt-6 flex items-center gap-2 bg-primary"
+                            className="mt-6 flex items-center gap-2 bg-primary w-full"
                             shape="rounded"
                         >
                             Se connecter <MoveRight />
@@ -148,7 +148,7 @@ function LoginForm({ initialStep = "login", className }) {
                 <form
                     className="text-sm font-semibold min-w-[400px] w-full" /* handler ici */
                 >
-                    <h3 className="font-semibold mb-8">Première Connexion</h3>
+                    <h3 className="font-semibold mb-8 justify-self-center xl:justify-self-start">Première Connexion</h3>
                     <Input
                         id="provisional-password"
                         label="Mot de passe provisoire"
@@ -159,9 +159,9 @@ function LoginForm({ initialStep = "login", className }) {
                         required={false}
                         withShowPassword
                         withCopy={false}
-                        className="my-3 w-15 h-10"
+                        className="my-3 w-15 h-10 "
                     />
-                    <p className="text-secondary-text text-md">
+                    <p className="text-secondary-text text-md ">
                         Entrez le mot de passe reçu par email afin de vous{" "}
                         <br />
                         connecter
@@ -171,7 +171,7 @@ function LoginForm({ initialStep = "login", className }) {
                             <Button
                                 color="blue"
                                 type="submit"
-                                className="mt-2 flex items-center gap-2"
+                                className="mt-2 flex items-center gap-2 w-full"
                                 shape="rounded"
                             >
                                 Créer mon compte <MoveRight size={12} />
@@ -185,7 +185,7 @@ function LoginForm({ initialStep = "login", className }) {
                     onSubmit={handleForgot}
                     className="text-sm font-semibold min-w-[400px] w-full"
                 >
-                    <h3 className="font-bold text-primary-text pb-8">
+                    <h3 className="font-bold text-primary-text pb-20 justify-self-center xl:pb-8 xl:justify-self-start">
                         Mot de passe oublié
                     </h3>
                     <Input
@@ -199,7 +199,7 @@ function LoginForm({ initialStep = "login", className }) {
                         withCopy={false}
                         className="h-10 my-2"
                     />
-                    <p className="text-secondary-text">
+                    <p className="text-secondary-text pb-2 xl:pb-0">
                         Entrez l'adresse mail associée à votre compte pour
                         modifier <br /> votre mot de passe
                     </p>
@@ -210,7 +210,7 @@ function LoginForm({ initialStep = "login", className }) {
                         className="mt-2 pb-2 w-sm"
                         shape="rounded"
                     >
-                        Récupérer mon compte <MoveRight size={10} />
+                        Récupérer mon compte <MoveRight size={12} />
                     </Button>
                 </form>
             )}
