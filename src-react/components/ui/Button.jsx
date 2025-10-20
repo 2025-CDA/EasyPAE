@@ -1,5 +1,5 @@
 export default function Button({
-    variant = 'solid',
+    variant = "solid",
     icon,
     color = "blue",
     children,
@@ -28,8 +28,9 @@ export default function Button({
         },
         white: {
             solid: "bg-background text-primary-text",
-            outline:
-                "border border-black-600 text-red-500",
+            outline: "border border-black-600 text-primary-text",
+
+            
         },
     };
 

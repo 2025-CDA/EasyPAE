@@ -3,7 +3,7 @@ import Label from "./Label";
 import Button from "./Button";
 import Input from "./Input";
 import { LogIn, Mail, LockKeyhole, MoveRight } from "lucide-react";
-import CheckBox from "./CheckBox";
+import Checkbox from "./Checkbox";
 import Container from "./Container";
 
 function LoginForm({ initialStep = "login", className }) {
