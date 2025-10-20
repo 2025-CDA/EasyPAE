@@ -1,0 +1,22 @@
+[
+    {
+        "category": "Fruits",
+        "name": "Apple",
+        "image": "/images/apple.png"
+    },
+    {
+        "category": "Fruits",
+        "name": "Banana",
+        "image": "/images/banana.png"
+    },
+    {
+        "category": "Vegetables",
+        "name": "Carrot",
+        "image": "/images/carrot.png"
+    },
+    {
+        "category": "Vegetables",
+        "name": "Lettuce",
+        "image": "/images/lettuce.png"
+    }
+]
