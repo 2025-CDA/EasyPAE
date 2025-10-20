@@ -25,8 +25,10 @@ export default function App() {
 
     // console.log(data[0])
 
-    return <div>
+    return (
+      <div>
         <LoginForm initialStep='login'/>
-    </div>;
+      </div>
+           );
 }
 
