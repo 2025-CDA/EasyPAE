@@ -1,12 +1,12 @@
 import React from 'react'
-import Trow from './Trow'
+import TableRow from './TableRow'
 
-function Tbody({columnsTbody, dataInTbody, onEdit, onDelete}) {
+function TableBody({columnsTbody, dataInTbody, onEdit, onDelete}) {
   // console.log(columnsTbody) 
   // console.log(dataInTbody) 
   return ( 
     <tbody className="divide-y divide-gray-200">
-        <Trow 
+        <TableRow
           trData={dataInTbody} 
           trColumns={columnsTbody}
           onEdit={onEdit}
@@ -15,4 +15,4 @@ function Tbody({columnsTbody, dataInTbody, onEdit, onDelete}) {
     </tbody>    
   )
 }
-export default Tbody
+export default TableBody

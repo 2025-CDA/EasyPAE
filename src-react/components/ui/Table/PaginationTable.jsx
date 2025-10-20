@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Pagination({ totalItems, itemsPerPage, currentPage, onPageChange }) {
+function PaginationTable({ totalItems, itemsPerPage, currentPage, onPageChange }) {
   const totalPages = Math.ceil(totalItems / itemsPerPage)
   const pageNumbers = [...Array(totalPages).keys()].map(num => num + 1)
 
@@ -54,4 +54,4 @@ function Pagination({ totalItems, itemsPerPage, currentPage, onPageChange }) {
   )
 }
 
-export default Pagination
+export default PaginationTable

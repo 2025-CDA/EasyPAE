@@ -1,6 +1,6 @@
 import React from 'react'
 
-function TdataBody({tdData, tdColumns}) {
+function TableCellData({tdData, tdColumns}) {
     // console.log(tdData)
     // console.log(tdColumns)
   return (
@@ -19,4 +19,4 @@ function TdataBody({tdData, tdColumns}) {
 
   )
 }
-export default TdataBody
+export default TableCellData
