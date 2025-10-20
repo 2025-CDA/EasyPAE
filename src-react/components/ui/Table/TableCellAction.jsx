@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ActionBoutons({ keyAction, onEdit, onDelete}) {
+function TableCellAction({ keyAction, onEdit, onDelete}) {
   return (
     <div className="flex gap-3 justify-end">
       <button
@@ -22,4 +22,4 @@ function ActionBoutons({ keyAction, onEdit, onDelete}) {
   )
 }
 
-export default ActionBoutons
+export default TableCellAction

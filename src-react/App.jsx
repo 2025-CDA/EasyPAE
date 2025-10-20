@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Label from "./ui/Label";
 import { LogIn, Mail, LockKeyhole, MoveRight } from "lucide-react";
-import LoginForm from "./components/ui/LoginForm";
+import LoginForm from "./ui/LoginForm";
 
 export default function App() {
     const [showAlert, setShowAlert] = useState(true);
@@ -25,7 +26,7 @@ export default function App() {
 
     return (
         <div>
-            <LoginForm initialStep="forgotPassword"/>
+            <LoginForm initialStep="login" />
         </div>
     );
 }
