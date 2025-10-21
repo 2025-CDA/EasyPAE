@@ -46,7 +46,7 @@ export default StepperNavbar;
 function StepItem({ step, title, description, isValidated, isActive, isDone }) {
     let stepCircleClass = "bg-gray-100 text-gray-400";
     if (isValidated) {
-        stepCircleClass = "bg-success-text text-white";
+        stepCircleClass = "bg-validate-text text-white";
     } else if (isDone) {
         stepCircleClass = "bg-primary text-white";
     } else if (isActive) {
@@ -55,7 +55,7 @@ function StepItem({ step, title, description, isValidated, isActive, isDone }) {
 
     let barClass = "bg-gray-100";
     if (isValidated) {
-        barClass = "bg-success-text";
+        barClass = "bg-validate-text";
     } else if (isDone) {
         barClass = "bg-primary";
     }
