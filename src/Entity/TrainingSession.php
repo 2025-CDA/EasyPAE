@@ -149,19 +149,6 @@ class TrainingSession
     ])]
     private ?Training $training = null;
 
-    /**
-     * @var Collection<int, InternMember>
-     */
-    #[ORM\ManyToMany(targetEntity: InternMember::class, mappedBy: 'trainingSession')]
-    #[MaxDepth(1)]
-    #[Groups([
-        'read:training_session',
-        'read:training_session_collection',
-        'create:training_session',
-        'update:training_session'
-    ])]
-    private Collection $internMembers;
-
     #[ORM\Column(nullable: true)]
     #[MaxDepth(1)]
     #[Groups([
@@ -177,6 +164,12 @@ class TrainingSession
         'read:training_session_collection'
     ])]
     private ?\DateTimeImmutable $createdAt = null;
+
+    /**
+     * @var Collection<int, InfoForm>
+     */
+    #[ORM\OneToMany(targetEntity: InfoForm::class, mappedBy: 'trainingSession')]
+    private Collection $infoForms;
 
     #[MaxDepth(1)]
     #[Groups([
@@ -199,7 +192,7 @@ class TrainingSession
     public function __construct()
     {
         $this->organizationMembers = new ArrayCollection();
-        $this->internMembers = new ArrayCollection();
+        $this->infoForms = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -306,33 +299,6 @@ class TrainingSession
         return $this;
     }
 
-    /**
-     * @return Collection<int, InternMember>
-     */
-    public function getInternMembers(): Collection
-    {
-        return $this->internMembers;
-    }
-
-    public function addInternMember(InternMember $internMember): static
-    {
-        if (!$this->internMembers->contains($internMember)) {
-            $this->internMembers->add($internMember);
-            $internMember->addTrainingSession($this);
-        }
-
-        return $this;
-    }
-
-    public function removeInternMember(InternMember $internMember): static
-    {
-        if ($this->internMembers->removeElement($internMember)) {
-            $internMember->removeTrainingSession($this);
-        }
-
-        return $this;
-    }
-
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
@@ -353,6 +319,36 @@ class TrainingSession
     public function setCreatedAt(?\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, InfoForm>
+     */
+    public function getInfoForms(): Collection
+    {
+        return $this->infoForms;
+    }
+
+    public function addInfoForm(InfoForm $infoForm): static
+    {
+        if (!$this->infoForms->contains($infoForm)) {
+            $this->infoForms->add($infoForm);
+            $infoForm->setTrainingSession($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInfoForm(InfoForm $infoForm): static
+    {
+        if ($this->infoForms->removeElement($infoForm)) {
+            // set the owning side to null (unless already changed)
+            if ($infoForm->getTrainingSession() === $this) {
+                $infoForm->setTrainingSession(null);
+            }
+        }
 
         return $this;
     }

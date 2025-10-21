@@ -194,6 +194,9 @@ class InfoForm
     ])]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'infoForms')]
+    private ?TrainingSession $trainingSession = null;
+
 
 
 
@@ -306,6 +309,18 @@ class InfoForm
     public function setCreatedAt(?\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getTrainingSession(): ?TrainingSession
+    {
+        return $this->trainingSession;
+    }
+
+    public function setTrainingSession(?TrainingSession $trainingSession): static
+    {
+        $this->trainingSession = $trainingSession;
 
         return $this;
     }
