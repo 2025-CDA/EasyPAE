@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Label from "./ui/Label";
-import { LogIn, Mail, LockKeyhole, MoveRight } from "lucide-react";
-import LoginForm from "./ui/LoginForm";
+
 
 export default function App() {
-    const [showAlert, setShowAlert] = useState(true);
+    // const [showAlert, setShowAlert] = useState(true);
 
     useEffect(() => {
         // const fetchData = async () => {
@@ -26,7 +24,6 @@ export default function App() {
 
     return (
         <div>
-            <LoginForm initialStep="login" />
         </div>
     );
 }

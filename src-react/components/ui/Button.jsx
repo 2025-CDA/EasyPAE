@@ -8,7 +8,7 @@ export default function Button({
     className,
     ...props
 }) {
-    console.log(variant)
+    console.log(variant);
     // Définition des variantes et des couleurs
     const colorVariants = {
         blue: {
@@ -29,8 +29,6 @@ export default function Button({
         white: {
             solid: "bg-background text-primary-text",
             outline: "border border-black-600 text-primary-text",
-
-            
         },
     };
 
@@ -51,18 +49,18 @@ export default function Button({
     const shapeClass = shapes[shape] || "";
 
     return (
-            <button
-                type="button"
-                className={`
+        <button
+            type="button"
+            className={`
         ${baseButton}
         ${colorVariantClass} ${shapeClass}
         ${className}
       `}
-                {...props}
-                onClick={onClick}
-            >
-                {icon}
-                {children}
-            </button>
+            {...props}
+            onClick={onClick}
+        >
+            {icon}
+            {children}
+        </button>
     );
 }
