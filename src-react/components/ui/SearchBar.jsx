@@ -4,7 +4,7 @@ import  Button  from './Button';
 import Input from './Input';
 
 
-function SearchBar() {
+function SearchBar({className}) {
 
 
   const [datas, setDatas] = useState([]);         //la liste complète des données chargées 
@@ -40,10 +40,9 @@ function SearchBar() {
 
   // ---------------------- Return ----------------------
   return (
-    <div className="max-w-sm relative mt-8">
+    <div className={`${className} relative mt-8 `}>
       <div className="flex">
         <div className="relative flex-grow">
-
          <Input
             type="text"
             role="combobox"
@@ -53,7 +52,7 @@ function SearchBar() {
             aria-controls="search-results"
             aria-autocomplete="list"
             placeholder="Recherche (formation, stagiaire....)"
-            className="py-3 ps-10 pe-4 w-full h-10 border border-gray-200 rounded-l-lg sm:text-sm focus:border-1"
+            className="ps-10 pe-4 w-[50%] border border-gray-200 rounded-l-lg sm:text-sm focus:border-1 rounded-r-none h-full"
             value={search}
             onChange={e => setSearch(e.target.value)}
             onBlur={() => setTimeout(() => setOpen(false), 150)}
@@ -63,7 +62,7 @@ function SearchBar() {
         {/* Bouton de recherche */}
         <Button
           onClick={handleSearch}
-          className="bg-blue-600 text-white px-4 rounded-r-lg w-12 h-11 flex items-center justify-center"
+          className="bg-blue-600 text-white px-4 rounded-r-lg w-12  flex items-center justify-center"
           shape="square"
         >
             <Search size={15} color={"white"} />

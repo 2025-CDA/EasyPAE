@@ -1,4 +1,4 @@
-import placeholder from "../assets/profile.jpg";
+import placeholder from "../../assets/profile.jpg";
 
 function Avatar({ url = placeholder, size = 8, color = "red" }) {
     return (
