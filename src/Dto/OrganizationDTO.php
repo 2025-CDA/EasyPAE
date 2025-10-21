@@ -4,35 +4,38 @@ namespace App\Dto;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
-use App\State\TestProvider;
+use App\Entity\Organization;
+use App\State\OrganizationProvider;
 
 #[ApiResource(
     operations: [
-
         new GetCollection(
-            uriTemplate: '/organization/sessions',
-            normalizationContext: ['groups' => ['read:organization_sessions_collection']]
-
-        ),
-
-        new GetCollection(
-            uriTemplate: '/organization/session/{id}/interns',
-            normalizationContext: ['groups' => ['read:organization_session_interns_collection']],
+            uriTemplate: '/organization/{organizationId}/sessions',
             uriVariables: [
-                'id' => new Link(fromClass: self::class, identifiers: ['id']),
-            ]
-        ),
+                'organizationId' => new Link(fromClass: Organization::class, identifiers: ['id'])
+            ],
+            provider: OrganizationProvider::class,
+        )
     ],
-    // provider: TestProvider::class,
-    // processor: null
+    processor: null
 )]
 class OrganizationDTO
 {
+    /**
+     * The ID of the TrainingSession.
+     */
     #[ApiProperty(identifier: true)]
     public int $id;
 
-    public string $userFullName;
+    /**
+     * The name of the TrainingSession.
+     */
+    public string $name;
+
+    /**
+     * The start date of the TrainingSession.
+     */
+    public \DateTimeInterface $startDate;
 }
