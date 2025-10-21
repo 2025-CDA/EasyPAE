@@ -1,27 +1,27 @@
 import React from "react";
 
-function StepperNavbar(
-    
-    { inactive, currentStep, nextStep,
-        content = [
-            {
-                step: 1,
-                title: "test",
-                description: "lorem ipsum",
-            },
-            {
-                step: 2,
-                title: "test2",
-                description: "lorem ipsum2",
-            },
-            {
-                step: 3,
-                title: "test3",
-                description: "lorem ipsum3",
-            },
-        ],
-    }
-) {
+function StepperNavbar({
+    validated,
+    currentStep,
+    finishedStep = [],
+    content = [
+        {
+            step: 1,
+            title: "test",
+            description: "lorem ipsum",
+        },
+        {
+            step: 2,
+            title: "test2",
+            description: "lorem ipsum2",
+        },
+        {
+            step: 3,
+            title: "test3",
+            description: "lorem ipsum3",
+        },
+    ],
+}) {
     return (
         <ul className="w-full flex justify-center items-center flex-col md:flex-row gap-2">
             {content.map((step, i) => (
@@ -30,12 +30,11 @@ function StepperNavbar(
                     step={step.step}
                     title={step.title}
                     description={step.description}
-                    isInactive={i === inactive}
-                    isActive={i === nextStep}
-                    isDone={i === currentStep}
-                    
-                    
-                    
+                    isActive={i === currentStep}
+                    isDone={
+                        Array.isArray(finishedStep) && finishedStep.includes(i)
+                    }
+                    isValidated={validated}
                 />
             ))}
         </ul>
@@ -44,17 +43,35 @@ function StepperNavbar(
 
 export default StepperNavbar;
 
-function StepItem({ step, title, description,isInactive, isActive, isDone }) {
+function StepItem({ step, title, description, isValidated, isActive, isDone }) {
+    let stepCircleClass = "bg-gray-100 text-gray-400";
+    if (isValidated) {
+        stepCircleClass = "bg-success-text text-white";
+    } else if (isDone) {
+        stepCircleClass = "bg-primary text-white";
+    } else if (isActive) {
+        stepCircleClass = "bg-logo text-primary";
+    }
+
+    let barClass = "bg-gray-100";
+    if (isValidated) {
+        barClass = "bg-success-text";
+    } else if (isDone) {
+        barClass = "bg-primary";
+    }
+
     return (
         <li className="md:shrink md:basis-0 flex-1  group flex gap-x-2 md:block">
             <div className=" min-w-7 min-h-7 flex flex-col items-center md:w-full md:inline-flex md:flex-wrap md:flex-row text-xs align-middle">
-                <span className= {
-                    `bg-gray-100 text-gray-400 size-7 flex justify-center items-center shrink-0 font-medium rounded-full ${ isActive && "bg-logo text-primary"} ${isDone && "bg-primary text-white"} ${isInactive && "bg-logo text-primary"}` 
-                }>
+                <span
+                    className={` ${stepCircleClass} size-7 flex justify-center items-center shrink-0 font-medium rounded-full`}
+                >
                     {step}
-                </span >
-                {/* barre bleue */}
-                <div className={`${isDone && "bg-primary"} mt-2 w-full h-full md:mt-0 md:ms-2 md:w-full md:h-px md:flex-1 bg-gray-100 group-last:hidden`}></div>
+                </span>
+
+                <div
+                    className={`${barClass} mt-2 w-1 h-full md:mt-0 md:ms-2 md:w-full md:h-px md:flex-1 bg-gray-100 group-last:hidden`}
+                ></div>
             </div>
             <div className="grow md:grow-0 md:mt-3 pb-5">
                 <span className="block text-sm font-medium text-gray-800">
