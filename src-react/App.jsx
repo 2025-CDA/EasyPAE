@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { LogIn, Mail, LockKeyhole, MoveRight } from "lucide-react";
-import LoginForm from "./components/ui/LoginForm";
+import LoginPage from "./pages/security/LoginPage";
 
 export default function App() {
     const [showAlert, setShowAlert] = useState(true);
@@ -25,7 +24,7 @@ export default function App() {
 
     return (
         <div>
-            <LoginForm initialStep="forgotPassword"/>
+            <LoginPage initialStep="error" />
         </div>
     );
 }
