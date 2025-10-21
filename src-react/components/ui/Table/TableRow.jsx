@@ -1,8 +1,8 @@
 import React from 'react'
-import TdataBody from './TdataBody'
-import ActionBoutons from './ActionBoutons'
+import TableCellData from './TableCellData'
+import TableCellAction from './TableCellAction'
 
-function Trow({ trData, trColumns, onEdit, onDelete}) {
+function TableRow({ trData, trColumns, onEdit, onDelete}) {
 
   // Vérifier si la colonne ayant comme key action existe dans la constante des colonnes
   const hasActionColumn = trColumns.some(col => col.key === "action")
@@ -14,7 +14,7 @@ function Trow({ trData, trColumns, onEdit, onDelete}) {
 
           {/* On affiche d'abord les colonnes sans la colonne Action*/}
 
-          <TdataBody 
+          <TableCellData 
             tdData={row} 
             tdColumns={trColumns.filter(col => col.key !== "action")} 
           />
@@ -24,7 +24,7 @@ function Trow({ trData, trColumns, onEdit, onDelete}) {
           {
             hasActionColumn && (
               <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
-                <ActionBoutons 
+                <TableCellAction 
                   keyAction={row.id} 
                   onEdit={onEdit} 
                   onDelete={onDelete}
@@ -38,4 +38,4 @@ function Trow({ trData, trColumns, onEdit, onDelete}) {
   )
 }
 
-export default Trow
+export default TableRow
