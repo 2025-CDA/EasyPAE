@@ -6,7 +6,7 @@ import {
     Lightbulb,
     ArrowRightFromLine,
 } from "lucide-react";
-import Avatar from "../ui/Avatar.jsx";
+import Avatar from "../ui/Avatar";
 import logo from "../../assets/Logo-light.png";
 
 export default function DesktopSidebar() {
