@@ -33,10 +33,19 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
         new Patch(
             denormalizationContext: ['groups' => ['update:intern_member']]
         ),
-        new Put(
-            denormalizationContext: ['groups' => ['update:intern_member']]
+        new Delete(),
+        new Get(
+            uriTemplate: "/intern/form/{id}/summary",
+            name: "Juan Pedro",
+            normalizationContext: ['groups' => ['read:intern_member_info']]
         ),
-        new Delete()
+        new Get(
+            uriTemplate: "/company/form/{id}/summary",
+            name: "Dolores",
+            normalizationContext: ['groups' => ['read:company_member_info']]
+        )
+        
+
     ],
     order: ['createdAt' => 'DESC']
 )]
@@ -79,19 +88,6 @@ class InternMember
     private ?User $user = null;
 
     /**
-     * @var Collection<int, TrainingSession>
-     */
-    #[ORM\ManyToMany(targetEntity: TrainingSession::class, inversedBy: 'internMembers')]
-    #[MaxDepth(1)]
-    #[Groups([
-        'read:intern_member',
-        'read:intern_member_collection',
-        'create:intern_member',
-        'update:intern_member'
-    ])]
-    private Collection $trainingSession;
-
-    /**
      * @var Collection<int, InfoForm>
      */
     #[ORM\OneToMany(targetEntity: InfoForm::class, mappedBy: 'internMember')]
@@ -100,7 +96,7 @@ class InternMember
         'read:intern_member',
         'read:intern_member_collection',
         'create:intern_member',
-        'update:intern_member'
+        'update:intern_member',
     ])]
     private Collection $infoForm;
 
@@ -122,7 +118,6 @@ class InternMember
 
     public function __construct()
     {
-        $this->trainingSession = new ArrayCollection();
         $this->infoForm = new ArrayCollection();
     }
 
@@ -149,30 +144,6 @@ class InternMember
         }
 
         $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, TrainingSession>
-     */
-    public function getTrainingSession(): Collection
-    {
-        return $this->trainingSession;
-    }
-
-    public function addTrainingSession(TrainingSession $trainingSession): static
-    {
-        if (!$this->trainingSession->contains($trainingSession)) {
-            $this->trainingSession->add($trainingSession);
-        }
-
-        return $this;
-    }
-
-    public function removeTrainingSession(TrainingSession $trainingSession): static
-    {
-        $this->trainingSession->removeElement($trainingSession);
 
         return $this;
     }
@@ -230,4 +201,23 @@ class InternMember
 
         return $this;
     }
+
+    // #[Groups([
+    //     'read:intern_member_info'
+    // ])]
+    // public function getInfoFormIntern(): array
+    // {
+    //     $infoFormsData = [];
+    //     foreach ($this->infoForm as $infoForm) {
+    //         $infoFormsData[] = [
+    //             'someData' => $infoForm->getInfoFormIntern(),
+    //             'firstName' => $this->user->getFirstName(),
+    //             'lastName' => $this->user->getLastName(),
+    //             'email' => $this->user->getEmail(),
+    //             'trainingSessionName' => $infoForm->getInternMember()->getTrainingSession()->first()->getTraining()->getName(),
+    //             'trainingSessionNumber' => $infoForm->getInternMember()->getTrainingSession()->first()->getOfferNumber(),
+    //         ];
+    //     }
+    //     return $infoFormsData;
+    // }
 }
