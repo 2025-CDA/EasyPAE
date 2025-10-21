@@ -171,6 +171,12 @@ class TrainingSession
     #[ORM\OneToMany(targetEntity: InfoForm::class, mappedBy: 'trainingSession')]
     private Collection $infoForms;
 
+    /**
+     * @var Collection<int, InternMember>
+     */
+    #[ORM\ManyToMany(targetEntity: InternMember::class, mappedBy: 'trainingSession')]
+    private Collection $internMembers;
+
     #[MaxDepth(1)]
     #[Groups([
         'read:training_period',
@@ -193,6 +199,7 @@ class TrainingSession
     {
         $this->organizationMembers = new ArrayCollection();
         $this->infoForms = new ArrayCollection();
+        $this->internMembers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -348,6 +355,33 @@ class TrainingSession
             if ($infoForm->getTrainingSession() === $this) {
                 $infoForm->setTrainingSession(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, InternMember>
+     */
+    public function getInternMembers(): Collection
+    {
+        return $this->internMembers;
+    }
+
+    public function addInternMember(InternMember $internMember): static
+    {
+        if (!$this->internMembers->contains($internMember)) {
+            $this->internMembers->add($internMember);
+            $internMember->addTrainingSession($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInternMember(InternMember $internMember): static
+    {
+        if ($this->internMembers->removeElement($internMember)) {
+            $internMember->removeTrainingSession($this);
         }
 
         return $this;

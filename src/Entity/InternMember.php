@@ -116,9 +116,16 @@ class InternMember
     ])]
     private ?\DateTimeImmutable $createdAt = null;
 
+    /**
+     * @var Collection<int, TrainingSession>
+     */
+    #[ORM\ManyToMany(targetEntity: TrainingSession::class, inversedBy: 'internMembers')]
+    private Collection $trainingSession;
+
     public function __construct()
     {
         $this->infoForm = new ArrayCollection();
+        $this->trainingSession = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -220,4 +227,28 @@ class InternMember
     //     }
     //     return $infoFormsData;
     // }
+
+    /**
+     * @return Collection<int, TrainingSession>
+     */
+    public function getTrainingSession(): Collection
+    {
+        return $this->trainingSession;
+    }
+
+    public function addTrainingSession(TrainingSession $trainingSession): static
+    {
+        if (!$this->trainingSession->contains($trainingSession)) {
+            $this->trainingSession->add($trainingSession);
+        }
+
+        return $this;
+    }
+
+    public function removeTrainingSession(TrainingSession $trainingSession): static
+    {
+        $this->trainingSession->removeElement($trainingSession);
+
+        return $this;
+    }
 }
