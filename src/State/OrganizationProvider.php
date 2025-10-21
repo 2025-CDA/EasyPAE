@@ -9,6 +9,7 @@ use App\Dto\OrganizationDTO;
 use App\Repository\OrganizationRepository;
 use App\Repository\TrainingSessionRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use ApiPlatform\Metadata\CollectionOperationInterface;
 
 class OrganizationProvider implements ProviderInterface
 {
@@ -18,33 +19,42 @@ class OrganizationProvider implements ProviderInterface
     ) {
     }
 
-    public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
-    {
-        $organizationId = $uriVariables['organizationId'];
 
-        $organization = $this->organizationRepository->find($organizationId);
-        if (!$organization) {
-            throw new NotFoundHttpException('Organization not found.');
-        }
-
-        // --- THIS IS THE FIX ---
-        // Replace the old, failing findBy() call...
-        // $trainingSessions = $this->trainingSessionRepository->findBy(['organization' => $organization]);
-
-        // ...with our new custom repository method.
-        $trainingSessions = $this->trainingSessionRepository->findByOrganization($organization);
-        // -------------------------
-
-        $dtoCollection = [];
-        foreach ($trainingSessions as $session) {
+public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
+{
+    if ($operation instanceof CollectionOperationInterface) {
+        // Récupérer toutes les sessions
+        $sessions = $this->trainingSessionRepository->findAll();
+        $dtos = [];
+        foreach ($sessions as $session) {
             $dto = new OrganizationDTO();
             $dto->id = $session->getId();
             $dto->name = $session->getTraining()?->getName();
-
+            $dto->offerNumber = $session->getOfferNumber();
             $dto->startDate = $session->getTrainingPeriodStart();
-            $dtoCollection[] = $dto;
+            $dto->endDate = $session->getTrainingPeriodEnd();
+            $dtos[] = $dto;
         }
-
-        return $dtoCollection;
+        return $dtos;
     }
+
+    // Cas item
+    if (isset($uriVariables['id'])) {
+        $session = $this->trainingSessionRepository->find((int) $uriVariables['id']);
+        if (!$session) {
+            // Option 1 : lancer explicitement l’exception
+            throw new NotFoundHttpException('Training session not found.');
+            // Option 2 : return null; // Api Platform gère la 404
+        }
+        $dto = new OrganizationDTO();
+        $dto->id = $session->getId();
+        $dto->name = $session->getTraining()?->getName();
+        $dto->offerNumber = $session->getOfferNumber();
+        $dto->startDate = $session->getTrainingPeriodStart();
+        $dto->endDate = $session->getTrainingPeriodEnd();
+        return $dto;
+    }
+
+    return null; // Aucun cas traité
+}
 }
