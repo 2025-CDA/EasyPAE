@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import HelpPage from "./pages/help/HelpPage";
+import SuperAdminPage from "./pages/super_admin/SuperAdminPage";
+
 
 
 export default function App() {
@@ -25,7 +26,7 @@ export default function App() {
 
     return (
         <div>
-            <HelpPage/>
+            <SuperAdminPage></SuperAdminPage>
         </div>
     );
 }
