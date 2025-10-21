@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import LoginPage from "./pages/security/LoginPage";
+
 
 export default function App() {
-    const [showAlert, setShowAlert] = useState(true);
+    // const [showAlert, setShowAlert] = useState(true);
 
     useEffect(() => {
         // const fetchData = async () => {
@@ -24,7 +24,6 @@ export default function App() {
 
     return (
         <div>
-            <LoginPage initialStep="error" />
         </div>
     );
 }

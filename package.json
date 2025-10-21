@@ -5,8 +5,10 @@
     "type": "module",
     "scripts": {
         "serve": "symfony serve -no-tls",
+        "serve2": "frankenphp run --config Caddyfile",
         "dev": "vite",
         "start": "concurrently \"npm run serve\" \"npm run dev\"",
+        "start2": "concurrently \"npm run serve2\" \"npm run dev\"",
         "mailpit": "mailpit --listen 0.0.0.0:8025 --smtp 0.0.0.0:1025",
         "messenger": "symfony console messenger:consume async -vv",
         "mail": "concurrently \"npm run mailpit\" \"npm run messenger\"",

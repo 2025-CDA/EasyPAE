@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Thead({columnsThead}) {
+function TableHead({columnsThead}) {
   // console.log(columnsThead)
   return (
     <thead className="bg-gray-50">
@@ -22,4 +22,4 @@ function Thead({columnsThead}) {
     </thead> 
   )
 }
-export default Thead
+export default TableHead

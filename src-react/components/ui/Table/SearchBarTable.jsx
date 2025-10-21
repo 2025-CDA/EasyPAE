@@ -1,6 +1,6 @@
 import React from "react"
 
-function SearchBar({ value, onChange, placeholder }) {
+function SearchBarTable({ value, onChange, placeholder }) {
   return (
     <div className="py-3 px-4">
       <div className="relative max-w-xs">
@@ -35,4 +35,4 @@ function SearchBar({ value, onChange, placeholder }) {
   )
 }
 
-export default SearchBar
+export default SearchBarTable
