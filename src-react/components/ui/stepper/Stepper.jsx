@@ -21,7 +21,7 @@ function Stepper({
             description: "lorem ipsum3",
         },
     ],
-    withBack = true,
+    withBack = false,
 }) {
     const [step, setStep] = useState(0);
 
