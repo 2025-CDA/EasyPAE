@@ -24,6 +24,9 @@ export default function App() {
     // console.log(data[0])
 
     return (
-            <Stepper />
+            <div className="w-full">
+                <Stepper />
+            </div>
+            
     );
 }
