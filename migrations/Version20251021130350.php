@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20251021074653 extends AbstractMigration
+final class Version20251021130350 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -29,6 +29,7 @@ final class Version20251021074653 extends AbstractMigration
         $this->addSql('CREATE TABLE info_form_intern_company (id INT AUTO_INCREMENT NOT NULL, company_name VARCHAR(255) DEFAULT NULL, address VARCHAR(255) DEFAULT NULL, email VARCHAR(255) DEFAULT NULL, contact_name VARCHAR(255) DEFAULT NULL, updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', created_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE info_form_organization (id INT AUTO_INCREMENT NOT NULL, validation_date DATE DEFAULT NULL COMMENT \'(DC2Type:date_immutable)\', signature VARCHAR(255) DEFAULT NULL, updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', created_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', status VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE intern_member (id INT AUTO_INCREMENT NOT NULL, user_id INT NOT NULL, updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', created_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', UNIQUE INDEX UNIQ_31CB5C38A76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE intern_member_training_session (intern_member_id INT NOT NULL, training_session_id INT NOT NULL, INDEX IDX_7873472156817849 (intern_member_id), INDEX IDX_78734721DB8156B9 (training_session_id), PRIMARY KEY(intern_member_id, training_session_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE notification (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, content LONGTEXT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE organization (id INT AUTO_INCREMENT NOT NULL, siret VARCHAR(255) DEFAULT NULL, name VARCHAR(255) DEFAULT NULL, updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', created_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE organization_member (id INT AUTO_INCREMENT NOT NULL, user_id INT NOT NULL, organization_id INT DEFAULT NULL, role VARCHAR(255) DEFAULT NULL, updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', created_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', UNIQUE INDEX UNIQ_756A2A8DA76ED395 (user_id), INDEX IDX_756A2A8D32C8A3DE (organization_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
@@ -50,6 +51,8 @@ final class Version20251021074653 extends AbstractMigration
         $this->addSql('ALTER TABLE info_form_company_calendar_row ADD CONSTRAINT FK_A9AA14DE7470E03B FOREIGN KEY (info_form_company_id) REFERENCES info_form_company (id)');
         $this->addSql('ALTER TABLE info_form_intern ADD CONSTRAINT FK_78AFA1678F0DCFE2 FOREIGN KEY (info_form_intern_company_id) REFERENCES info_form_intern_company (id)');
         $this->addSql('ALTER TABLE intern_member ADD CONSTRAINT FK_31CB5C38A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('ALTER TABLE intern_member_training_session ADD CONSTRAINT FK_7873472156817849 FOREIGN KEY (intern_member_id) REFERENCES intern_member (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE intern_member_training_session ADD CONSTRAINT FK_78734721DB8156B9 FOREIGN KEY (training_session_id) REFERENCES training_session (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE organization_member ADD CONSTRAINT FK_756A2A8DA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE organization_member ADD CONSTRAINT FK_756A2A8D32C8A3DE FOREIGN KEY (organization_id) REFERENCES organization (id)');
         $this->addSql('ALTER TABLE organization_member_training_session ADD CONSTRAINT FK_A4F87C184DA009F8 FOREIGN KEY (organization_member_id) REFERENCES organization_member (id) ON DELETE CASCADE');
@@ -74,6 +77,8 @@ final class Version20251021074653 extends AbstractMigration
         $this->addSql('ALTER TABLE info_form_company_calendar_row DROP FOREIGN KEY FK_A9AA14DE7470E03B');
         $this->addSql('ALTER TABLE info_form_intern DROP FOREIGN KEY FK_78AFA1678F0DCFE2');
         $this->addSql('ALTER TABLE intern_member DROP FOREIGN KEY FK_31CB5C38A76ED395');
+        $this->addSql('ALTER TABLE intern_member_training_session DROP FOREIGN KEY FK_7873472156817849');
+        $this->addSql('ALTER TABLE intern_member_training_session DROP FOREIGN KEY FK_78734721DB8156B9');
         $this->addSql('ALTER TABLE organization_member DROP FOREIGN KEY FK_756A2A8DA76ED395');
         $this->addSql('ALTER TABLE organization_member DROP FOREIGN KEY FK_756A2A8D32C8A3DE');
         $this->addSql('ALTER TABLE organization_member_training_session DROP FOREIGN KEY FK_A4F87C184DA009F8');
@@ -90,6 +95,7 @@ final class Version20251021074653 extends AbstractMigration
         $this->addSql('DROP TABLE info_form_intern_company');
         $this->addSql('DROP TABLE info_form_organization');
         $this->addSql('DROP TABLE intern_member');
+        $this->addSql('DROP TABLE intern_member_training_session');
         $this->addSql('DROP TABLE notification');
         $this->addSql('DROP TABLE organization');
         $this->addSql('DROP TABLE organization_member');

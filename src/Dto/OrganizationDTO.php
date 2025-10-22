@@ -5,37 +5,43 @@ namespace App\Dto;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Link;
-use App\Entity\Organization;
-use App\State\OrganizationProvider;
+use ApiPlatform\Metadata\Get;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     operations: [
         new GetCollection(
-            uriTemplate: '/organization/{organizationId}/sessions',
-            uriVariables: [
-                'organizationId' => new Link(fromClass: Organization::class, identifiers: ['id'])
-            ],
-            provider: OrganizationProvider::class,
-        )
+            uriTemplate: '/organization/sessions',
+            provider: \App\State\OrganizationProvider::class,
+            name: 'organization_sessions',
+            normalizationContext: ['groups' => ['read:organization_sessions']],
+        ),
+        new Get(
+            uriTemplate: '/organization/sessions/{id}',
+            provider: \App\State\OrganizationProvider::class,
+            name: 'organization_session_detail',
+            normalizationContext: ['groups' => ['read:organization_session_detail']],
+        ),
     ],
     processor: null
 )]
 class OrganizationDTO
 {
-    /**
-     * The ID of the TrainingSession.
-     */
     #[ApiProperty(identifier: true)]
-    public int $id;
+    public ?int $id = null;
 
-    /**
-     * The name of the TrainingSession.
-     */
-    public string $name;
+    #[Groups([
+        'read:organization_sessions',
+        'read:organization_session_detail'
+    ])]
+    public ?string $name = null;
 
-    /**
-     * The start date of the TrainingSession.
-     */
-    public \DateTimeInterface $startDate;
+    #[Groups(['read:organization_sessions'])]
+    public ?\DateTimeInterface $startDate = null;
+
+    #[Groups(['read:organization_sessions'])]
+    public ?\DateTimeInterface $endDate = null;
+
+    #[Groups(['read:organization_sessions'])]
+    public ?string $offerNumber = null;
 }
