@@ -22,10 +22,12 @@ class InternProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array|object|null
     {
-      
+    
         if ($operation instanceof CollectionOperationInterface) {
             $interns = $this->internMemberRepository->findAll();
             $dtos = [];
+
+            // infos intern
             foreach ($interns as $intern) {
                 $dto = new InternDTO();
                 $dto->id = $intern->getId();
@@ -33,12 +35,28 @@ class InternProvider implements ProviderInterface
                                 $dto->firstName = $user?->getFirstName();
                                 $dto->lastName = $user?->getLastName();
                                 $dto->email = $user?->getEmail();
-                      
+
+                    // Récupération du nom de la formation
+                    foreach ($intern->getTrainingSession() as $session) {
+                        $name = $session->getTraining()->getName();
+                       
+                    }
+                    $dto->trainingName = $name;
+
+
+                    // Récupération des dates de début et de fin de stage
+                    foreach ($intern->getTrainingSession() as $session) {
+                    $dto->internshipStartDate =  $session->getInternShipPeriodStart();
+                    $dto->internshipEndDate = $session->getInternshipPeriodEnd();
+                }
+
                 $dtos[] = $dto;
             }
 
             return $dtos;
         }
+
+
 
         if (isset($uriVariables['id'])) {
             $intern = $this->internMemberRepository->find((int)$uriVariables['id']);
@@ -51,8 +69,24 @@ class InternProvider implements ProviderInterface
                             $dto->firstName = $user?->getFirstName();
                             $dto->lastName = $user?->getLastName();
                             $dto->email = $user?->getEmail();
+                            
+                // Récupération du nom de la formation
+                            foreach ($intern->getTrainingSession() as $session) {
+                                $name = $session->getTraining()->getName();
+                          
+                            }
+                            $dto->trainingName = $name;
+                         
+            // Récupération des dates de début et de fin de stage
+            foreach ($intern->getTrainingSession() as $session) {
+
+                    $dto->internshipStartDate =  $session->getInternShipPeriodStart();
+                    $dto->internshipEndDate = $session->getInternshipPeriodEnd();
+            }
 
             return $dto;
         }
+      
+        return null;
     }
 }

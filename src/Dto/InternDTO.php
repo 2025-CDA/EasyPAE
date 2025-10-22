@@ -14,14 +14,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     operations: [
-        new GetCollection(
-            uriTemplate: '/intern/dashboard',
-            provider: \App\State\InternProvider::class,
-            name: 'intern_dashboard',
-            normalizationContext: ['groups' => ['read:intern_dashboard']],
-        ),
+        
         new Get(
-            uriTemplate: '/intern/dashboard/{id}',
+            uriTemplate: '/intern/{id}/dashboard/',
             provider: \App\State\InternProvider::class,
             name: 'intern_dashboard_detail',
             normalizationContext: ['groups' => ['read:intern_dashboard_detail']],
@@ -39,7 +34,7 @@ class InternDTO
     public ?int $id = null;
 
     #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
-    public ?InfoFormStatus $status = null;
+    public ?string $status = null;
 
     #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
     public ?\DateTimeInterface $internshipStartDate = null;
@@ -57,5 +52,7 @@ class InternDTO
     #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
     public ?string $email = null;
 
+    #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
+    public ?string $trainingName = null;
 
 }
