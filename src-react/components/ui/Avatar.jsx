@@ -1,6 +1,6 @@
-import placeholder from "../assets/profile.jpg";
+import placeholder from "../../assets/profile.jpg";
 
-function Avatar({ url = placeholder, size = 8, color = "red" }) {
+function Avatar({ url = placeholder, size , color = "red" }) {
     return (
         <img
             className={`my-3 inline-block w-${size} h-${size} rounded-full outline-3`}

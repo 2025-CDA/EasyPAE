@@ -20,21 +20,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
-        new Get(
-            normalizationContext: ['groups' => ['read:organization']]
-        ),
-        new GetCollection(
-            normalizationContext: ['groups' => ['read:organization_collection']]
-        ),
-        new Post(
-            denormalizationContext: ['groups' => ['create:organization']]
-        ),
-        new Patch(
-            denormalizationContext: ['groups' => ['update:organization']]
-        ),
-        new Put(
-            denormalizationContext: ['groups' => ['update:organization']]
-        ),
+        // new Get(
+        //     normalizationContext: ['groups' => ['read:organization']]
+        // ),
+        // new GetCollection(
+        //     uriTemplate: '/organization/sessions',
+        //     normalizationContext: ['groups' => ['read:organization_session_collection']],
+        //     name: 'organization_sessions',
+        // ),
+        // new GetCollection(
+        //     normalizationContext: ['groups' => ['read:organization_collection']]
+        // ),
+        // new Post(
+        //     denormalizationContext: ['groups' => ['create:organization']]
+        // ),
+        // new Patch(
+        //     denormalizationContext: ['groups' => ['update:organization']]
+        // ),
+        // new Put(
+        //     denormalizationContext: ['groups' => ['update:organization']]
+        // ),
         new Delete()
     ],
     order: ['createdAt' => 'DESC']
@@ -120,6 +125,21 @@ class Organization
         'read:organization_collection',
     ])]
     private ?\DateTimeImmutable $createdAt = null;
+
+
+    #[Groups(['read:organization_session_collection'])]
+    public function getOrganizationSessions(): Collection
+    {
+        $sessions = new ArrayCollection();
+
+        foreach ($this->organizationMembers as $member) {
+            foreach ($member->getTrainingSession() as $session) {
+                $sessions->add($session);
+            }
+        }
+
+        return $sessions;
+    }
 
     public function __construct()
     {

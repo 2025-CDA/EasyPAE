@@ -57,6 +57,11 @@ span {
     font-size: 16px;
 }
 
+.superAdmin {
+    display: flex;
+    flex-direction: column;
+}
+
 /*------------------------------ Mobile ------------------------------*/
 
 .h1-mobile {
