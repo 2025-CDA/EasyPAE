@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import HelpPage from "./pages/help/HelpPage";
 
 
 export default function App() {
@@ -25,7 +24,7 @@ export default function App() {
 
     return (
         <div>
-            <HelpPage/>
         </div>
     );
 }
+
