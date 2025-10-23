@@ -3,8 +3,10 @@ import Table from "./Table"
 import SearchBarTable from "./SearchBarTable"
 import PaginationTable from "./PaginationTable"
 
+
 // Vous appelez ce composant AppTable que si vous voulez utilisez à la fois la searchbar, la pagination et le tableau. si vous voulez juste utiliser le tableau appelez plutot que le composant Table seule
 function AppTable() {
+
 
   // Le tableau columns correspond aux titres de vos colonnes (thead) vous pouvez le modifier à votre guise.
 
@@ -76,9 +78,9 @@ function AppTable() {
             />
           </div>
         </div>
+       </div>
       </div>
-    </div>
-  )
+    );
 }
 
-export default AppTable
+export default AppTable;
