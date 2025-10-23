@@ -14,7 +14,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     operations: [
-        
         new Get(
             uriTemplate: '/intern/{id}/dashboard/',
             provider: InternProvider::class,

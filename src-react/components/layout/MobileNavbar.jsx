@@ -1,5 +1,5 @@
 import { User, Folder, Bell, Lightbulb } from "lucide-react";
-import Button from "../ui/Button.jsx"
+import Button from "../ui/Button";
 
 
 export default function MobileNavbar() {

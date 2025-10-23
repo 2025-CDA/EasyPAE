@@ -22,6 +22,9 @@ class UserNotification
     #[ORM\Column(nullable: true)]
     private ?bool $isRead = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isSigned = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,18 @@ class UserNotification
     public function setIsRead(?bool $isRead): static
     {
         $this->isRead = $isRead;
+
+        return $this;
+    }
+
+    public function isSigned(): ?bool
+    {
+        return $this->isSigned;
+    }
+
+    public function setIsSigned(?bool $isSigned): static
+    {
+        $this->isSigned = $isSigned;
 
         return $this;
     }
