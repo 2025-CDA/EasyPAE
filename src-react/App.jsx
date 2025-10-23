@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-
 export default function App() {
     // const [showAlert, setShowAlert] = useState(true);
 
@@ -22,8 +21,5 @@ export default function App() {
 
     // console.log(data[0])
 
-    return (
-        <div>
-        </div>
-    );
+    return <div></div>;
 }
