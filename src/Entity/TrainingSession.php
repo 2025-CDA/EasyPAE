@@ -177,6 +177,9 @@ class TrainingSession
     #[ORM\ManyToMany(targetEntity: InternMember::class, mappedBy: 'trainingSession')]
     private Collection $internMembers;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $hasEnded = null;
+
     #[MaxDepth(1)]
     #[Groups([
         'read:training_period',
@@ -368,21 +371,14 @@ class TrainingSession
         return $this->internMembers;
     }
 
-    public function addInternMember(InternMember $internMember): static
+    public function hasEnded(): ?bool
     {
-        if (!$this->internMembers->contains($internMember)) {
-            $this->internMembers->add($internMember);
-            $internMember->addTrainingSession($this);
-        }
-
-        return $this;
+        return $this->hasEnded;
     }
 
-    public function removeInternMember(InternMember $internMember): static
+    public function setHasEnded(?bool $hasEnded): static
     {
-        if ($this->internMembers->removeElement($internMember)) {
-            $internMember->removeTrainingSession($this);
-        }
+        $this->hasEnded = $hasEnded;
 
         return $this;
     }
