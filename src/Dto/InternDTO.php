@@ -27,8 +27,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class InternDTO
 {
-    #[ApiProperty(identifier: true)]
 
+    #[ApiProperty(identifier: true)]
     #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
     public ?int $id = null;
 
