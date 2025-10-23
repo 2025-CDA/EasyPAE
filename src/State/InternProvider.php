@@ -16,13 +16,11 @@ class InternProvider implements ProviderInterface
     public function __construct(
         private readonly InternMemberRepository $internMemberRepository,
         private readonly InfoFormRepository $infoFormRepository,
-    )
-    {
-    }
+    ) {}
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array|object|null
     {
-    
+
         if ($operation instanceof CollectionOperationInterface) {
             $interns = $this->internMemberRepository->findAll();
             $dtos = [];
@@ -31,21 +29,19 @@ class InternProvider implements ProviderInterface
             foreach ($interns as $intern) {
                 $dto = new InternDTO();
                 $dto->id = $intern->getId();
-                                $user = $intern->getUser();
-                                $dto->firstName = $user?->getFirstName();
-                                $dto->lastName = $user?->getLastName();
-                                $dto->email = $user?->getEmail();
+                $user = $intern->getUser();
+                $dto->firstName = $user?->getFirstName();
+                $dto->lastName = $user?->getLastName();
+                $dto->email = $user?->getEmail();
 
-                    // Récupération du nom de la formation
-                    foreach ($intern->getTrainingSession() as $session) {
-                        $name = $session->getTraining()->getName();
-                       
-                    }
-                    $dto->trainingName = $name;
+                // Récupération du nom de la formation
+                foreach ($intern->getInfoForm()->getTrainingSession() as $session) {
+                    $name = $session->getTraining()->getName();
+                }
+                $dto->trainingName = $name;
 
-
-                    // Récupération des dates de début et de fin de stage
-                    foreach ($intern->getTrainingSession() as $session) {
+                // Récupération des dates de début et de fin de stage
+                foreach ($intern->getTrainingSession() as $session) {
                     $dto->internshipStartDate =  $session->getInternShipPeriodStart();
                     $dto->internshipEndDate = $session->getInternshipPeriodEnd();
                 }
@@ -65,28 +61,27 @@ class InternProvider implements ProviderInterface
             }
             $dto = new InternDTO();
             $dto->id = $intern->getId();
-                            $user = $intern->getUser();
-                            $dto->firstName = $user?->getFirstName();
-                            $dto->lastName = $user?->getLastName();
-                            $dto->email = $user?->getEmail();
-                            
-                // Récupération du nom de la formation
-                            foreach ($intern->getTrainingSession() as $session) {
-                                $name = $session->getTraining()->getName();
-                          
-                            }
-                            $dto->trainingName = $name;
-                         
+            $user = $intern->getUser();
+            $dto->firstName = $user?->getFirstName();
+            $dto->lastName = $user?->getLastName();
+            $dto->email = $user?->getEmail();
+
+            // Récupération du nom de la formation
+            foreach ($intern->getTrainingSession() as $session) {
+                $name = $session->getTraining()->getName();
+            }
+            $dto->trainingName = $name;
+
             // Récupération des dates de début et de fin de stage
             foreach ($intern->getTrainingSession() as $session) {
 
-                    $dto->internshipStartDate =  $session->getInternShipPeriodStart();
-                    $dto->internshipEndDate = $session->getInternshipPeriodEnd();
+                $dto->internshipStartDate =  $session->getInternShipPeriodStart();
+                $dto->internshipEndDate = $session->getInternshipPeriodEnd();
             }
 
             return $dto;
         }
-      
+
         return null;
     }
 }

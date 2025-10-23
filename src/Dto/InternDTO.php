@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         
         new Get(
             uriTemplate: '/intern/{id}/dashboard/',
-            provider: \App\State\InternProvider::class,
+            provider: InternProvider::class,
             name: 'intern_dashboard_detail',
             normalizationContext: ['groups' => ['read:intern_dashboard_detail']],
         ),
@@ -28,8 +28,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class InternDTO
 {
-    #[ApiProperty(identifier: true)]
 
+    #[ApiProperty(identifier: true)]
     #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
     public ?int $id = null;
 
