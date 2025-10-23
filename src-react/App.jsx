@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import SuperAdminPage from "./pages/super_admin/SuperAdminPage";
-
+import Stepper from "./components/ui/stepper/Stepper";
 
 
 export default function App() {
@@ -25,8 +24,10 @@ export default function App() {
     // console.log(data[0])
 
     return (
-        <div>
-            <SuperAdminPage></SuperAdminPage>
-        </div>
+            <div className="w-full">
+                <Stepper />
+            </div>
+            
     );
 }
+

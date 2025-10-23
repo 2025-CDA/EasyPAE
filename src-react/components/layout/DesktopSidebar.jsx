@@ -6,17 +6,21 @@ import {
     Lightbulb,
     ArrowRightFromLine,
 } from "lucide-react";
-import Avatar from "../ui/Avatar";
+import Avatar from "../../components/ui/Avatar.jsx";
 import logo from "../../assets/Logo-light.png";
 
-export default function DesktopSidebar() {
+export default function DesktopSidebar({
+    avatarColor = "#ffe561",
+    userName = "Axel Érez",
+    role = "Stagiaire",
+}) {
     // ------------------------------------ Gérer l'affichache de la Sidbar etendu ou compact ------------------------------------
     const [collapsed, setCollapsed] = useState(false);
 
     // ------------------------------------ L'affichage ------------------------------------
     return (
         <div
-            className={`hidden md:flex flex-col left-0 top-0 h-screen bg-primary text-white 
+            className={`hidden md:flex flex-col left-0 top-0  bg-primary text-white 
         ${
             collapsed ? "w-20" : "w-60"
         } transition-all duration-300 relative rounded-tr-xl`}
@@ -24,20 +28,20 @@ export default function DesktopSidebar() {
             {/* ------Avatar + Infos utilisateur ----------- */}
             <div className="flex flex-col items-center py-10">
                 {/* Avatar version icône */}
-                <Avatar size={18} color={"yellow"} />
+                <Avatar size={collapsed ? "sm" : "xl"} color={avatarColor} />
 
                 {/* Quand la barre n’est pas réduite (collapsed = false), affiche le nom et le rôle en texte. */}
                 {!collapsed && (
                     <>
-                        <div className=" text-lg">Axel Érez</div>
+                        <div className=" text-lg">{userName}</div>
                         <div className="text-gray-300 text-xs font-light">
-                            Stagiaire
+                            {role}
                         </div>
                     </>
                 )}
             </div>
             {/* ----------- Nav items -----------  */}
-            <nav className="flex-1 flex flex-col items-center justify-center font-light">
+            <nav className="flex flex-col  items-center justify-center font-light py-12">
                 <div
                     className={`flex flex-col justify-center items-center ${
                         collapsed ? "space-y-12" : "space-y-6"
@@ -67,7 +71,11 @@ export default function DesktopSidebar() {
             </nav>
 
             {/* ----------- Logo custom bas ----------- */}
-            <div className="flex justify-center items-center w-[80%] m-auto">
+            <div
+                className={`flex flex-1 flex-col justify-end items-center w-[80%] ${
+                    collapsed ? "m-2" : "m-5"
+                }`}
+            >
                 <img src={logo} alt="logo" />
             </div>
 
