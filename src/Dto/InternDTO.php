@@ -5,34 +5,53 @@ namespace App\Dto;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Link;
-use App\Entity\Organization;
+use App\Entity\InternMember;
 use App\Enum\InfoFormStatus;
-use App\State\OrganizationProvider;
+use App\State\InternProvider;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     operations: [
-        new GetCollection(
-            uriTemplate: '/intern/dashboard',
-            uriVariables: ['organizationId' => new Link(fromClass: Organization::class,identifiers: ['id'])],
+        new Get(
+            uriTemplate: '/intern/{id}/dashboard/',
+            provider: InternProvider::class,
+            name: 'intern_dashboard_detail',
+            normalizationContext: ['groups' => ['read:intern_dashboard_detail']],
         ),
-        
     ],
-    provider: OrganizationProvider::class,
     processor: null
 )]
+
+
 class InternDTO
 {
-//    #[ApiProperty(identifier: true)]
-    public int $id;
+    #[ApiProperty(identifier: true)]
 
-    public InfoFormStatus $status;
+    #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
+    public ?int $id = null;
 
-    public array $infoFormInternCompany;
+    #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
+    public ?string $status = null;
 
-    public \DateTimeInterface $internshipStartDate;
+    #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
+    public ?\DateTimeInterface $internshipStartDate = null;
 
-    public \DateTimeInterface $internshipEndDate;
+    #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
+    public ?\DateTimeInterface $internshipEndDate = null;
 
+ 
+    #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
+    public ?string $firstName = null;
+
+    #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
+    public ?string $lastName = null;
+
+    #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
+    public ?string $email = null;
+
+    #[Groups(['read:intern_dashboard', 'read:intern_dashboard_detail'])]
+    public ?string $trainingName = null;
 
 }

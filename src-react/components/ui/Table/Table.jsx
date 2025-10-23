@@ -1,34 +1,35 @@
-import React, { useState } from "react"
+import React from "react"
 import TableHead from "./TableHead"
 import TableBody from "./TableBody"
-import PaginationTable from "./PaginationTable"
-import SearchBarTable from "./SearchBarTable"
 
-function Table(
-    {
-      columns, 
-      data, 
-      currentItems, 
-      handleEdit,  
-      handleDelete,
-      // currentPage, 
-      // itemsPerPage, 
-      // searchTerm, 
-      // filteredData, 
-      // indexOfLastItem, 
-    }
-  ) {
-// console.log(indexOfLastItem)
+// NB: Vous appelez ce composant Table que si vous voulez utiliser le tableau seule sans la pagination et la searchbar. Si vous voulez utiliser les trois fonctionnalités vous appelerez plutot le composant AppTable et ce composant Table sera utilisé automatiquement 
+function Table({
+  columns = [
+    { key: "id", label: "ID" },
+    { key: "name", label: "Nom" },
+  ],
+  data = [
+    { id: 1, name: "Exemple 1" },
+    { id: 2, name: "Exemple 2" },
+    { id: 2, name: "Exemple 2" },
+  ],
+  currentItems,
+  handleEdit,
+  handleDelete,
+  classNames = {},
+}) {
+  const displayData = currentItems && currentItems.length > 0 ? currentItems : data
+
   return (
-    
-    <div className="overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <TableHead columnsThead={columns} />
+    <div className={classNames.wrapper || "overflow-hidden"}>
+      <table className={classNames.table || "min-w-full divide-y divide-gray-200"}>
+        <TableHead columnsThead={columns} classNameThead={classNames.thead} />
         <TableBody
-          dataInTbody={currentItems}
+          dataInTbody={displayData}
           columnsTbody={columns}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          classNameTbody={classNames.tbody}
         />
       </table>
     </div>
