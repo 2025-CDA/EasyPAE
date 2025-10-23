@@ -44,7 +44,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 //             name: "Dolores",
 //             normalizationContext: ['groups' => ['read:company_member_info']]
 //         )
-        
+
 
 //     ],
 //     order: ['createdAt' => 'DESC']
@@ -229,16 +229,4 @@ class InternMember
     //     }
     //     return $infoFormsData;
     // }
-
-    public function getTrainingSession(): ?TrainingSession
-    {
-        return $this->trainingSession;
-    }
-
-    public function setTrainingSession(?TrainingSession $trainingSession): static
-    {
-        $this->trainingSession = $trainingSession;
-
-        return $this;
-    }
 }
