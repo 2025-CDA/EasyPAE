@@ -10,7 +10,6 @@ use App\Entity\Training;
 use App\Entity\TrainingSession;
 use ApiPlatform\Metadata\Operation;
 use App\Entity\User;
-use App\Enum\InfoFormStatus;
 use App\Enum\UserRole;
 use App\Repository\InternMemberRepository;
 use App\Repository\OrganizationMemberRepository;
@@ -18,12 +17,10 @@ use App\Repository\TrainingRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
-use App\Repository\OrganizationRepository;
 use App\Repository\TrainingSessionRepository;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 final class OrganizationProcessor implements ProcessorInterface
 {
@@ -50,7 +47,7 @@ final class OrganizationProcessor implements ProcessorInterface
         return match ($operationName) {
             'organization_session_add' => $this->organizationSessionAdd($data),
             'organization_session_sessionId_intern_add' => $this->organizationSessionSessionIdInternAdd($data, $uriVariables),
-            'organization_session_sessionId_edit' => $this->organizationSessionSessionIdEdit($data, $uriVariables, $context),
+            'organization_session_sessionId_edit' => $this->organizationSessionSessionIdEdit($data, $uriVariables),
             'organization_session_sessionId_archive' => $this->organizationSessionSessionIdArchive($data, $uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
@@ -90,19 +87,16 @@ final class OrganizationProcessor implements ProcessorInterface
 
     private function organizationSessionSessionIdInternAdd(OrganizationDTO $dto, array $uriVariables): TrainingSession
     {
-        // 1. Find the parent TrainingSession from the URL
         $sessionId = $uriVariables['sessionId'];
         $session = $this->trainingSessionRepository->find($sessionId);
         if (!$session) {
             throw new NotFoundHttpException('Training session not found.');
         }
 
-        // 2. Validate that an email was provided for the intern
         if (empty($dto->internEmail)) {
             throw new BadRequestHttpException('Intern email is required to add an intern.');
         }
 
-        // 3. Find or create the User for the intern
         $user = $this->userRepository->findOneBy(['email' => $dto->internEmail]);
         if (!$user) {
             $user = new User();
@@ -118,7 +112,6 @@ final class OrganizationProcessor implements ProcessorInterface
             $this->entityManager->persist($user);
         }
 
-        // 4. Find or create the InternMember profile for the User
         $internMember = $this->internMemberRepository->findOneBy(['user' => $user]);
         if (!$internMember) {
             $internMember = new InternMember();
@@ -126,34 +119,82 @@ final class OrganizationProcessor implements ProcessorInterface
             $this->entityManager->persist($internMember);
         }
 
-        // 5. Check if this intern is already in the session to prevent duplicates
         foreach ($session->getInfoForms() as $existingInfoForm) {
             if ($existingInfoForm->getInternMember() === $internMember) {
                 throw new BadRequestHttpException('This intern is already part of the session.');
             }
         }
 
-        // 6. Create the InfoForm to link the intern to the session
         $infoForm = new InfoForm();
         $infoForm->setTrainingSession($session);
         $infoForm->setInternMember($internMember);
-//        $infoForm->setStatus(InfoFormStatus::PENDING); // Set a default status
+//        $infoForm->setStatus(InfoFormStatus::PENDING);
 
         $this->entityManager->persist($infoForm);
 
-        // 7. Save everything to the database
         $this->entityManager->flush();
 
-        // 8. Return the updated session
         return $session;
     }
 
-    private function organizationSessionSessionIdEdit(OrganizationDTO $data, array $uriVariables, array $context)
+    private function organizationSessionSessionIdEdit(OrganizationDTO $dto, array $uriVariables): TrainingSession
     {
+        $sessionId = $uriVariables['sessionId'];
+        $session = $this->trainingSessionRepository->find($sessionId);
+        if (!$session) {
+            throw new NotFoundHttpException('Training session not found.');
+        }
+
+        if ($dto->trainingName !== null) {
+            $training = $this->trainingRepository->findOneBy(['name' => $dto->trainingName]);
+            if (!$training) {
+                $training = new Training();
+                $training->setName($dto->trainingName);
+                $this->entityManager->persist($training);
+            }
+            $session->setTraining($training);
+        }
+
+        if ($dto->trainerId !== null) {
+            $trainer = $this->organizationMemberRepository->find($dto->trainerId);
+            if (!$trainer) {
+                throw new NotFoundHttpException('The specified trainer with ID ' . $dto->trainerId . ' was not found.');
+            }
+            $session->addOrganizationMember($trainer);
+        }
+
+        if ($dto->offerNumber !== null) {
+            $session->setOfferNumber($dto->offerNumber);
+        }
+        if ($dto->internshipStart !== null) {
+            $session->setInternShipPeriodStart($dto->internshipStart);
+        }
+        if ($dto->internshipEnd !== null) {
+            $session->setInternshipPeriodEnd($dto->internshipEnd);
+        }
+
+        $this->entityManager->flush();
+
+        return $session;
     }
 
-    private function organizationSessionSessionIdArchive(array $uriVariables)
+    private function organizationSessionSessionIdArchive(OrganizationDTO $dto, array $uriVariables): TrainingSession
     {
+        $sessionId = $uriVariables['sessionId'];
+        $session = $this->trainingSessionRepository->find($sessionId);
+        if (!$session) {
+            throw new NotFoundHttpException('Training session not found.');
+        }
+
+        if ($dto->infoFormStatus === null) {
+            throw new BadRequestHttpException('A sessionStatus is required to archive a session.');
+        }
+
+        $session->setStatus($dto->infoFormStatus);
+
+        $this->entityManager->flush();
+
+        return $session;
     }
 
 }

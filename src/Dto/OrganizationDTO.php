@@ -76,7 +76,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Patch(
             uriTemplate: '/organization/session/{sessionId}',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-            uriVariables: ['sessionId' => new Link(fromClass: TrainingSession::class)],
+//            uriVariables: ['sessionId' => new Link(fromClass: TrainingSession::class)],
+            uriVariables: ['sessionId'],
 //            normalizationContext: ['groups' => ['update:organization_session_sessionId_edit']],
             denormalizationContext: ['groups' => ['update:organization_session_sessionId_edit']],
 //            read: false,
@@ -86,7 +87,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Patch(
             uriTemplate: '/organization/session/{sessionId}/archive',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-            uriVariables: ['sessionId' => new Link(fromClass: TrainingSession::class)],
+//            uriVariables: ['sessionId' => new Link(fromClass: TrainingSession::class)],
+            uriVariables: ['sessionId'],
 //            normalizationContext: ['groups' => ['update:organization_session_sessionId_archive']],
             denormalizationContext: ['groups' => ['update:organization_session_sessionId_archive']],
 //            read: false,
@@ -220,5 +222,5 @@ class OrganizationDTO
     #[Groups([
         'read:organization_session_sessionId_interns',
     ])]
-    public ?InfoFormStatus $InfoFormStatus = null;
+    public ?InfoFormStatus $infoFormStatus = null;
 }
