@@ -40,7 +40,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         // new Put(
         //     denormalizationContext: ['groups' => ['update:organization']]
         // ),
-        new Delete()
+        // new Delete()
     ],
     order: ['createdAt' => 'DESC']
 )]

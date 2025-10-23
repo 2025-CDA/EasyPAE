@@ -14,13 +14,9 @@ use App\State\OrganizationProvider;
     operations: [
         new GetCollection(
             uriTemplate: '/intern/dashboard',
-            uriVariables: [
-                'organizationId' => new Link(
-                    fromClass: Organization::class,
-                    identifiers: ['id']
-                )
-            ],
-        )
+            uriVariables: ['organizationId' => new Link(fromClass: Organization::class,identifiers: ['id'])],
+        ),
+        
     ],
     provider: OrganizationProvider::class,
     processor: null

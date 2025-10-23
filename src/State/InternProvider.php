@@ -14,8 +14,7 @@ class InternProvider implements ProviderInterface
     public function __construct(
         private readonly OrganizationRepository    $organizationRepository,
         private readonly TrainingSessionRepository $trainingSessionRepository
-    )
-    {
+    ) {
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
