@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import SuperAdminPage from "./pages/super_admin/SuperAdminPage";
-import AppTable from './components/ui/Table/AppTable'
-import Table from "./components/ui/Table/Table";
+import Stepper from "./components/ui/stepper/Stepper";
 
 
 export default function App() {
@@ -26,10 +24,10 @@ export default function App() {
     // console.log(data[0])
 
     return (
-        <div>
-            {/* <SuperAdminPage></SuperAdminPage> */}
-            <AppTable></AppTable>
-            {/* <Table></Table> */}
-        </div>
+            <div className="w-full">
+                <Stepper />
+            </div>
+            
     );
 }
+

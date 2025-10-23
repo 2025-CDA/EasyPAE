@@ -4,35 +4,44 @@ namespace App\Dto;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Link;
-use App\State\TestProvider;
+use ApiPlatform\Metadata\Get;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     operations: [
-
         new GetCollection(
             uriTemplate: '/organization/sessions',
-            normalizationContext: ['groups' => ['read:organization_sessions_collection']]
-
+            provider: \App\State\OrganizationProvider::class,
+            name: 'organization_sessions',
+            normalizationContext: ['groups' => ['read:organization_sessions']],
         ),
-
-        new GetCollection(
-            uriTemplate: '/organization/session/{id}/interns',
-            normalizationContext: ['groups' => ['read:organization_session_interns_collection']],
-            uriVariables: [
-                'id' => new Link(fromClass: self::class, identifiers: ['id']),
-            ]
+        new Get(
+            uriTemplate: '/organization/sessions/{id}',
+            provider: \App\State\OrganizationProvider::class,
+            name: 'organization_session_detail',
+            normalizationContext: ['groups' => ['read:organization_session_detail']],
         ),
     ],
-    // provider: TestProvider::class,
-    // processor: null
+    processor: null
 )]
 class OrganizationDTO
 {
     #[ApiProperty(identifier: true)]
-    public int $id;
+    public ?int $id = null;
 
-    public string $userFullName;
+    #[Groups([
+        'read:organization_sessions',
+        'read:organization_session_detail'
+    ])]
+    public ?string $name = null;
+
+    #[Groups(['read:organization_sessions'])]
+    public ?\DateTimeInterface $startDate = null;
+
+    #[Groups(['read:organization_sessions'])]
+    public ?\DateTimeInterface $endDate = null;
+
+    #[Groups(['read:organization_sessions'])]
+    public ?string $offerNumber = null;
 }
