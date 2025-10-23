@@ -8,6 +8,7 @@ export default function Button({
     className,
     ...props
 }) {
+
     // Définition des variantes et des couleurs
     const colorVariants = {
         blue: {

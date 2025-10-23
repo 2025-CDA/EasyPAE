@@ -1,63 +1,62 @@
-# config/packages/security.yaml
 security:
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-        App\Entity\User: 'auto'
-
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-
-#        users:
-#            entity:
-#                class: App\Entity\User
-#                property: email
-
+        # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
                 class: App\Entity\User
-                # property: email
+                property: email
     firewalls:
         dev:
-            pattern: ^/_(profiler|wdt)
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-
-        main:
-            pattern: ^/api #non présent sur dev branch
+        login:
+            pattern: ^/api/login
             stateless: true
             json_login:
-              # check_path: /auth #présent sur dev branch
-                check_path: /api/login_check        # Route exposée pour la connexion
-                username_path: email                # Chemin dans le JSON pour le nom d'utilisateur/email
-                password_path: password             # Chemin dans le JSON pour le mot de passe
+                check_path: /api/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-
         api:
-            pattern:   ^/api
-            stateless: true # <-- This is the setting causing the error if a session is used
+            pattern: ^/api
+            stateless: true
             jwt: ~
 
+#        guard:
+#            authenticators:
+#            - lexik_jwt_authentication.jwt_token_authenticator
+#
+#        main:
+#            lazy: true
+#            provider: app_user_provider
+#            json_login:
+#                check_path: api_login
+#
+#        form_login:
+#            login_path: app_login
+#             check_path: app_login
+#            enable_csrf: true
+#
+#        logout:
+#            path: app_logout
+            # where to redirect after logout
+            # target: app_any_route
 
 
-    # Access control rules are also crucial.
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#the-firewall
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
     access_control:
-        # 1. The login route MUST be public
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
-#
-#        # 2. The API documentation entry point MUST be public
-        - { path: ^/api, roles: PUBLIC_ACCESS } # The '$' means it matches '/api' exactly
-#
-#        # 3. The documentation assets (schemas, etc.) MUST be public
-#        - { path: ^/api/docs, roles: PUBLIC_ACCESS }
-#
-#        # 4. EVERYTHING ELSE under /api is secured and requires a valid token
-#        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        # - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
-
-
+    # - { path: ^/admin, roles: ROLE_ADMIN }
+    # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
     security:

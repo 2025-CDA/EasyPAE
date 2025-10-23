@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\OpenApi\Model\Operation;
 use App\Enum\UserRole;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
@@ -35,8 +36,15 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ApiResource(
     operations: [
         new Get(
+//            THIS ROUTE IS ONLY TO TEST RESTRICTED ROUTES
+//            TODO: WE NEED TO CHANGE IT LATER
+            openapi: new Operation(
+                summary: 'Retrieves the User resource.',
+                description: 'Retrieves the User resource.',
+                security: [['cookieAuth' => []]]
+            ),
             normalizationContext: ['groups' => ['read:user']],
-            security: "is_granted('ROLE_ADMIN')"
+            security: "is_granted('ROLE_Formateur')",
         ),
         new GetCollection(
             paginationItemsPerPage: 10,
@@ -102,21 +110,51 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * 4. This is the COMPATIBILITY method for Symfony Security.
-     * It satisfies the UserInterface contract.
-     *
      * @see UserInterface
      */
+    #[Groups([
+        'read:user',
+        'read:user_collection'
+    ])]
     public function getRoles(): array
     {
-        $roles = ['ROLE_USER']; // Always grant the basic role.
+        $roles = [];
 
-        // If a specific role is set, add its string value to the array.
+        // Determine member type and role
+        [$memberType, $memberRole] = $this->getMemberTypeAndRole();
+
+        // Add the constructed member role if applicable
+        if ($memberType && $memberRole) {
+            $roles[] = "ROLE_{$memberRole}";
+        }
+
+        // Add user's own role if it exists
         if ($this->role !== null) {
             $roles[] = $this->role->value;
         }
 
         return array_unique($roles);
+    }
+
+    /**
+     * Determines the member type and role for this user.
+     * Returns [memberType, roleValue] or [null, null] if no member relation exists.
+     */
+    private function getMemberTypeAndRole(): array
+    {
+        if ($member = $this->getOrganizationMember()) {
+            return ['ORGANIZATION', $member->getRole()->value];
+        }
+
+        if ($member = $this->getCompanyMember()) {
+            return ['COMPANY', $member->getRole()->value];
+        }
+
+        if ($this->getInternMember()) {
+            return ['INTERN', 'STAGIAIRE'];
+        }
+
+        return [null, null];
     }
 
     #[ORM\Id]
