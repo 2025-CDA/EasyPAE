@@ -21,27 +21,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: InfoFormInternRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(
-    operations: [
-        new Get(
-            normalizationContext: ['groups' => ['read:info_form_intern']]
-        ),
-        new GetCollection(
-            normalizationContext: ['groups' => ['read:info_form_intern_collection']]
-        ),
-        new Post(
-            denormalizationContext: ['groups' => ['create:info_form_intern']]
-        ),
-        new Patch(
-            denormalizationContext: ['groups' => ['update:info_form_intern']]
-        ),
-        new Put(
-            denormalizationContext: ['groups' => ['update:info_form_intern']]
-        ),
-        new Delete()
-    ],
-    order: ['createdAt' => 'DESC']
-)]
+// #[ApiResource(
+//     operations: [
+//         new Get(
+//             normalizationContext: ['groups' => ['read:info_form_intern']]
+//         ),
+//         new GetCollection(
+//             normalizationContext: ['groups' => ['read:info_form_intern_collection']]
+//         ),
+//         new Post(
+//             denormalizationContext: ['groups' => ['create:info_form_intern']]
+//         ),
+//         new Patch(
+//             denormalizationContext: ['groups' => ['update:info_form_intern']]
+//         ),
+//         new Put(
+//             denormalizationContext: ['groups' => ['update:info_form_intern']]
+//         ),
+//         new Delete()
+//     ],
+//     order: ['createdAt' => 'DESC']
+// )]
 class InfoFormIntern
 {
     #[ORM\PrePersist]

@@ -18,32 +18,32 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: OrganizationRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(
-    operations: [
-        // new Get(
-        //     normalizationContext: ['groups' => ['read:organization']]
-        // ),
-        // new GetCollection(
-        //     uriTemplate: '/organization/sessions',
-        //     normalizationContext: ['groups' => ['read:organization_session_collection']],
-        //     name: 'organization_sessions',
-        // ),
-        // new GetCollection(
-        //     normalizationContext: ['groups' => ['read:organization_collection']]
-        // ),
-        // new Post(
-        //     denormalizationContext: ['groups' => ['create:organization']]
-        // ),
-        // new Patch(
-        //     denormalizationContext: ['groups' => ['update:organization']]
-        // ),
-        // new Put(
-        //     denormalizationContext: ['groups' => ['update:organization']]
-        // ),
-        // new Delete()
-    ],
-    order: ['createdAt' => 'DESC']
-)]
+// #[ApiResource(
+//     operations: [
+//         new Get(
+//             normalizationContext: ['groups' => ['read:organization']]
+//         ),
+//         new GetCollection(
+//             uriTemplate: '/organization/sessions',
+//             normalizationContext: ['groups' => ['read:organization_session_collection']],
+//             name: 'organization_sessions',
+//         ),
+//         new GetCollection(
+//             normalizationContext: ['groups' => ['read:organization_collection']]
+//         ),
+//         new Post(
+//             denormalizationContext: ['groups' => ['create:organization']]
+//         ),
+//         new Patch(
+//             denormalizationContext: ['groups' => ['update:organization']]
+//         ),
+//         new Put(
+//             denormalizationContext: ['groups' => ['update:organization']]
+//         ),
+//         new Delete()
+//     ],
+//     order: ['createdAt' => 'DESC']
+// )]
 class Organization
 {
     #[ORM\PrePersist]
