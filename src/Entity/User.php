@@ -45,7 +45,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
                 security: [['cookieAuth' => []]]
             ),
             normalizationContext: ['groups' => ['read:user']],
-            security: "is_granted('ROLE_Formateur')",
+            security: "is_granted('ROLE_STAGIAIR')",
         ),
         new GetCollection(
             paginationItemsPerPage: 10,
