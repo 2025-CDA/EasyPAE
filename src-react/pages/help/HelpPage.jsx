@@ -1,3 +1,4 @@
+import { Asked } from './Asked';
 import { ThemeItem } from './ThemeItem';
 import React from "react";
 import MainLayout from "../../components/layout/MainLayout";
@@ -22,9 +23,7 @@ function HelpPage() {
 
                     <div className=" mt-5 flex flex-row gap-5 justify-center overflow-x-auto p-4 snap-x snap-mandatory">
 
-                        <Container className="bg-[#BEF264] rounded shadow snap-start">
-                        <p>Où puis-je télécharger la fiche <br /> de renseignement ? </p>
-                        </Container>
+                        <Asked     />
 
                         <Container className="bg-[#BEF264] rounded shadow snap-start">
                         <p>Comment remplir la fiche de <br /> renseignement ?</p>
