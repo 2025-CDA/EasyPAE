@@ -22,8 +22,9 @@ final readonly class UserStateProcessor implements ProcessorInterface
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
     {
         if ($data instanceof User &&
-            ($operation->getMethod() === 'POST' || $operation->getMethod() === 'PATCH') &&
-                $data->getPlainPassword()) {
+            $data->getPlainPassword() &&
+            ($operation->getMethod() === 'POST' || $operation->getMethod() === 'PATCH')
+        ) {
             $hashedPassword = $this->passwordHasher->hashPassword($data, $data->getPlainPassword());
             $data->setPassword($hashedPassword);
             $data->eraseCredentials(); // Nulls out the plainPassword
