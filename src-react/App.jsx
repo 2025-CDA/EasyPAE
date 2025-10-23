@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import SuperAdminPage from "./pages/super_admin/SuperAdminPage";
-
+import AppTable from './components/ui/Table/AppTable'
+import Table from "./components/ui/Table/Table";
 
 
 export default function App() {
@@ -26,7 +27,9 @@ export default function App() {
 
     return (
         <div>
-            <SuperAdminPage></SuperAdminPage>
+            {/* <SuperAdminPage></SuperAdminPage> */}
+            <AppTable></AppTable>
+            {/* <Table></Table> */}
         </div>
     );
 }
