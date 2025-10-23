@@ -36,7 +36,7 @@ body {
     min-width: 100vw;
     min-height: 100vh;
     /* color: white; */
-    font-size: 18px;
+    /* font-size: 18px; */
 }
 
 h1 {
@@ -59,10 +59,47 @@ span {
     font-size: 16px;
 }
 
-.superAdmin {
+/*------------------------------ Start Super AdminPage ----------------*/
+.RoleCardSuperAdmin {
+    /* background-color: #c5f1ac; */
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
 }
+
+.CardSuperAdmin {
+    /* background-color: #aafaf5; */
+    display: flex;
+    width: 30rem;
+     padding:0 10px
+}
+
+.CheckboxSuperAdmin {
+    /* background-color: #f9d290; */
+    display: flex;
+    flex-direction: column;
+    /* color:red */
+    width: 30rem;
+    gap:15px;
+    padding:10px
+}
+
+.AvatarSuperAdminPage {
+    width: 7rem;
+    padding: 0.25rem;
+    /* background-color: yellow; */
+}
+.TextCardSuperAdmin {
+    display: flex;
+    flex-direction: column;
+    padding:1.2rem;
+}
+.titlePage {
+    /* background-color: #878cf7; */
+    margin-bottom: 4.7rem;
+    margin-top: 5rem;
+}
+/*------------------------------ End Super AdminPage ----------------*/
 
 /*------------------------------ Mobile ------------------------------*/
 
