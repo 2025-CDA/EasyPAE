@@ -37,18 +37,13 @@ class InternProvider implements ProviderInterface
                                 $dto->email = $user?->getEmail();
 
                     // Récupération du nom de la formation
-                    foreach ($intern->getTrainingSession() as $session) {
-                        $name = $session->getTraining()->getName();
-                       
+                    $session = $intern->getTrainingSession();
+                    if ($session) {
+                        $dto->trainingName = $session->getTraining()->getName();
+                        // Récupération des dates de début et de fin de stage
+                        $dto->internshipStartDate = $session->getInternShipPeriodStart();
+                        $dto->internshipEndDate = $session->getInternshipPeriodEnd();
                     }
-                    $dto->trainingName = $name;
-
-
-                    // Récupération des dates de début et de fin de stage
-                    foreach ($intern->getTrainingSession() as $session) {
-                    $dto->internshipStartDate =  $session->getInternShipPeriodStart();
-                    $dto->internshipEndDate = $session->getInternshipPeriodEnd();
-                }
 
                 $dtos[] = $dto;
             }
@@ -71,18 +66,13 @@ class InternProvider implements ProviderInterface
                             $dto->email = $user?->getEmail();
                             
                 // Récupération du nom de la formation
-                            foreach ($intern->getTrainingSession() as $session) {
-                                $name = $session->getTraining()->getName();
-                          
-                            }
-                            $dto->trainingName = $name;
-                         
-            // Récupération des dates de début et de fin de stage
-            foreach ($intern->getTrainingSession() as $session) {
-
-                    $dto->internshipStartDate =  $session->getInternShipPeriodStart();
+                $session = $intern->getTrainingSession();
+                if ($session) {
+                    $dto->trainingName = $session->getTraining()->getName();
+                    // Récupération des dates de début et de fin de stage
+                    $dto->internshipStartDate = $session->getInternShipPeriodStart();
                     $dto->internshipEndDate = $session->getInternshipPeriodEnd();
-            }
+                }
 
             return $dto;
         }
