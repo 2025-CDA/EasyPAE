@@ -42,10 +42,10 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
             openapi: new Operation(
                 summary: 'Retrieves the User resource.',
                 description: 'Retrieves the User resource.',
-                security: [['cookieAuth' => []]]
+                security: [['bearerAuth' => []]]
             ),
             normalizationContext: ['groups' => ['read:user']],
-            security: "is_granted('ROLE_STAGIAIR')",
+            security: "is_granted('ROLE_STAGIAIRE')",
         ),
         new GetCollection(
             paginationItemsPerPage: 10,
