@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\OpenApi\Model\Operation;
 use App\Enum\UserRole;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
@@ -35,8 +36,15 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ApiResource(
     operations: [
         new Get(
+//            THIS ROUTE IS ONLY TO TEST RESTRICTED ROUTES
+//            TODO: WE NEED TO CHANGE IT LATER
+            openapi: new Operation(
+                summary: 'Retrieves the User resource.',
+                description: 'Retrieves the User resource.',
+                security: [['cookieAuth' => []]]
+            ),
             normalizationContext: ['groups' => ['read:user']],
-            security: "is_granted('ROLE_ADMIN')"
+            security: "is_granted('ROLE_ADMIN')",
         ),
         new GetCollection(
             paginationItemsPerPage: 10,
@@ -109,7 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        $roles = ['ROLE_ADMI']; // Always grant the basic role.
+        $roles = ['ROLE_ADMIN']; // Always grant the basic role.
 
         // If a specific role is set, add its string value to the array.
         if ($this->role !== null) {
