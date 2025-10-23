@@ -129,7 +129,7 @@ class TrainingSession
     /**
      * @var Collection<int, OrganizationMember>
      */
-    #[ORM\ManyToMany(targetEntity: OrganizationMember::class, mappedBy: 'trainingSession')]
+    #[ORM\ManyToMany(targetEntity: OrganizationMember::class, mappedBy: 'trainingSessions')]
     #[MaxDepth(1)]
     #[Groups([
         'read:training_session',
@@ -171,12 +171,6 @@ class TrainingSession
     #[ORM\OneToMany(targetEntity: InfoForm::class, mappedBy: 'trainingSession')]
     private Collection $infoForms;
 
-    /**
-     * @var Collection<int, InternMember>
-     */
-    #[ORM\ManyToMany(targetEntity: InternMember::class, mappedBy: 'trainingSession')]
-    private Collection $internMembers;
-
     #[ORM\Column(nullable: true)]
     private ?bool $hasEnded = null;
 
@@ -202,7 +196,6 @@ class TrainingSession
     {
         $this->organizationMembers = new ArrayCollection();
         $this->infoForms = new ArrayCollection();
-        $this->internMembers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -361,14 +354,6 @@ class TrainingSession
         }
 
         return $this;
-    }
-
-    /**
-     * @return Collection<int, InternMember>
-     */
-    public function getInternMembers(): Collection
-    {
-        return $this->internMembers;
     }
 
     public function hasEnded(): ?bool

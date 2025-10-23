@@ -104,7 +104,7 @@ class OrganizationMember
         'create:organization_member',
         'update:organization_member'
     ])]
-    private Collection $trainingSession;
+    private Collection $trainingSessions;
 
     #[ORM\Column(nullable: true)]
     #[Groups([
@@ -122,7 +122,7 @@ class OrganizationMember
 
     public function __construct()
     {
-        $this->trainingSession = new ArrayCollection();
+        $this->trainingSessions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -179,15 +179,15 @@ class OrganizationMember
     /**
      * @return Collection<int, TrainingSession>
      */
-    public function getTrainingSession(): Collection
+    public function getTrainingSessions(): Collection
     {
-        return $this->trainingSession;
+        return $this->trainingSessions;
     }
 
     public function addTrainingSession(TrainingSession $trainingSession): static
     {
-        if (!$this->trainingSession->contains($trainingSession)) {
-            $this->trainingSession->add($trainingSession);
+        if (!$this->trainingSessions->contains($trainingSession)) {
+            $this->trainingSessions->add($trainingSession);
         }
 
         return $this;
@@ -195,7 +195,7 @@ class OrganizationMember
 
     public function removeTrainingSession(TrainingSession $trainingSession): static
     {
-        $this->trainingSession->removeElement($trainingSession);
+        $this->trainingSessions->removeElement($trainingSession);
 
         return $this;
     }
