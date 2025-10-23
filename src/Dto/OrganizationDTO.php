@@ -15,18 +15,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     operations: [
-        new GetCollection(
-            uriTemplate: '/organization/sessions',
-            normalizationContext: ['groups' => ['read:organization_sessions']],
-            name: 'organization_sessions',
-            provider: OrganizationProvider::class,
-        ),
-//        new Get(
-//            uriTemplate: '/organization/session/{sessionId}',
-//            normalizationContext: ['groups' => ['read:organization_session_detail']],
-//            name: 'organization_session_detail',
+//        new GetCollection(
+//            uriTemplate: '/organization/sessions',
+//            normalizationContext: ['groups' => ['read:organization_sessions']],
+//            name: 'organization_sessions',
 //            provider: OrganizationProvider::class,
 //        ),
+        new Get(
+            uriTemplate: '/organization/session/{sessionId}',
+            normalizationContext: ['groups' => ['read:organization_session_detail']],
+            name: 'organization_session_detail',
+            provider: OrganizationProvider::class,
+        ),
 //        new Patch(
 //            uriTemplate: '/organization/session/{sessionId}/edit',
 //            denormalizationContext: ['groups' => ['update:organization_session']], // obligatoire pour charger la ressource

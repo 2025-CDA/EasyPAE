@@ -81,9 +81,9 @@ class OrganizationProvider implements ProviderInterface
                         $status = $infoForm->getStatus();
                         // Si le statut est un ENUM (objet), tente de récupérer sa valeur ou son nom
                         if (is_object($status)) {
-                            $dto->infoFormStatus = $status->value ?? $status->name ?? (method_exists($status, '__toString') ? (string) $status : null);
+                            $dto->infoFormStatus = $status->value ?? $status->name ?? (method_exists($status, '__toString') ? (string)$status : null);
                         } else {
-                            $dto->infoFormStatus = $status !== null ? (string) $status : null;
+                            $dto->infoFormStatus = $status !== null ? (string)$status : null;
                         }
                     } else {
                         $dto->infoFormStatus = null;
@@ -92,7 +92,7 @@ class OrganizationProvider implements ProviderInterface
                 }
                 return $dtos; // On retourne la liste des DTOs des stagiaires pour la session
             }
-            }
+        }
 
         // Cas où on demande un item (spécifique), cherche par sessionId ou par id
 //          route /organization/session/{sessionId}
