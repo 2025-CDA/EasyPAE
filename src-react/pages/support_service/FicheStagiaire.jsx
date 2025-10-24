@@ -7,7 +7,7 @@ function FicheStagiaire() {
     <div>
       <MainLayout>
             <div className='w-100'>
-                <StepperNavbar 
+                <StepperNavbar className="grid-cols-2"
                    
                 />
             </div>
