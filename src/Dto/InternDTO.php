@@ -65,8 +65,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             name: 'intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
             processor: InternProcessor::class
         ),
-
-
     ],
 )]
 class InternDTO

@@ -275,7 +275,6 @@ class InfoFormCompany
     ])]
     private ?InfoFormCompanyStatus $status = null;
 
-
     #[Groups([
         'read:info_form_company',
         'read:info_form_company_collection'

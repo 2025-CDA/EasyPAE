@@ -3,11 +3,8 @@
 namespace App\Dto;
 
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Post;
-use App\Entity\TrainingSession;
 use App\State\OrganizationProcessor;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
@@ -77,7 +74,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriVariables: ['sessionId'],
             normalizationContext: ['groups' => ['update:organization_session_sessionId_edit']],
             denormalizationContext: ['groups' => ['denorm-update:organization_session_sessionId_edit']],
-//            output: self::class,
             read: false,
             name: 'organization_session_sessionId_edit',
             processor: OrganizationProcessor::class,
@@ -88,7 +84,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriVariables: ['sessionId'],
             normalizationContext: ['groups' => ['update:organization_session_sessionId_archive']],
             denormalizationContext: ['groups' => ['denorm-update:organization_session_sessionId_archive']],
-//            output: self::class,
             read: false,
             name: 'organization_session_sessionId_archive',
             processor: OrganizationProcessor::class,

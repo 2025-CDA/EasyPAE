@@ -195,8 +195,6 @@ readonly class OrganizationProcessor implements ProcessorInterface
         $session->setHasEnded(1);
         $this->entityManager->flush();
 
-
-        $organizationDTO = [];
         $dto = new OrganizationDTO();
         $dto->hasEnded = 1;
         $dto->sessionId = $sessionId;
