@@ -1,39 +1,16 @@
 import React from "react";
 
-function StepperNavbar({
-    validated,
-    currentStep,
-    finishedStep = [],
-    content = [
-        {
-            step: 1,
-            title: "test",
-            description: "lorem ipsum",
-        },
-        {
-            step: 2,
-            title: "test2",
-            description: "lorem ipsum2",
-        },
-        {
-            step: 3,
-            title: "test3",
-            description: "lorem ipsum3",
-        },
-    ],
-}) {
+function StepperNavbar({ validated, currentStep, finishedStep = [], content }) {
     return (
-        <ul className="w-full flex justify-center items-center flex-col md:flex-row gap-2">
+        <ul className="w-full flex justify-center md:items-center h-[500px] flex-col md:flex-row gap-2">
             {content.map((step, i) => (
                 <StepItem
                     key={i}
-                    step={step.step}
+                    step={i + 1}
                     title={step.title}
                     description={step.description}
                     isActive={i === currentStep}
-                    isDone={
-                        Array.isArray(finishedStep) && finishedStep.includes(i)
-                    }
+                    isDone={finishedStep.includes(i)}
                     isValidated={validated}
                 />
             ))}
@@ -61,10 +38,10 @@ function StepItem({ step, title, description, isValidated, isActive, isDone }) {
     }
 
     return (
-        <li className="md:shrink md:basis-0 flex-1  group flex gap-x-2 md:block">
+        <li className="md:shrink md:basis-0 flex-1 group flex gap-x-2 md:block">
             <div className=" min-w-7 min-h-7 flex flex-col items-center md:w-full md:inline-flex md:flex-wrap md:flex-row text-xs align-middle">
                 <span
-                    className={` ${stepCircleClass} size-7 flex justify-center items-center shrink-0 font-medium rounded-full`}
+                    className={` ${stepCircleClass} size-8 flex justify-center items-center shrink-0 font-medium rounded-full`}
                 >
                     {step}
                 </span>
