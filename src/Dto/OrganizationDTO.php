@@ -113,11 +113,6 @@ class OrganizationDTO
         'update:organization_session_sessionId_edit',
         'read:organization_session_sessionId_interns',
         'create:organization_session_sessionId_intern_add',
-//        'read:organization_session_interns',
-//        'read:organization_session_sessionId',
-//        'create:organization_session_sessionId_intern_add',
-//        'update:organization_session_sessionId_edit',
-//        'update:organization_session_sessionId_archive',
     ])]
     public ?int $sessionId = null;
 
