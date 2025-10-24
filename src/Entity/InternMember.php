@@ -19,36 +19,36 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: InternMemberRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(
-    operations: [
-        new Get(
-            normalizationContext: ['groups' => ['read:intern_member']]
-        ),
-        new GetCollection(
-            normalizationContext: ['groups' => ['read:intern_member_collection']]
-        ),
-        new Post(
-            denormalizationContext: ['groups' => ['create:intern_member']]
-        ),
-        new Patch(
-            denormalizationContext: ['groups' => ['update:intern_member']]
-        ),
-        new Delete(),
-        new Get(
-            uriTemplate: "/intern/form/{id}/summary",
-            name: "Juan Pedro",
-            normalizationContext: ['groups' => ['read:intern_member_info']]
-        ),
-        new Get(
-            uriTemplate: "/company/form/{id}/summary",
-            name: "Dolores",
-            normalizationContext: ['groups' => ['read:company_member_info']]
-        )
-        
+// #[ApiResource(
+//     operations: [
+//         new Get(
+//             normalizationContext: ['groups' => ['read:intern_member']]
+//         ),
+//         new GetCollection(
+//             normalizationContext: ['groups' => ['read:intern_member_collection']]
+//         ),
+//         new Post(
+//             denormalizationContext: ['groups' => ['create:intern_member']]
+//         ),
+//         new Patch(
+//             denormalizationContext: ['groups' => ['update:intern_member']]
+//         ),
+//         new Delete(),
+//         new Get(
+//             uriTemplate: "/intern/form/{id}/summary",
+//             name: "Juan Pedro",
+//             normalizationContext: ['groups' => ['read:intern_member_info']]
+//         ),
+//         new Get(
+//             uriTemplate: "/company/form/{id}/summary",
+//             name: "Dolores",
+//             normalizationContext: ['groups' => ['read:company_member_info']]
+//         )
 
-    ],
-    order: ['createdAt' => 'DESC']
-)]
+
+//     ],
+//     order: ['createdAt' => 'DESC']
+// )]
 class InternMember
 {
     #[ORM\PrePersist]
@@ -116,16 +116,18 @@ class InternMember
     ])]
     private ?\DateTimeImmutable $createdAt = null;
 
-    /**
-     * @var Collection<int, TrainingSession>
-     */
-    #[ORM\ManyToMany(targetEntity: TrainingSession::class, inversedBy: 'internMembers')]
-    private Collection $trainingSession;
+    #[ORM\ManyToOne(targetEntity: TrainingSession::class)]
+    #[ORM\JoinColumn(name: 'training_session_id')]
+    #[Groups([
+        'read:intern_member',
+        'read:intern_member_collection',
+        'read:intern_member_info'
+    ])]
+    private ?TrainingSession $trainingSession = null;
 
     public function __construct()
     {
         $this->infoForm = new ArrayCollection();
-        $this->trainingSession = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -227,28 +229,4 @@ class InternMember
     //     }
     //     return $infoFormsData;
     // }
-
-    /**
-     * @return Collection<int, TrainingSession>
-     */
-    public function getTrainingSession(): Collection
-    {
-        return $this->trainingSession;
-    }
-
-    public function addTrainingSession(TrainingSession $trainingSession): static
-    {
-        if (!$this->trainingSession->contains($trainingSession)) {
-            $this->trainingSession->add($trainingSession);
-        }
-
-        return $this;
-    }
-
-    public function removeTrainingSession(TrainingSession $trainingSession): static
-    {
-        $this->trainingSession->removeElement($trainingSession);
-
-        return $this;
-    }
 }
