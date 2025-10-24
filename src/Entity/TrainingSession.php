@@ -174,6 +174,12 @@ class TrainingSession
     #[ORM\Column(nullable: true)]
     private ?bool $hasEnded = null;
 
+    /**
+     * @var Collection<int, InternMember>
+     */
+    #[ORM\ManyToMany(targetEntity: InternMember::class, inversedBy: 'trainingSessions')]
+    private Collection $internMembers;
+
     #[MaxDepth(1)]
     #[Groups([
         'read:training_period',
@@ -196,6 +202,7 @@ class TrainingSession
     {
         $this->organizationMembers = new ArrayCollection();
         $this->infoForms = new ArrayCollection();
+        $this->internMembers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -364,6 +371,30 @@ class TrainingSession
     public function setHasEnded(?bool $hasEnded): static
     {
         $this->hasEnded = $hasEnded;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, InternMember>
+     */
+    public function getInternMembers(): Collection
+    {
+        return $this->internMembers;
+    }
+
+    public function addInternMember(InternMember $internMember): static
+    {
+        if (!$this->internMembers->contains($internMember)) {
+            $this->internMembers->add($internMember);
+        }
+
+        return $this;
+    }
+
+    public function removeInternMember(InternMember $internMember): static
+    {
+        $this->internMembers->removeElement($internMember);
 
         return $this;
     }
