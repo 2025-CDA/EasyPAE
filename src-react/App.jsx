@@ -4,7 +4,6 @@ import Stepper from "./components/ui/stepper/Stepper";
 import FicheStagiaire from "./pages/support_service/FicheStagiaire";
 
 
-
 export default function App() {
     // const [showAlert, setShowAlert] = useState(true);
 
@@ -25,12 +24,5 @@ export default function App() {
 
     // console.log(data[0])
 
-    return (
-            <div className="w-full">
-                {/* <Stepper /> */}
-                <FicheStagiaire />
-            </div>
-            
-    );
+    return <div className="w-full"></div>;
 }
-

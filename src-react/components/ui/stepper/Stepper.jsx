@@ -8,19 +8,30 @@ import Container from "../Container";
 function Stepper({
     content = [
         {
-            index: 1,
-            description: "lorem ipsum",
-        },
-        {
-            index: 2,
+            title: "test1",
             description: "lorem ipsum2",
+            stepContent: <h1>Test1</h1>,
         },
         {
-            index: 3,
+            title: "test2",
+            description: "lorem ipsum2",
+            stepContent: <h1>Test2</h1>,
+        },
+        {
+            title: "test3",
             description: "lorem ipsum3",
+            stepContent: <h1>Test3</h1>,
+        },
+        {
+            title: "test3",
+            description: "lorem ipsum3",
+            stepContent: <h1>Test3</h1>,
         },
     ],
     withBack = true,
+    handleLastEvent, //par example download file
+    lastEventButtonTitle = "Download",
+    handleValidateEvent, // par example pour navigate apres validation
 }) {
     const [step, setStep] = useState(0);
     const [finishedSteps, setFinishedSteps] = useState([]);
@@ -36,11 +47,14 @@ function Stepper({
         } else {
             setFinishedSteps([...Array(content.length).keys()]);
             setValidated(true);
+            handleValidateEvent();
         }
     };
 
     const handlePrevious = () => {
         if (step > 0) {
+            // const arr = ;
+            setFinishedSteps(finishedSteps.filter((item) => item !== step - 1));
             setStep(step - 1);
         }
     };
@@ -48,22 +62,18 @@ function Stepper({
     return (
         <Container className="flex flex-col justify-center items-center p-4">
             <StepperNavbar
-                content={content.map((item, i) => ({
-                    step: i + 1,
-                    title: `Etape ${i + 1}`,
-                    description: item.description,
-                }))}
+                content={content}
                 currentStep={step}
                 nextStep={step + 1}
                 finishedStep={finishedSteps}
                 validated={validated}
             />
 
-            <StepContent index={step} description={content[step].description} />
+            <StepContent content={content[step].stepContent} />
 
             <div className="flex w-full flex-row my-2 gap-4 items-center justify-center">
                 {/* Afficher bouton "Précédent" sauf à la première étape */}
-                {withBack && step > 0 && (
+                {withBack && !validated && step > 0 && (
                     <Button
                         className="flex-1"
                         color="blue"
@@ -75,7 +85,7 @@ function Stepper({
                 )}
 
                 {/* Afficher bouton "Suivant" sauf à la dernière étape où on affiche "Valider" */}
-                {withBack && (
+                {withBack && !validated && (
                     <Button
                         className="flex-1"
                         color="blue"
@@ -85,6 +95,17 @@ function Stepper({
                         {step < content.length - 1
                             ? "Suivant"
                             : "Valider la demande"}
+                    </Button>
+                )}
+
+                {validated && (
+                    <Button
+                        className="flex-1"
+                        color="blue"
+                        variant="solid"
+                        onClick={handleLastEvent}
+                    >
+                        {lastEventButtonTitle}
                     </Button>
                 )}
             </div>
