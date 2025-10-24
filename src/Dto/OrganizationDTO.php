@@ -93,13 +93,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             name: 'organization_session_sessionId_archive',
             processor: OrganizationProcessor::class,
         ),
-
-//        new Delete(
-//            uriTemplate: '/organization/session/{sessionId}',
-//            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-//            uriVariables: ['sessionId'],
-//            name: 'organization_session_sessionId_delete',
-//        ),
     ],
 )]
 class OrganizationDTO
