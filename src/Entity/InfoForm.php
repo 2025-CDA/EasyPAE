@@ -20,50 +20,50 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: InfoFormRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(
-    operations: [
-        new Get(
-            normalizationContext: ['groups' => ['read:info_form']]
-        ),
-        new GetCollection(
-            normalizationContext: ['groups' => ['read:info_form_collection']]
-        ),
-        new Post(
-            denormalizationContext: ['groups' => ['create:info_form']]
-        ),
-        new Patch(
-            denormalizationContext: ['groups' => ['update:info_form']]
-        ),
-        new Put(
-            denormalizationContext: ['groups' => ['update:info_form']]
-        ),
-        new Delete(),
+// #[ApiResource(
+//     operations: [
+//         new Get(
+//             normalizationContext: ['groups' => ['read:info_form']]
+//         ),
+//         new GetCollection(
+//             normalizationContext: ['groups' => ['read:info_form_collection']]
+//         ),
+//         new Post(
+//             denormalizationContext: ['groups' => ['create:info_form']]
+//         ),
+//         new Patch(
+//             denormalizationContext: ['groups' => ['update:info_form']]
+//         ),
+//         new Put(
+//             denormalizationContext: ['groups' => ['update:info_form']]
+//         ),
+//         new Delete(),
 
-        new Get(
-            uriTemplate: '/info_forms/{id}/status',
-            normalizationContext: ['groups' => ['read:info_form-status']],
-            name: 'info_form-status'
-        ),
-        new Get(
-            uriTemplate: '/info_form/{id}/status/company',
-            normalizationContext: ['groups' => ['read:info_form-status-company']],
-            name: 'info_form-status-company'
-        ),
+//         new Get(
+//             uriTemplate: '/info_forms/{id}/status',
+//             normalizationContext: ['groups' => ['read:info_form-status']],
+//             name: 'info_form-status'
+//         ),
+//         new Get(
+//             uriTemplate: '/info_form/{id}/status/company',
+//             normalizationContext: ['groups' => ['read:info_form-status-company']],
+//             name: 'info_form-status-company'
+//         ),
 
-        new Get(
-            uriTemplate: '/info_form/{id}/status/organization',
-            normalizationContext: ['groups' => ['read:info_form-status-organization']],
-            name: 'info_form-status-organization'
-        ),
-        new Get(
-            uriTemplate: '/info_form/{id}/status/intern',
-            normalizationContext: ['groups' => ['read:info_form-status-intern']],
-            name: 'info_form-status-intern'
-        ),
+//         new Get(
+//             uriTemplate: '/info_form/{id}/status/organization',
+//             normalizationContext: ['groups' => ['read:info_form-status-organization']],
+//             name: 'info_form-status-organization'
+//         ),
+//         new Get(
+//             uriTemplate: '/info_form/{id}/status/intern',
+//             normalizationContext: ['groups' => ['read:info_form-status-intern']],
+//             name: 'info_form-status-intern'
+//         ),
 
-    ],
-    order: ['createdAt' => 'DESC']
-)]
+//     ],
+//     order: ['createdAt' => 'DESC']
+// )]
 class InfoForm
 {
     #[ORM\PrePersist]

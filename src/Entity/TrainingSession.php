@@ -23,31 +23,31 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: TrainingSessionRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(
-    operations: [
-        new Get(
-            uriTemplate: '/training_session/{id}/trainingPeriod',
-            normalizationContext: ['groups' => ['read:training_period']],
-            name: 'trainingSessionPeriod',
-        ),
-        new Get(normalizationContext: ['groups' => ['read:training_session']]),
-        new Post(
-            uriTemplate: '/training_session',
-            denormalizationContext: ['groups' => ['create:training_session']],
-            name: 'addTrainingSession',
-        ),
-        new GetCollection(
-            paginationItemsPerPage: 1,
-            paginationMaximumItemsPerPage: 1,
-            paginationClientItemsPerPage: true,
-            normalizationContext: ['groups' => ['read:training_session_collection']]
-        ),
-        new Patch(denormalizationContext: ['groups' => ['update:training_session']]),
-        new Put(denormalizationContext: ['groups' => ['update:training_session']]),
-        new Delete()
-    ],
+// #[ApiResource(
+//     operations: [
+//         new Get(
+//             uriTemplate: '/training_session/{id}/trainingPeriod',
+//             normalizationContext: ['groups' => ['read:training_period']],
+//             name: 'trainingSessionPeriod',
+//         ),
+//         new Get(normalizationContext: ['groups' => ['read:training_session']]),
+//         new Post(
+//             uriTemplate: '/training_session',
+//             denormalizationContext: ['groups' => ['create:training_session']],
+//             name: 'addTrainingSession',
+//         ),
+//         new GetCollection(
+//             paginationItemsPerPage: 1,
+//             paginationMaximumItemsPerPage: 1,
+//             paginationClientItemsPerPage: true,
+//             normalizationContext: ['groups' => ['read:training_session_collection']]
+//         ),
+//         new Patch(denormalizationContext: ['groups' => ['update:training_session']]),
+//         new Put(denormalizationContext: ['groups' => ['update:training_session']]),
+//         new Delete()
+//     ],
 
-)]
+// )]
 #[ApiFilter(DateFilter::class, properties: ['createdAt', 'updatedAt'])]
 class TrainingSession
 {
@@ -129,7 +129,7 @@ class TrainingSession
     /**
      * @var Collection<int, OrganizationMember>
      */
-    #[ORM\ManyToMany(targetEntity: OrganizationMember::class, mappedBy: 'trainingSession')]
+    #[ORM\ManyToMany(targetEntity: OrganizationMember::class, mappedBy: 'trainingSessions')]
     #[MaxDepth(1)]
     #[Groups([
         'read:training_session',
@@ -171,10 +171,13 @@ class TrainingSession
     #[ORM\OneToMany(targetEntity: InfoForm::class, mappedBy: 'trainingSession')]
     private Collection $infoForms;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $hasEnded = null;
+
     /**
      * @var Collection<int, InternMember>
      */
-    #[ORM\ManyToMany(targetEntity: InternMember::class, mappedBy: 'trainingSession')]
+    #[ORM\ManyToMany(targetEntity: InternMember::class, inversedBy: 'trainingSessions')]
     private Collection $internMembers;
 
     #[MaxDepth(1)]
@@ -360,6 +363,18 @@ class TrainingSession
         return $this;
     }
 
+    public function hasEnded(): ?bool
+    {
+        return $this->hasEnded;
+    }
+
+    public function setHasEnded(?bool $hasEnded): static
+    {
+        $this->hasEnded = $hasEnded;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, InternMember>
      */
@@ -372,7 +387,6 @@ class TrainingSession
     {
         if (!$this->internMembers->contains($internMember)) {
             $this->internMembers->add($internMember);
-            $internMember->addTrainingSession($this);
         }
 
         return $this;
@@ -380,9 +394,7 @@ class TrainingSession
 
     public function removeInternMember(InternMember $internMember): static
     {
-        if ($this->internMembers->removeElement($internMember)) {
-            $internMember->removeTrainingSession($this);
-        }
+        $this->internMembers->removeElement($internMember);
 
         return $this;
     }

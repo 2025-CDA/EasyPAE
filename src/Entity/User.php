@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use App\State\UserStateProcessor;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiFilter;
@@ -41,10 +42,10 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
             openapi: new Operation(
                 summary: 'Retrieves the User resource.',
                 description: 'Retrieves the User resource.',
-                security: [['cookieAuth' => []]]
+                security: [['bearerAuth' => []]]
             ),
             normalizationContext: ['groups' => ['read:user']],
-            security: "is_granted('ROLE_Formateur')",
+            security: "is_granted('ROLE_STAGIAIRE')",
         ),
         new GetCollection(
             paginationItemsPerPage: 10,
@@ -300,6 +301,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatar = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $phone = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $address = null;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $birthday = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isFirstConnection = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -539,6 +552,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatar(?string $avatar): static
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): static
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getBirthday(): ?\DateTimeImmutable
+    {
+        return $this->birthday;
+    }
+
+    public function setBirthday(?\DateTimeImmutable $birthday): static
+    {
+        $this->birthday = $birthday;
+
+        return $this;
+    }
+
+    public function isFirstConnection(): ?bool
+    {
+        return $this->isFirstConnection;
+    }
+
+    public function setIsFirstConnection(?bool $isFirstConnection): static
+    {
+        $this->isFirstConnection = $isFirstConnection;
 
         return $this;
     }

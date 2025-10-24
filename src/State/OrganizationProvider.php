@@ -1,60 +1,185 @@
 <?php
-// src/State/OrganizationProvider.php
 
 namespace App\State;
 
+use App\Dto\OrganizationDTO;
+use App\Repository\OrganizationMemberRepository;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\Dto\OrganizationDTO;
-use App\Repository\OrganizationRepository;
 use App\Repository\TrainingSessionRepository;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use ApiPlatform\Metadata\CollectionOperationInterface;
 
 class OrganizationProvider implements ProviderInterface
 {
     public function __construct(
-        private readonly OrganizationRepository $organizationRepository,
-        private readonly TrainingSessionRepository $trainingSessionRepository
-    ) {
+        private readonly TrainingSessionRepository $trainingSessionRepository,
+        private readonly OrganizationMemberRepository $organizationMemberRepository,
+    )
+    {
+
+    }
+
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
+    {
+
+        $operationName = $operation->getName();
+
+        return match ($operationName) {
+            'organization_sessions' => $this->getOrganizationSessions($uriVariables),
+            'organization_organizationMemberId_sessions' => $this->getOrganizationOrganizationMemberIdSessions($uriVariables),
+            'organization_session_sessionId_interns' => $this->getOrganizationSessionSessionIdInterns($uriVariables),
+            'organization_session_sessionId' => $this->getOrganizationSessionSessionId($uriVariables),
+            default => throw new BadRequestHttpException('Operation not supported')
+        };
+
+    }
+
+    private function getOrganizationSessions(array $uriVariables): array
+    {
+        $trainingSessions = $this->trainingSessionRepository->findAll();
+
+        $organizationDTO = [];
+
+        foreach ($trainingSessions as $trainingSession) {
+            $dto = new OrganizationDTO(); //
+            $dto->sessionId = $trainingSession->getId();
+            $dto->trainingName = $trainingSession->getTraining()?->getName();
+            $dto->offerNumber = $trainingSession->getOfferNumber();
+
+            $organizationMembers = $trainingSession->getOrganizationMembers();
+
+            if (!$organizationMembers->isEmpty()) {
+                $firstMember = $organizationMembers->first();
+                $dto->trainerId = $firstMember->getId();
+                if ($user = $firstMember?->getUser()) {
+                    $dto->trainerFirstName = $user->getFirstName();
+                    $dto->trainerLastName = $user->getLastName();
+
+                }
+            }
+
+            $dto->internshipStart = $trainingSession->getInternShipPeriodStart();
+            $dto->internshipEnd = $trainingSession->getInternshipPeriodEnd();
+
+//            TODO: add percentage, I'm not sure what I'm supposed to do here.
+//            $dto->validationPercentage = $trainingSession->getValidationPercentage();
+
+            $organizationDTO[] = $dto;
+        }
+
+        return $organizationDTO;
     }
 
 
-public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
-{
-    if ($operation instanceof CollectionOperationInterface) {
-        // Récupérer toutes les sessions
-        $sessions = $this->trainingSessionRepository->findAll();
-        $dtos = [];
-        foreach ($sessions as $session) {
+    private function getOrganizationOrganizationMemberIdSessions(array $uriVariables): array
+    {
+
+        $organizationMemberId = $uriVariables['organizationMemberId'];
+
+        $organizationMember = $this->organizationMemberRepository->find($organizationMemberId);
+
+        if (!$organizationMember) {
+            throw new NotFoundHttpException('Organization member not found.');
+        }
+
+        $trainingSessions = $organizationMember->getTrainingSessions();
+
+        $dtoCollection = [];
+        foreach ($trainingSessions as $trainingSession) {
             $dto = new OrganizationDTO();
-            $dto->id = $session->getId();
-            $dto->name = $session->getTraining()?->getName();
-            $dto->offerNumber = $session->getOfferNumber();
-            $dto->startDate = $session->getTrainingPeriodStart();
-            $dto->endDate = $session->getTrainingPeriodEnd();
-            $dtos[] = $dto;
+            $dto->sessionId = $trainingSession->getId();
+
+            $dto->organizationMemberId = $organizationMemberId;
+
+            $dto->trainingName = $trainingSession->getTraining()?->getName();
+            $dto->offerNumber = $trainingSession->getOfferNumber();
+            $dto->internshipStart = $trainingSession->getInternShipPeriodStart();
+            $dto->internshipEnd = $trainingSession->getInternshipPeriodEnd();
+
+            $members = $trainingSession->getOrganizationMembers();
+            if (!$members->isEmpty()) {
+                $firstMember = $members->first();
+                $dto->trainerId = $firstMember->getId();
+                if ($user = $firstMember?->getUser()) {
+                    $dto->trainerFirstName = $user->getFirstName();
+                    $dto->trainerLastName = $user->getLastName();
+                }
+            }
+
+            // TODO: Add percentage logic here as well.
+            // $dto->validationPercentage = ...
+
+            $dtoCollection[] = $dto;
         }
-        return $dtos;
+
+        return $dtoCollection;
     }
 
-    // Cas item
-    if (isset($uriVariables['id'])) {
-        $session = $this->trainingSessionRepository->find((int) $uriVariables['id']);
+    private function getOrganizationSessionSessionIdInterns(array $uriVariables): array
+    {
+        $sessionId = $uriVariables['sessionId'];
+
+        $session = $this->trainingSessionRepository->find($sessionId);
+
         if (!$session) {
-            // Option 1 : lancer explicitement l’exception
             throw new NotFoundHttpException('Training session not found.');
-            // Option 2 : return null; // Api Platform gère la 404
         }
+
+        $dtoCollection = [];
+
+        foreach ($session->getInfoForms() as $infoForm) {
+            $internMember = $infoForm->getInternMember();
+
+            if (!$internMember) {
+                continue;
+            }
+
+            $dto = new OrganizationDTO();
+
+            $dto->sessionId = $session->getId();
+            $dto->trainingName = $session->getTraining()?->getName();
+
+            if ($user = $internMember->getUser()) {
+                $dto->internId = $user->getId();
+                $dto->internFirstName = $user->getFirstName();
+                $dto->internLastName = $user->getLastName();
+                $dto->internLogin = $user->getLogin();
+            }
+
+            $dto->InfoFormStatus = $infoForm->getStatus();
+
+            $dtoCollection[] = $dto;
+        }
+
+        return $dtoCollection;
+    }
+
+    private function getOrganizationSessionSessionId(array $uriVariables): OrganizationDTO
+    {
+        $sessionId = $uriVariables['sessionId'];
+
+        $session = $this->trainingSessionRepository->find($sessionId);
+
+        if (!$session) {
+            throw new NotFoundHttpException('Training session not found.');
+        }
+
         $dto = new OrganizationDTO();
-        $dto->id = $session->getId();
-        $dto->name = $session->getTraining()?->getName();
+
+        $dto->sessionId = $session->getId();
+        $dto->trainingName = $session->getTraining()?->getName();
         $dto->offerNumber = $session->getOfferNumber();
-        $dto->startDate = $session->getTrainingPeriodStart();
-        $dto->endDate = $session->getTrainingPeriodEnd();
+        $dto->internshipStart = $session->getInternShipPeriodStart();
+        $dto->internshipEnd = $session->getInternshipPeriodEnd();
+
+        $organizationMembers = $session->getOrganizationMembers();
+        if (!$organizationMembers->isEmpty()) {
+            $firstMember = $organizationMembers->first();
+            $dto->trainerId = $firstMember->getId();
+        }
+
         return $dto;
     }
 
-    return null; // Aucun cas traité
-}
 }
