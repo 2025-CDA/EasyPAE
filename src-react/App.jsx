@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Stepper from "./components/ui/stepper/Stepper";
+import FicheStagiaire from "./pages/support_service/FicheStagiaire";
+
 
 
 export default function App() {
@@ -25,7 +27,8 @@ export default function App() {
 
     return (
             <div className="w-full">
-                <Stepper />
+                {/* <Stepper /> */}
+                <FicheStagiaire />
             </div>
             
     );
