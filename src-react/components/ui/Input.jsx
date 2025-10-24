@@ -16,8 +16,7 @@ export default function Input({
     const [showPassword, setShowPassword] = useState(false);
     const [value, setValue] = useState("");
     return (
-
-        <div>
+        <div className="">
             <label htmlFor={id} className="">
                 {label} {required && <span className="text-red-500">*</span>}
             </label>
