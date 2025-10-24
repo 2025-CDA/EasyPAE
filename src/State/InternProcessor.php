@@ -11,7 +11,7 @@ use ApiPlatform\Metadata\CollectionOperationInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Entity\InternMember;
 
-class InternProvider implements ProviderInterface
+class InternProcessor implements ProviderInterface
 {
     public function __construct(
 

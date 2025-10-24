@@ -10,19 +10,17 @@ use App\Repository\TrainingSessionRepository;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class OrganizationProvider implements ProviderInterface
+readonly class OrganizationProvider implements ProviderInterface
 {
     public function __construct(
-        private readonly TrainingSessionRepository $trainingSessionRepository,
-        private readonly OrganizationMemberRepository $organizationMemberRepository,
+        private TrainingSessionRepository    $trainingSessionRepository,
+        private OrganizationMemberRepository $organizationMemberRepository,
     )
     {
-
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-
         $operationName = $operation->getName();
 
         return match ($operationName) {
@@ -74,7 +72,6 @@ class OrganizationProvider implements ProviderInterface
 
     private function getOrganizationOrganizationMemberIdSessions(array $uriVariables): array
     {
-
         $organizationMemberId = $uriVariables['organizationMemberId'];
 
         $organizationMember = $this->organizationMemberRepository->find($organizationMemberId);
@@ -147,7 +144,7 @@ class OrganizationProvider implements ProviderInterface
                 $dto->internLogin = $user->getLogin();
             }
 
-            $dto->InfoFormStatus = $infoForm->getStatus();
+            $dto->infoFormStatus = $infoForm->getStatus();
 
             $dtoCollection[] = $dto;
         }

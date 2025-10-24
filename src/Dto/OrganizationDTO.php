@@ -57,7 +57,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Post(
             uriTemplate: '/organization/session',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-//            normalizationContext: ['groups' => ['create:organization_session_add']],
             denormalizationContext: ['groups' => ['create:organization_session_add']],
             name: 'organization_session_add',
             processor: OrganizationProcessor::class,
@@ -66,7 +65,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/organization/session/{sessionId}/intern',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
             uriVariables: ['sessionId'],
-//            normalizationContext: ['groups' => ['create:organization_session_sessionId_intern_add']],
             denormalizationContext: ['groups' => ['create:organization_session_sessionId_intern_add']],
             name: 'organization_session_sessionId_intern_add',
             processor: OrganizationProcessor::class,
@@ -76,22 +74,22 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Patch(
             uriTemplate: '/organization/session/{sessionId}',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-//            uriVariables: ['sessionId' => new Link(fromClass: TrainingSession::class)],
             uriVariables: ['sessionId'],
-//            normalizationContext: ['groups' => ['update:organization_session_sessionId_edit']],
-            denormalizationContext: ['groups' => ['update:organization_session_sessionId_edit']],
-//            read: false,
+            normalizationContext: ['groups' => ['update:organization_session_sessionId_edit']],
+            denormalizationContext: ['groups' => ['denorm-update:organization_session_sessionId_edit']],
+//            output: self::class,
+            read: false,
             name: 'organization_session_sessionId_edit',
             processor: OrganizationProcessor::class,
         ),
         new Patch(
             uriTemplate: '/organization/session/{sessionId}/archive',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-//            uriVariables: ['sessionId' => new Link(fromClass: TrainingSession::class)],
             uriVariables: ['sessionId'],
-//            normalizationContext: ['groups' => ['update:organization_session_sessionId_archive']],
-            denormalizationContext: ['groups' => ['update:organization_session_sessionId_archive']],
-//            read: false,
+            normalizationContext: ['groups' => ['update:organization_session_sessionId_archive']],
+            denormalizationContext: ['groups' => ['denorm-update:organization_session_sessionId_archive']],
+//            output: self::class,
+            read: false,
             name: 'organization_session_sessionId_archive',
             processor: OrganizationProcessor::class,
         ),
@@ -101,7 +99,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 //            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
 //            uriVariables: ['sessionId'],
 //            name: 'organization_session_sessionId_delete',
-//        )
+//        ),
     ],
 )]
 class OrganizationDTO
@@ -113,6 +111,7 @@ class OrganizationDTO
         'update:organization_session_sessionId_edit',
         'read:organization_session_sessionId_interns',
         'create:organization_session_sessionId_intern_add',
+        'update:organization_session_sessionId_archive',
     ])]
     public ?int $sessionId = null;
 
@@ -128,6 +127,7 @@ class OrganizationDTO
         'read:organization_organizationMemberId_sessions',
         'create:organization_session_add',
         'update:organization_session_sessionId_edit',
+        'denorm-update:organization_session_sessionId_edit',
     ])]
     public ?int $trainerId = null;
 
@@ -142,6 +142,7 @@ class OrganizationDTO
         'read:organization_session_sessionId',
         'create:organization_session_add',
         'update:organization_session_sessionId_edit',
+        'denorm-update:organization_session_sessionId_edit',
         'read:organization_session_sessionId_interns',
     ])]
     public ?string $trainingName = null;
@@ -152,6 +153,7 @@ class OrganizationDTO
         'read:organization_session_sessionId',
         'create:organization_session_add',
         'update:organization_session_sessionId_edit',
+        'denorm-update:organization_session_sessionId_edit',
     ])]
     public ?string $offerNumber = null;
 
@@ -173,6 +175,7 @@ class OrganizationDTO
         'read:organization_session_sessionId',
         'create:organization_session_add',
         'update:organization_session_sessionId_edit',
+        'denorm-update:organization_session_sessionId_edit',
     ])]
     public ?\DateTimeInterface $internshipStart = null;
 
@@ -182,6 +185,7 @@ class OrganizationDTO
         'read:organization_session_sessionId',
         'create:organization_session_add',
         'update:organization_session_sessionId_edit',
+        'denorm-update:organization_session_sessionId_edit',
     ])]
     public ?\DateTimeInterface $internshipEnd = null;
 
@@ -218,4 +222,9 @@ class OrganizationDTO
         'read:organization_session_sessionId_interns',
     ])]
     public ?InfoFormStatus $infoFormStatus = null;
+
+    #[Groups([
+        'update:organization_session_sessionId_archive',
+    ])]
+    public ?bool $hasEnded = null;
 }
