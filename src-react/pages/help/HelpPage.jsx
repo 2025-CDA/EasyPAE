@@ -1,21 +1,23 @@
-import { Asked } from './Asked';
+import { FrequentlyAsked } from './FrequentlyAsked';
 import { ThemeItem } from './ThemeItem';
 import React from "react";
 import MainLayout from "../../components/layout/MainLayout";
 import SearchBar from "../../components/ui/SearchBar";
-import Container from "../../components/ui/Container";
 import { FileText, GraduationCap, Building2, File } from 'lucide-react';
+import Breadcrumbs from "../../components/ui/Breadcrumb";
 
 
 function HelpPage() {
     
     return ( 
-            <MainLayout >
-                <div className="flex w-full justify-center">
+            <MainLayout withSearchbar = {false} >
+                
+                <div className="flex w-full justify-center m-5">
                     <SearchBar className={"w-[90%] md:w-[80%]"} />
                 </div>
 
-                <div className="mt-6">
+
+                <div className="mt-6 m-5">
                     
                     <h5 className="font-semibold">
                        Fréquemment demandées
@@ -23,25 +25,18 @@ function HelpPage() {
 
                     <div className=" mt-5 flex flex-row gap-5 justify-center overflow-x-auto p-4 snap-x snap-mandatory">
 
-                        <Asked     />
 
-                        <Container className="bg-[#BEF264] rounded shadow snap-start">
-                        <p>Comment remplir la fiche de <br /> renseignement ?</p>
-                        </Container>
+                        <FrequentlyAsked color={"#BEF264"} description={"Où puis-je télécharger la fiche de renseignement ?"}/>
+                        <FrequentlyAsked color={"#BEF264"} description={"Comment remplir la fiche de renseignement ?"}/>
+                        <FrequentlyAsked color={"#BEF264"} description={"Comment suivre l'avancée des signatures"}/>
+                        <FrequentlyAsked color={"#BEF264"} description={"Comment sont organisés les heures en entreprise ?"}/>
 
-                        <Container className="bg-[#BEF264] rounded shadow snap-start">
-                        <p>Comment suivre l'avancée <br /> des signatures </p>
-                        </Container>
-
-                        <Container className="bg-[#BEF264] rounded shadow snap-start">
-                        <p>Comment sont organisés les <br /> heures en entreprise ?</p>
-                        </Container>
 
                     </div>
 
                 </div>
 
-                <div className="mt-6">
+                <div className="mt-6 m-5">
 
                     <h5 className="font-semibold">
                        Thèmes
@@ -49,10 +44,10 @@ function HelpPage() {
 
                     <div className="flex flex-col gap-5 mt-5 justify-center">
 
-                        <ThemeItem  NArticles={2} icon={<FileText strokeWidth={1} />} titre={"Fiche de renseignement"}    />
-                        <ThemeItem  NArticles={6} icon={<GraduationCap strokeWidth={1} />} titre={"Stagiaires"}    />
-                        <ThemeItem  NArticles={4} icon={<Building2 strokeWidth={1} />} titre={"Entreprises"}    />
-                        <ThemeItem  NArticles={10} icon={<File strokeWidth={1} />} titre={"Fonctionnement"}    />
+                        <ThemeItem description={"articles"} NArticles={2} icon={<FileText strokeWidth={1} />} titre={"Fiche de renseignement"}    />
+                        <ThemeItem description={"articles"} NArticles={6} icon={<GraduationCap strokeWidth={1} />} titre={"Stagiaires"}    />
+                        <ThemeItem description={"articles"} NArticles={4} icon={<Building2 strokeWidth={1} />} titre={"Entreprises"}    />
+                        <ThemeItem description={"articles"} NArticles={10} icon={<File strokeWidth={1} />} titre={"Fonctionnement"}    />
 
                         
                     </div>
