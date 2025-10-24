@@ -310,6 +310,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $birthday = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isFirstConnection = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -585,6 +588,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setBirthday(?\DateTimeImmutable $birthday): static
     {
         $this->birthday = $birthday;
+
+        return $this;
+    }
+
+    public function isFirstConnection(): ?bool
+    {
+        return $this->isFirstConnection;
+    }
+
+    public function setIsFirstConnection(?bool $isFirstConnection): static
+    {
+        $this->isFirstConnection = $isFirstConnection;
 
         return $this;
     }
