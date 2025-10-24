@@ -22,27 +22,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: InfoFormCompanyRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(
-    operations: [
-        new Get(
-            normalizationContext: ['groups' => ['read:info_form_company']]
-        ),
-        new GetCollection(
-            normalizationContext: ['groups' => ['read:info_form_company_collection']]
-        ),
-        new Post(
-            denormalizationContext: ['groups' => ['create:info_form_company']]
-        ),
-        new Patch(
-            denormalizationContext: ['groups' => ['update:info_form_company']]
-        ),
-        new Put(
-            denormalizationContext: ['groups' => ['update:info_form_company']]
-        ),
-        new Delete()
-    ],
-    order: ['createdAt' => 'DESC']
-)]
+// #[ApiResource(
+//     operations: [
+//         new Get(
+//             normalizationContext: ['groups' => ['read:info_form_company']]
+//         ),
+//         new GetCollection(
+//             normalizationContext: ['groups' => ['read:info_form_company_collection']]
+//         ),
+//         new Post(
+//             denormalizationContext: ['groups' => ['create:info_form_company']]
+//         ),
+//         new Patch(
+//             denormalizationContext: ['groups' => ['update:info_form_company']]
+//         ),
+//         new Put(
+//             denormalizationContext: ['groups' => ['update:info_form_company']]
+//         ),
+//         new Delete() 
+//     ],
+//     order: ['createdAt' => 'DESC']
+// )]
 class InfoFormCompany
 {
     #[ORM\PrePersist]

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\OpenApi\Model\Operation;
 use App\Enum\UserRole;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
@@ -9,6 +10,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use App\State\UserStateProcessor;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiFilter;
@@ -35,8 +37,15 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ApiResource(
     operations: [
         new Get(
+//            THIS ROUTE IS ONLY TO TEST RESTRICTED ROUTES
+//            TODO: WE NEED TO CHANGE IT LATER
+            openapi: new Operation(
+                summary: 'Retrieves the User resource.',
+                description: 'Retrieves the User resource.',
+                security: [['bearerAuth' => []]]
+            ),
             normalizationContext: ['groups' => ['read:user']],
-            security: "is_granted('ROLE_ADMIN')"
+            security: "is_granted('ROLE_STAGIAIRE')",
         ),
         new GetCollection(
             paginationItemsPerPage: 10,
@@ -102,21 +111,51 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * 4. This is the COMPATIBILITY method for Symfony Security.
-     * It satisfies the UserInterface contract.
-     *
      * @see UserInterface
      */
+    #[Groups([
+        'read:user',
+        'read:user_collection'
+    ])]
     public function getRoles(): array
     {
-        $roles = ['ROLE_USER']; // Always grant the basic role.
+        $roles = [];
 
-        // If a specific role is set, add its string value to the array.
+        // Determine member type and role
+        [$memberType, $memberRole] = $this->getMemberTypeAndRole();
+
+        // Add the constructed member role if applicable
+        if ($memberType && $memberRole) {
+            $roles[] = "ROLE_{$memberRole}";
+        }
+
+        // Add user's own role if it exists
         if ($this->role !== null) {
             $roles[] = $this->role->value;
         }
 
         return array_unique($roles);
+    }
+
+    /**
+     * Determines the member type and role for this user.
+     * Returns [memberType, roleValue] or [null, null] if no member relation exists.
+     */
+    private function getMemberTypeAndRole(): array
+    {
+        if ($member = $this->getOrganizationMember()) {
+            return ['ORGANIZATION', $member->getRole()->value];
+        }
+
+        if ($member = $this->getCompanyMember()) {
+            return ['COMPANY', $member->getRole()->value];
+        }
+
+        if ($this->getInternMember()) {
+            return ['INTERN', 'STAGIAIRE'];
+        }
+
+        return [null, null];
     }
 
     #[ORM\Id]
@@ -261,6 +300,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatar = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $phone = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $address = null;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $birthday = null;
 
     public function getId(): ?int
     {
@@ -501,6 +549,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatar(?string $avatar): static
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): static
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getBirthday(): ?\DateTimeImmutable
+    {
+        return $this->birthday;
+    }
+
+    public function setBirthday(?\DateTimeImmutable $birthday): static
+    {
+        $this->birthday = $birthday;
 
         return $this;
     }
