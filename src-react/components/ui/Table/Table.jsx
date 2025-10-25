@@ -18,14 +18,17 @@ function Table(
       // indexOfLastItem, 
     }
   ) {
-// console.log(indexOfLastItem)
+
+  console.log(data)
+  const displayData = currentItems && currentItems.length > 0 ? currentItems : data
+  
   return (
     
     <div className="overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200">
         <TableHead columnsThead={columns} />
         <TableBody
-          dataInTbody={currentItems}
+          dataInTbody={displayData}
           columnsTbody={columns}
           onEdit={handleEdit}
           onDelete={handleDelete}
