@@ -3,33 +3,31 @@ import Table from "./Table"
 import SearchBarTable from "./SearchBarTable"
 import PaginationTable from "./PaginationTable"
 
-
-// Vous appelez ce composant AppTable que si vous voulez utilisez à la fois la searchbar, la pagination et le tableau. si vous voulez juste utiliser le tableau appelez plutot que le composant Table seule
-function AppTable() {
-
-
-  // Le tableau columns correspond aux titres de vos colonnes (thead) vous pouvez le modifier à votre guise.
-
-  // Vous n'ajouterez la dernière colonne action que si vous voulez utiliser une colonne d'action ou d'autres données de cellule qui ne sont pas dans la constante data juste en bas
-
-  
-  const columns = [
+function AppTable({
+  visibilitySearchBar, 
+  visibilityPagination,
+  columns = [
     { key: "id", label: "IDENTIFIANT" },
     { key: "first_name", label: "PRÉNOM" },
     { key: "last_name", label: "NOM" },
     { key: "intern_member_id", label: "ID STAGIAIRE" },
     { key: "status", label: "AVANCÉE DU DOSSIER" },
     { key: "action", label: "ACTION" },
-  ]
-
-  // Ce tableau correspond 
-  const data = [
+  ], 
+  data = [
     { id: 1, first_name: "Jeremie", last_name: "Chabanais", intern_member_id: 125242, status: "Aucune demande" },
-    { id: 2, first_name: "Saria", last_name: "Dupont", intern_member_id: 125243, status: "Demande initiée" },
-    { id: 3, first_name: "Aziza", last_name: "Martin", intern_member_id: 125244, status: "Transmis à l'administration" },
-    { id: 4, first_name: "Margot", last_name: "Legrand", intern_member_id: 125245, status: "Aucune demande" },
-    { id: 5, first_name: "Arnaud", last_name: "Petit", intern_member_id: 125246, status: "Terminé" },
-  ]
+    { id: 2, first_name: "Saria", last_name: "Chabanais", intern_member_id: 125242, status: "Stagiaire a initié la demande" },
+    { id: 3, first_name: "Aziza", last_name: "Chabanais", intern_member_id: 125242, status: "Transmis à l'administration" },
+    { id: 4, first_name: "Margot", last_name: "Chabanais", intern_member_id: 125242, status: "Aucune demande" },
+    { id: 5, first_name: "Arnaud", last_name: "Chabanais", intern_member_id: 125242, status: "Terminé" },
+    { id: 6, first_name: "Yves", last_name: "Dupont", intern_member_id: 125243, status: "En attente de validation" },
+    { id: 7, first_name: "Camille", last_name: "Durand", intern_member_id: 125244, status: "Terminé" },
+    { id: 8, first_name: "Paul", last_name: "Martin", intern_member_id: 125245, status: "Transmis à l'administration" },
+  ],
+  
+}) 
+
+{
 
   const [currentPage, setCurrentPage] = useState(1)
   //Le chiffre qu'on met dans le useState correspond au nombre d'items par page
@@ -52,17 +50,24 @@ function AppTable() {
   //Vous pouvez changer ici la logique qui sera appliquée dans vos bouttons d'action
   const handleEdit = (id) => console.log(`Modifier l'élément ID : ${id}`)
   const handleDelete = (id) => console.log(`Supprimer l'élément ID : ${id}`)
-
+  // const visibility = "visible"
   return (
     <div className="flex flex-col">
       <div className="-m-1.5 overflow-x-auto">
         <div className="p-1.5 min-w-full inline-block align-middle">
           <div className="border border-gray-200 rounded-lg divide-y divide-gray-200 shadow-sm">
-            <SearchBarTable
-              value={searchTerm}
-              onChange={setSearchTerm}
-              placeholder="Rechercher un stagiaire..."
-            />
+
+            <div className= {visibilitySearchBar}>
+            {/* SearchBar */}
+              <SearchBarTable 
+                value={searchTerm} 
+                onChange={setSearchTerm} 
+                placeholder="Rechercher un stagiaire..." 
+              />
+            </div>
+
+
+            {/* Table */}
             <Table
               columns={columns}
               data={data}
@@ -70,12 +75,16 @@ function AppTable() {
               handleEdit={handleEdit}
               handleDelete={handleDelete}
             />
-            <PaginationTable
-              totalItems={filteredData.length}
-              itemsPerPage={itemsPerPage}
-              currentPage={currentPage}
-              onPageChange={setCurrentPage}
-            />
+
+            {/* Pagination */}
+            <div className= {visibilityPagination}>  
+              <PaginationTable
+                totalItems={filteredData.length}
+                itemsPerPage={itemsPerPage}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+              />
+            </div>
           </div>
         </div>
        </div>
