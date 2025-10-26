@@ -13,8 +13,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 readonly class CompanyProvider implements ProviderInterface
 {
     public function __construct(
-        private readonly InfoFormRepository        $infoFormRepository,
-        private readonly InfoFormCompanyRepository $infoFormCompanyRepository,
+        private InfoFormRepository        $infoFormRepository,
+        private InfoFormCompanyRepository $infoFormCompanyRepository,
     )
     {
     }
@@ -27,7 +27,6 @@ readonly class CompanyProvider implements ProviderInterface
             'company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId' => $this->getCompanyInfoFormInfoFormCompany($uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
-
     }
 
     private function getCompanyInfoFormInfoFormCompany(array $uriVariables): CompanyDTO
@@ -55,16 +54,10 @@ readonly class CompanyProvider implements ProviderInterface
             throw new NotFoundHttpException('Info form company does not belong to this info form');
         }
 
-//        $company = $infoFormCompany;
-
-        if (!$infoFormCompany) {
-            throw new NotFoundHttpException('Company not found');
-        }
-
         $dto = new CompanyDTO();
+
         $dto->infoFormId = $infoForm->getId();
         $dto->infoFormCompanyId = $infoFormCompany->getId();
-
         $dto->name = $infoFormCompany->getName();
         $dto->address = $infoFormCompany->getAddress();
         $dto->activity = $infoFormCompany->getActivity();
@@ -72,11 +65,9 @@ readonly class CompanyProvider implements ProviderInterface
         $dto->email = $infoFormCompany->getEmail();
         $dto->fax = $infoFormCompany->getFax();
         $dto->siret = $infoFormCompany->getInfoForm()?->getCompany()?->getSiret();
-
         $dto->legalRepresentativeFirstName = $infoFormCompany->getLegalRepresentativeFirstName();
         $dto->legalRepresentativeLastName = $infoFormCompany->getLegalRepresentativeLastName();
         $dto->legalRepresentativeEmail = $infoFormCompany->getLegalRepresentativeEmail();
-
         $dto->tutorFirstName = $infoFormCompany->getTutorFirstName();
         $dto->tutorLastName = $infoFormCompany->getTutorLastName();
         $dto->tutorEmail = $infoFormCompany->getTutorEmail();
@@ -84,5 +75,4 @@ readonly class CompanyProvider implements ProviderInterface
 
         return $dto;
     }
-
 }

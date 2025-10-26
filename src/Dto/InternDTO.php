@@ -7,6 +7,10 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Enum\InfoFormCompanyStatus;
+use App\Enum\InfoFormInternStatus;
+use App\Enum\InfoFormOrganizationStatus;
+use App\Enum\InfoFormStatus;
 use App\State\InternProcessor;
 use App\State\InternProvider;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -106,7 +110,7 @@ class InternDTO
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
     ])]
-    public ?string $infoFormStatus = null;
+    public ?InfoFormStatus $infoFormStatus = null;
 
     #[Groups([
         'create:intern_infoForm_add',
@@ -116,7 +120,7 @@ class InternDTO
     #[Groups([
         'create:intern_infoForm_add',
     ])]
-    public ?string $infoFormOrganizationStatus = null;
+    public ?InfoFormOrganizationStatus $infoFormOrganizationStatus = null;
 
     #[Groups([
         'create:intern_infoForm_add',
@@ -137,7 +141,7 @@ class InternDTO
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
     ])]
-    public ?string $infoFormInternStatus = null;
+    public ?InfoFormInternStatus $infoFormInternStatus = null;
 
     #[Groups([
         'create:intern_infoForm_add',
@@ -151,7 +155,7 @@ class InternDTO
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
     ])]
-    public ?string $infoFormCompanyStatus = null;
+    public ?InfoFormCompanyStatus $infoFormCompanyStatus = null;
 
     #[Groups([
         'create:intern_infoForm_add',

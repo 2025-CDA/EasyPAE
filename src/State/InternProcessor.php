@@ -2,36 +2,39 @@
 
 namespace App\State;
 
-use App\Dto\OrganizationDTO;
+use App\Dto\InternDTO;
 use App\Entity\InfoForm;
-use App\Entity\InternMember;
-use App\Entity\Training;
-use App\Entity\TrainingSession;
-use ApiPlatform\Metadata\Operation;
-use App\Entity\User;
-use App\Enum\UserRole;
+use App\Entity\InfoFormCompany;
+use App\Entity\InfoFormIntern;
+use App\Entity\InfoFormInternCompany;
+use App\Entity\InfoFormOrganization;
+use App\Repository\InfoFormRepository;
+use App\Repository\InfoFormInternRepository;
 use App\Repository\InternMemberRepository;
-use App\Repository\OrganizationMemberRepository;
-use App\Repository\TrainingRepository;
-use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use ApiPlatform\State\ProcessorInterface;
+use App\Repository\OrganizationRepository;
 use App\Repository\TrainingSessionRepository;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 readonly class InternProcessor implements ProcessorInterface
 {
     public function __construct(
-
+        private InfoFormRepository $infoFormRepository,
+        private InfoFormInternRepository $infoFormInternRepository,
+        private InternMemberRepository $internMemberRepository,
+        private OrganizationRepository $organizationRepository,
+        private TrainingSessionRepository $trainingSessionRepository,
+        private EntityManagerInterface $entityManager
     )
     {
     }
 
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): TrainingSession|OrganizationDTO|null
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): InternDTO|null
     {
-        if (!$data instanceof OrganizationDTO) {
+        if (!$data instanceof InternDTO) {
             return null;
         }
 
@@ -41,26 +44,208 @@ readonly class InternProcessor implements ProcessorInterface
             'intern_infoForm_add' => $this->internInfoFormAdd($data),
             'intern_infoForm_InfoFormIntern_infoFormInternId_edit' => $this->internInfoFormInfoFormInternEdit($data, $uriVariables),
             'intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit' => $this->internInfoFormInfoFormInternInfoFormInternCompanyEdit($data, $uriVariables),
-            'intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation' => $this->internInfoFormInfoFormInternInfoFormInternCompanyValidation($data),
+            'intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation' => $this->internInfoFormInfoFormInternInfoFormInternCompanyValidation($data, $uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
     }
 
-    private function internInfoFormAdd(OrganizationDTO $data)
+    private function internInfoFormAdd(InternDTO $data): InternDTO
     {
+        if (!$data->trainingSessionId || !$data->organizationId || !$data->internId) {
+            throw new BadRequestHttpException('Missing required fields: trainingSessionId, organizationId, or internId');
+        }
+
+        $trainingSession = $this->trainingSessionRepository->find($data->trainingSessionId);
+        if (!$trainingSession) {
+            throw new NotFoundHttpException('Training session not found');
+        }
+
+        $organization = $this->organizationRepository->find($data->organizationId);
+        if (!$organization) {
+            throw new NotFoundHttpException('Organization not found');
+        }
+
+        $internMember = $this->internMemberRepository->find($data->internId);
+        if (!$internMember) {
+            throw new NotFoundHttpException('Intern member not found');
+        }
+
+        $infoForm = new InfoForm();
+        $infoForm->setInternMember($internMember);
+        $infoForm->setOrganization($organization);
+        $infoForm->setTrainingSession($trainingSession);
+
+//dd($data->infoFormStatus);
+
+        if ($data->infoFormStatus !== null) {
+            $infoForm->setStatus($data->infoFormStatus);
+        }
+        $this->entityManager->persist($infoForm);
+
+        $infoFormIntern = new InfoFormIntern();
+        if ($data->infoFormInternDateStart !== null) {
+            $infoFormIntern->setDateStart($data->infoFormInternDateStart);
+        }
+        if ($data->infoFormInternDateEnd !== null) {
+            $infoFormIntern->setDateEnd($data->infoFormInternDateEnd);
+        }
+        if ($data->infoFormInternStatus !== null) {
+            $infoFormIntern->setStatus($data->infoFormInternStatus);
+        }
+
+        $this->entityManager->persist($infoFormIntern);
+        $infoForm->setInfoFormIntern($infoFormIntern);
+
+        $infoFormOrganization = new InfoFormOrganization();
+        if ($data->infoFormOrganizationStatus !== null) {
+            $infoFormOrganization->setStatus($data->infoFormOrganizationStatus);
+        }
+
+        $this->entityManager->persist($infoFormOrganization);
+        $infoForm->setInfoFormOrganization($infoFormOrganization);
+
+        if ($data->infoFormInternCompanyName !== null) {
+            $infoFormInternCompany = new InfoFormInternCompany();
+            $infoFormInternCompany->setCompanyName($data->infoFormInternCompanyName);
+
+            if ($data->infoFormInternCompanyAddress !== null) {
+                $infoFormInternCompany->setAddress($data->infoFormInternCompanyAddress);
+            }
+
+            if ($data->infoFormInternCompanyLegalRepresentativeFirstName !== null) {
+                $infoFormInternCompany->setLegalRepresentativeFirstName($data->infoFormInternCompanyLegalRepresentativeFirstName);
+            }
+
+            if ($data->infoFormInternCompanyLegalRepresentativeLastName !== null) {
+                $infoFormInternCompany->setLegalRepresentativeLastName($data->infoFormInternCompanyLegalRepresentativeLastName);
+            }
+
+            if ($data->infoFormInternCompanyLegalRepresentativeEmail !== null) {
+                $infoFormInternCompany->setEmail($data->infoFormInternCompanyLegalRepresentativeEmail);
+            }
+
+            $this->entityManager->persist($infoFormInternCompany);
+            $infoFormIntern->setInfoFormInternCompany($infoFormInternCompany);
+        }
+
+        if ($data->infoFormCompanyStatus !== null) {
+            $infoFormCompany = new InfoFormCompany();
+            $infoFormCompany->setStatus($data->infoFormCompanyStatus);
+            $this->entityManager->persist($infoFormCompany);
+            $infoForm->setInfoFormCompany($infoFormCompany);
+        }
+
+        $this->entityManager->flush();
+
+        $data->infoFormInternId = $infoFormIntern->getId();
+
+        return $data;
     }
 
-    private function internInfoFormInfoFormInternEdit(OrganizationDTO $data, array $uriVariables)
+    private function internInfoFormInfoFormInternEdit(InternDTO $data, array $uriVariables): InternDTO
     {
+        $infoFormInternId = $uriVariables['infoFormInternId'] ?? null;
+
+        if (!$infoFormInternId) {
+            throw new BadRequestHttpException('Missing required URI variable: infoFormInternId');
+        }
+
+        $infoFormIntern = $this->infoFormInternRepository->find($infoFormInternId);
+        if (!$infoFormIntern) {
+            throw new NotFoundHttpException('InfoFormIntern not found');
+        }
+
+        if ($data->infoFormInternDateStart !== null) {
+            $infoFormIntern->setDateStart($data->infoFormInternDateStart);
+        }
+        if ($data->infoFormInternDateEnd !== null) {
+            $infoFormIntern->setDateEnd($data->infoFormInternDateEnd);
+        }
+
+        $this->entityManager->flush();
+
+        return $data;
     }
 
-    private function internInfoFormInfoFormInternInfoFormInternCompanyEdit(OrganizationDTO $data, array $uriVariables)
+    private function internInfoFormInfoFormInternInfoFormInternCompanyEdit(InternDTO $data, array $uriVariables): InternDTO
     {
+        $infoFormId = $uriVariables['infoFormId'] ?? null;
+
+        if (!$infoFormId) {
+            throw new BadRequestHttpException('Missing required URI variable: infoFormId');
+        }
+
+        $infoForm = $this->infoFormRepository->find($infoFormId);
+        if (!$infoForm) {
+            throw new NotFoundHttpException('InfoForm not found');
+        }
+
+        $infoFormIntern = $infoForm->getInfoFormIntern();
+        if (!$infoFormIntern) {
+            throw new NotFoundHttpException('InfoFormIntern not found for this InfoForm');
+        }
+
+        $infoFormInternCompany = $infoFormIntern->getInfoFormInternCompany();
+        if (!$infoFormInternCompany) {
+            $infoFormInternCompany = new InfoFormInternCompany();
+            $this->entityManager->persist($infoFormInternCompany);
+            $infoFormIntern->setInfoFormInternCompany($infoFormInternCompany);
+        }
+
+        if ($data->infoFormInternCompanyName !== null) {
+            $infoFormInternCompany->setCompanyName($data->infoFormInternCompanyName);
+        }
+
+        if ($data->infoFormInternCompanyAddress !== null) {
+            $infoFormInternCompany->setAddress($data->infoFormInternCompanyAddress);
+        }
+
+        if ($data->infoFormInternCompanyLegalRepresentativeFirstName !== null) {
+            $infoFormInternCompany->setLegalRepresentativeFirstName($data->infoFormInternCompanyLegalRepresentativeFirstName);
+        }
+
+        if ($data->infoFormInternCompanyLegalRepresentativeLastName !== null) {
+            $infoFormInternCompany->setLegalRepresentativeLastName($data->infoFormInternCompanyLegalRepresentativeLastName);
+        }
+
+        if ($data->infoFormInternCompanyLegalRepresentativeEmail !== null) {
+            $infoFormInternCompany->setEmail($data->infoFormInternCompanyLegalRepresentativeEmail);
+        }
+
+        $this->entityManager->flush();
+
+        return $data;
     }
 
-    private function internInfoFormInfoFormInternInfoFormInternCompanyValidation(OrganizationDTO $data)
+    private function internInfoFormInfoFormInternInfoFormInternCompanyValidation(InternDTO $data, array $uriVariables): InternDTO
     {
+        $infoFormId = $uriVariables['infoFormId'] ?? null;
+
+        if (!$infoFormId) {
+            throw new BadRequestHttpException('Missing required URI variable: infoFormId');
+        }
+
+        $infoForm = $this->infoFormRepository->find($infoFormId);
+        if (!$infoForm) {
+            throw new NotFoundHttpException('InfoForm not found');
+        }
+
+        if ($data->infoFormStatus !== null) {
+            $infoForm->setStatus($data->infoFormStatus);
+        }
+
+        $infoFormIntern = $infoForm->getInfoFormIntern();
+        if ($infoFormIntern && $data->infoFormInternStatus !== null) {
+            $infoFormIntern->setStatus($data->infoFormInternStatus);
+        }
+
+        $infoFormCompany = $infoForm->getInfoFormCompany();
+        if ($infoFormCompany && $data->infoFormCompanyStatus !== null) {
+            $infoFormCompany->setStatus($data->infoFormCompanyStatus);
+        }
+
+        $this->entityManager->flush();
+
+        return $data;
     }
-
-
 }

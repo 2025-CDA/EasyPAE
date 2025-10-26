@@ -72,7 +72,7 @@ readonly class OrganizationProvider implements ProviderInterface
 
     private function getOrganizationOrganizationMemberIdSessions(array $uriVariables): array
     {
-        $organizationMemberId = $uriVariables['organizationMemberId'];
+        $organizationMemberId = $uriVariables['organizationMemberId'] ?? null;
 
         $organizationMember = $this->organizationMemberRepository->find($organizationMemberId);
 
@@ -115,7 +115,7 @@ readonly class OrganizationProvider implements ProviderInterface
 
     private function getOrganizationSessionSessionIdInterns(array $uriVariables): array
     {
-        $sessionId = $uriVariables['sessionId'];
+        $sessionId = $uriVariables['sessionId']?? null;
 
         $session = $this->trainingSessionRepository->find($sessionId);
 
@@ -154,7 +154,7 @@ readonly class OrganizationProvider implements ProviderInterface
 
     private function getOrganizationSessionSessionId(array $uriVariables): OrganizationDTO
     {
-        $sessionId = $uriVariables['sessionId'];
+        $sessionId = $uriVariables['sessionId'] ?? null;
 
         $session = $this->trainingSessionRepository->find($sessionId);
 

@@ -86,7 +86,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
 
     private function organizationSessionSessionIdInternAdd(OrganizationDTO $dto, array $uriVariables): TrainingSession
     {
-        $sessionId = $uriVariables['sessionId'];
+        $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
         if (!$session) {
             throw new NotFoundHttpException('Training session not found.');
@@ -138,7 +138,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
 
     private function organizationSessionSessionIdEdit(OrganizationDTO $dto, array $uriVariables): OrganizationDTO
     {
-        $sessionId = $uriVariables['sessionId'];
+        $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
         if (!$session) {
             throw new NotFoundHttpException('Training session not found.');
@@ -181,7 +181,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
 
     private function organizationSessionSessionIdArchive(array $uriVariables): OrganizationDTO
     {
-        $sessionId = $uriVariables['sessionId'];
+        $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
 
         if (!$session) {

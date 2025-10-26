@@ -33,7 +33,7 @@ readonly class InternProvider implements ProviderInterface
 
     private function getInfoFormInfoFormIntern(array $uriVariables): InternDTO
     {
-        $infoFormInternId = $uriVariables['infoFormInternId'];
+        $infoFormInternId = $uriVariables['infoFormInternId'] ?? null;
 
         if (!$infoFormInternId) {
             throw new BadRequestHttpException('Info form intern ID is required');
