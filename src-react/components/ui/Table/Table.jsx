@@ -9,27 +9,44 @@ function Table(
       currentItems, 
       handleEdit,  
       handleDelete,
-      // currentPage, 
-      // itemsPerPage, 
-      // searchTerm, 
-      // filteredData, 
-      // indexOfLastItem, 
+      classNameTbody,
+      classNameThead,
+      classNameTable,
+      classNameTdataBody,
+      classNameTdataHead,
+      classNameTdataAction,
+      divAction,
     }
   ) {
 
-  console.log(data)
-  const displayData = currentItems && currentItems.length > 0 ? currentItems : data
+  // console.log(data)
+  // const displayData = currentItems && currentItems.length > 0 ? currentItems : data
   
   return (
-    <div className={classNames.wrapper || "overflow-hidden"}>
-      <table className={classNames.table || "min-w-full divide-y divide-gray-200"}>
-        <TableHead columnsThead={columns} classNameThead={classNames.thead} />
+    
+    <div className="overflow-hidden">
+      <table className={
+          classNameTable || 
+          "min-w-full divide-y divide-gray-200"}
+      >
+        <TableHead 
+          columnsThead={columns} 
+          classNameThead={classNameThead} 
+          classNameTdataHead={classNameTdataHead} 
+
+        />
+
         <TableBody
-          dataInTbody={displayData}
+          dataInTbody={currentItems}
           columnsTbody={columns}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          classNameTbody={classNames.tbody}
+          divAction={divAction}
+          
+          classNameTbody={classNameTbody}
+          classNameTdataBody={classNameTdataBody}
+          classNameTdataAction={classNameTdataAction}
+
         />
       </table>
     </div>
