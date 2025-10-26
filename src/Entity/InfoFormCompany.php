@@ -39,7 +39,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 //         new Put(
 //             denormalizationContext: ['groups' => ['update:info_form_company']]
 //         ),
-//         new Delete() 
+//         new Delete()
 //     ],
 //     order: ['createdAt' => 'DESC']
 // )]
@@ -274,7 +274,6 @@ class InfoFormCompany
         'update:info_form_company'
     ])]
     private ?InfoFormCompanyStatus $status = null;
-
 
     #[Groups([
         'read:info_form_company',
