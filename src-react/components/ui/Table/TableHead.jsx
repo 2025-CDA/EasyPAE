@@ -1,9 +1,9 @@
 import React from 'react'
 
-function TableHead({columnsThead}) {
-  // console.log(columnsThead)
+function TableHead({columnsThead, classNameThead,classNameTdataHead }) {
+  
   return (
-    <thead className="bg-gray-50">
+    <thead className={classNameThead || "bg-gray-50"}>
         <tr>
           {
             columnsThead.map((col, index)=> {
@@ -11,7 +11,7 @@ function TableHead({columnsThead}) {
                 <th 
                   key={index}
                   scope="col" 
-                  className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
+                  className={classNameTdataHead || "px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"}>
                     {col.label}
                 </th>
               )

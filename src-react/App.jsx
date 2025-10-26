@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import SuperAdminPage from "./pages/super_admin/SuperAdminPage";
-
-
 import AppTable from './components/ui/Table/AppTable'
-import Table from './components/ui/Table/Table'
+import Select from './components/ui/Select'
 
 export default function App() {
     // const [showAlert, setShowAlert] = useState(true);
@@ -47,32 +44,40 @@ export default function App() {
   const editProps = (id) => alert(`Modifier l'élément ID : ${id}`)
    
   const divAction = (<p>Action</p>)
-  const visibilitySearchBar = "visible"
-  const visibilityPagination = "visible "
+
+
     return (
         <div>
-            <SuperAdminPage></SuperAdminPage>
+            {/* <SuperAdminPage></SuperAdminPage> */}
             <AppTable
-                
-                visibilitySearchBar={visibilitySearchBar}
-                visibilityPagination={visibilityPagination}
+                // visibilitySearchBar={"hidden"}
+                // visibilityPagination={"hidden"}
                 // columns={columns}
                 // data={data}
                 // divAction={divAction}
                 // editProps={editProps}
-                // classNameThead = {"bg-blue-100"}
+                // numberItemsPerPage={2}
+                // classNameThead = {"bg-red-100 px-6 py-4 whitespace-nowrap text-sm font-medium text-red-800 dark:text-neutral-800"}
                 // classNameTbody = {"divide-y divide-red-500 dark:divide-neutral-700"}
                 // classNameTable = {"min-w-full divide-y divide-red-300"}
+                // classNameTableTitle ={"text-lg text-red-500 font-extrabold mb-6 mt-4"}
+                // textTableTitle = {"Les stagiaires et leurs informations"}
+                // divButtonHeaderClassName= {"hidden flex flex-row justify-between items-center gap-4 mr-3"}
+                // textButtonOneHeader={"EasyPae"}
+                // textButtonTwoHeader={"NotEasyPae"}
+                // buttonHeaderOneClassName={"py-1 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-red-600 text-red-600 hover:border-blue-500 hover:text-blue-500 focus:outline-hidden focus:border-blue-500 focus:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:border-blue-500 dark:text-blue-500 dark:hover:text-blue-400 dark:hover:border-blue-400"}
+
+                // buttonHeaderTwoClassName ={"py-1 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"}
+
+                // visibilityButtonOneHeader = {"hidden"}
+                // visibilityButtonTwoHeader ={"hidden"}
+                // placeholderTextSearchBar= {"Chercher formateur"}
                 // classNameTdataBody ={"bg-red-100 px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-800"}
-                // classNameTdataHead ={"bg-red-100 px-6 py-4 whitespace-nowrap text-sm font-medium text-red-800 dark:text-neutral-800"}
+                // classNameTdataHead ={"bg-blue-600 px-6 py-2 whitespace-nowrap text-sm font-medium text-white dark:text-neutral-800"}
                 // classNameTdataAction={"bg-red-100 px-6 py-4 whitespace-nowrap text-sm font-medium text-red-800 dark:text-neutral-800"}
 
             />
 
-            {/* <Table
-                data={data}
-                columns={columns}
-            /> */}
         </div>
     );
 }

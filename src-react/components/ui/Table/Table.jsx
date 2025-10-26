@@ -1,8 +1,6 @@
 import React, { useState } from "react"
 import TableHead from "./TableHead"
 import TableBody from "./TableBody"
-import PaginationTable from "./PaginationTable"
-import SearchBarTable from "./SearchBarTable"
 
 function Table(
     {
@@ -11,27 +9,44 @@ function Table(
       currentItems, 
       handleEdit,  
       handleDelete,
-      // currentPage, 
-      // itemsPerPage, 
-      // searchTerm, 
-      // filteredData, 
-      // indexOfLastItem, 
+      classNameTbody,
+      classNameThead,
+      classNameTable,
+      classNameTdataBody,
+      classNameTdataHead,
+      classNameTdataAction,
+      divAction,
     }
   ) {
 
-  console.log(data)
-  const displayData = currentItems && currentItems.length > 0 ? currentItems : data
+  // console.log(data)
+  // const displayData = currentItems && currentItems.length > 0 ? currentItems : data
   
   return (
     
     <div className="overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <TableHead columnsThead={columns} />
+      <table className={
+          classNameTable || 
+          "min-w-full divide-y divide-gray-200"}
+      >
+        <TableHead 
+          columnsThead={columns} 
+          classNameThead={classNameThead} 
+          classNameTdataHead={classNameTdataHead} 
+
+        />
+
         <TableBody
-          dataInTbody={displayData}
+          dataInTbody={currentItems}
           columnsTbody={columns}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          divAction={divAction}
+          
+          classNameTbody={classNameTbody}
+          classNameTdataBody={classNameTdataBody}
+          classNameTdataAction={classNameTdataAction}
+
         />
       </table>
     </div>
