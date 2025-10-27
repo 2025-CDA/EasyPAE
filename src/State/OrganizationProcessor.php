@@ -84,7 +84,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
         return $session;
     }
 
-    private function organizationSessionSessionIdInternAdd(OrganizationDTO $dto, array $uriVariables): TrainingSession
+    private function organizationSessionSessionIdInternAdd(OrganizationDTO $dto, array $uriVariables): OrganizationDTO|null
     {
         $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
@@ -124,16 +124,15 @@ readonly class OrganizationProcessor implements ProcessorInterface
             }
         }
 
-        $infoForm = new InfoForm();
-        $infoForm->setTrainingSession($session);
-        $infoForm->setInternMember($internMember);
+//        $infoForm = new InfoForm();
+//        $infoForm->setTrainingSession($session);
+//        $infoForm->setInternMember($internMember);
 //        $infoForm->setStatus(InfoFormStatus::PENDING);
-
-        $this->entityManager->persist($infoForm);
+//        $this->entityManager->persist($infoForm);
 
         $this->entityManager->flush();
 
-        return $session;
+        return $dto;
     }
 
     private function organizationSessionSessionIdEdit(OrganizationDTO $dto, array $uriVariables): OrganizationDTO

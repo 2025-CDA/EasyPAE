@@ -62,7 +62,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/organization/session/{sessionId}/intern',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
             uriVariables: ['sessionId'],
-            denormalizationContext: ['groups' => ['create:organization_session_sessionId_intern_add']],
+            denormalizationContext: ['groups' => ['denorm-create:organization_session_sessionId_intern_add']],
             name: 'organization_session_sessionId_intern_add',
             processor: OrganizationProcessor::class,
         ),
@@ -98,7 +98,7 @@ class OrganizationDTO
         'read:organization_organizationMemberId_sessions',
         'update:organization_session_sessionId_edit',
         'read:organization_session_sessionId_interns',
-        'create:organization_session_sessionId_intern_add',
+//        'create:organization_session_sessionId_intern_add',
         'update:organization_session_sessionId_archive',
     ])]
     public ?int $sessionId = null;
@@ -185,24 +185,24 @@ class OrganizationDTO
 
     #[Groups([
         'read:organization_session_sessionId_interns',
-        'create:organization_session_sessionId_intern_add',
+        'denorm-create:organization_session_sessionId_intern_add',
     ])]
     public ?string $internFirstName = null;
 
     #[Groups([
         'read:organization_session_sessionId_interns',
-        'create:organization_session_sessionId_intern_add',
+        'denorm-create:organization_session_sessionId_intern_add',
     ])]
     public ?string $internLastName = null;
 
     #[Groups([
         'read:organization_session_sessionId_interns',
-        'create:organization_session_sessionId_intern_add',
+        'denorm-create:organization_session_sessionId_intern_add',
     ])]
     public ?string $internLogin = null;
 
     #[Groups([
-        'create:organization_session_sessionId_intern_add',
+        'denorm-create:organization_session_sessionId_intern_add',
     ])]
     public ?string $internEmail = null;
 
