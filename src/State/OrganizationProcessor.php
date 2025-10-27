@@ -126,13 +126,6 @@ readonly class OrganizationProcessor implements ProcessorInterface
             throw new BadRequestHttpException('This intern is already part of the session.');
         }
 
-
-//        $infoForm = new InfoForm();
-//        $infoForm->setTrainingSession($session);
-//        $infoForm->setInternMember($internMember);
-//        $infoForm->setStatus(InfoFormStatus::PENDING);
-//        $this->entityManager->persist($infoForm);
-
         $this->entityManager->flush();
 
 //        TODO: add mail logic here, unless we make an external service or something else.
