@@ -52,39 +52,39 @@ readonly class OrganizationProcessor implements ProcessorInterface
         };
     }
 
-    private function organizationSessionAdd(OrganizationDTO $dto): TrainingSession
+    private function organizationSessionAdd(OrganizationDTO $data): OrganizationDTO|null
     {
-        if ($dto->trainerId === null || empty(trim($dto->trainingName ?? ''))) {
+        if ($data->trainerId === null || empty(trim($data->trainingName ?? ''))) {
             throw new BadRequestHttpException('Trainer ID and a non-empty Training Name are required.');
         }
 
-        $trainer = $this->organizationMemberRepository->find($dto->trainerId);
+        $trainer = $this->organizationMemberRepository->find($data->trainerId);
         if (!$trainer) {
             throw new NotFoundHttpException('Trainer not found.');
         }
 
-        $training = $this->trainingRepository->findOneBy(['name' => $dto->trainingName]);
+        $training = $this->trainingRepository->findOneBy(['name' => $data->trainingName]);
         if (!$training) {
             $training = new Training();
-            $training->setName($dto->trainingName);
+            $training->setName($data->trainingName);
             $this->entityManager->persist($training);
         }
 
         $session = new TrainingSession();
         $session->setTraining($training);
-        $session->setOfferNumber($dto->offerNumber);
-        $session->setInternShipPeriodStart($dto->internshipStart);
-        $session->setInternshipPeriodEnd($dto->internshipEnd);
+        $session->setOfferNumber($data->offerNumber);
+        $session->setInternShipPeriodStart($data->internshipStart);
+        $session->setInternshipPeriodEnd($data->internshipEnd);
 
         $session->addOrganizationMember($trainer);
 
         $this->entityManager->persist($session);
         $this->entityManager->flush();
 
-        return $session;
+        return $data;
     }
 
-    private function organizationSessionSessionIdInternAdd(OrganizationDTO $dto, array $uriVariables): OrganizationDTO|null
+    private function organizationSessionSessionIdInternAdd(OrganizationDTO $data, array $uriVariables): OrganizationDTO|null
     {
         $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
@@ -92,20 +92,20 @@ readonly class OrganizationProcessor implements ProcessorInterface
             throw new NotFoundHttpException('Training session not found.');
         }
 
-        if (empty($dto->internEmail)) {
+        if (empty($data->internEmail)) {
             throw new BadRequestHttpException('Intern email is required to add an intern.');
         }
 
-        $user = $this->userRepository->findOneBy(['email' => $dto->internEmail]);
+        $user = $this->userRepository->findOneBy(['email' => $data->internEmail]);
         if ($user) {
             throw new BadRequestHttpException('A user with this email already exists.');
         }
 
         $user = new User();
-        $user->setEmail($dto->internEmail);
-        $user->setFirstName($dto->internFirstName);
-        $user->setLastName($dto->internLastName);
-        $user->setLogin($dto->internLogin);
+        $user->setEmail($data->internEmail);
+        $user->setFirstName($data->internFirstName);
+        $user->setLastName($data->internLastName);
+        $user->setLogin($data->internLogin);
         $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
         $user->setPassword($hashedPassword);
         $user->setRole(UserRole::INTERN);
@@ -125,6 +125,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
                 throw new BadRequestHttpException('This intern is already part of the session.');
             }
         }
+//        TODO: ^ Fix this condition, it shouldn't check from the infoForm anymore.
 
 //        $infoForm = new InfoForm();
 //        $infoForm->setTrainingSession($session);
@@ -134,10 +135,12 @@ readonly class OrganizationProcessor implements ProcessorInterface
 
         $this->entityManager->flush();
 
-        return $dto;
+//        TODO: add mail logic here, unless we make an external service or something else.
+
+        return $data;
     }
 
-    private function organizationSessionSessionIdEdit(OrganizationDTO $dto, array $uriVariables): OrganizationDTO
+    private function organizationSessionSessionIdEdit(OrganizationDTO $dto, array $uriVariables): OrganizationDTO|null
     {
         $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
@@ -177,7 +180,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
         return $dto;
     }
 
-    private function organizationSessionSessionIdArchive(array $uriVariables): OrganizationDTO
+    private function organizationSessionSessionIdArchive(array $uriVariables): OrganizationDTO|null
     {
         $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
