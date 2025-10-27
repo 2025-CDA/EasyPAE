@@ -5,6 +5,7 @@ import FicheStagiaire from "./pages/support_service/FicheStagiaire";
 import AppTable from "./components/ui/Table/AppTable";
 import CardFormation from './components/ui/CardFormation'
 import Select from "./components/ui/Select";
+import AssistantPage from "./pages/assistant/AssistantPage";
 
 export default function App() {
     // const [showAlert, setShowAlert] = useState(true);
@@ -27,10 +28,8 @@ export default function App() {
     // console.log(data[0])
 
     return <div className="">
-        {/* <AppTable/> */}
-        {/* <CardFormation/> */}
-        <Select
-            classNameSelect ={"hidden py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"}
-        />
+        <AssistantPage />
+        
+
     </div>;
 }
