@@ -84,7 +84,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
         return $session;
     }
 
-    private function organizationSessionSessionIdInternAdd(OrganizationDTO $dto, array $uriVariables): TrainingSession
+    private function organizationSessionSessionIdInternAdd(OrganizationDTO $dto, array $uriVariables): OrganizationDTO
     {
         $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
@@ -133,7 +133,15 @@ readonly class OrganizationProcessor implements ProcessorInterface
 
         $this->entityManager->flush();
 
-        return $session;
+
+        $responseDto = new OrganizationDTO();
+        $responseDto->sessionId = $session->getId();
+        $responseDto->internEmail = $dto->internEmail;
+        $responseDto->internFirstName = $dto->internFirstName;
+        $responseDto->internLastName = $dto->internLastName;
+        $responseDto->internLogin = $dto->internLogin;
+        
+        return $responseDto;
     }
 
     private function organizationSessionSessionIdEdit(OrganizationDTO $dto, array $uriVariables): OrganizationDTO
