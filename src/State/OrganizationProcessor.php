@@ -148,6 +148,9 @@ readonly class OrganizationProcessor implements ProcessorInterface
             }
         }
 
+//        TODO: fix this, it should change the relation, not change the names.
+//        Use something like addTrainingSession()
+
         if ($dto->trainerId !== null) {
             $trainer = $this->organizationMemberRepository->find($dto->trainerId);
             if (!$trainer) {
