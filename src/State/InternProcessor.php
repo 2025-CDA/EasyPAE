@@ -4,20 +4,21 @@ namespace App\State;
 
 use App\Dto\InternDTO;
 use App\Entity\InfoForm;
-use App\Entity\InfoFormCompany;
 use App\Entity\InfoFormIntern;
-use App\Entity\InfoFormInternCompany;
+use App\Entity\InfoFormCompany;
+use ApiPlatform\Metadata\Operation;
 use App\Entity\InfoFormOrganization;
+use App\Entity\InfoFormInternCompany;
 use App\Repository\InfoFormRepository;
-use App\Repository\InfoFormInternRepository;
+use App\Enum\InfoFormOrganizationStatus;
+use Doctrine\ORM\EntityManagerInterface;
+use ApiPlatform\State\ProcessorInterface;
 use App\Repository\InternMemberRepository;
 use App\Repository\OrganizationRepository;
+use App\Repository\InfoFormInternRepository;
 use App\Repository\TrainingSessionRepository;
-use ApiPlatform\Metadata\Operation;
-use ApiPlatform\State\ProcessorInterface;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 readonly class InternProcessor implements ProcessorInterface
 {
@@ -42,7 +43,7 @@ readonly class InternProcessor implements ProcessorInterface
 
         return match ($operationName) {
             'intern_infoForm_add' => $this->internInfoFormAdd($data),
-            'intern_infoForm_InfoFormIntern_infoFormInternId_edit' => $this->internInfoFormInfoFormInternEdit($data, $uriVariables),
+            'intern_infoForm_infoFormId_infoFormIntern_edit' => $this->internInfoFormInfoFormInternEdit($data, $uriVariables),
             'intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit' => $this->internInfoFormInfoFormInternInfoFormInternCompanyEdit($data, $uriVariables),
             'intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation' => $this->internInfoFormInfoFormInternInfoFormInternCompanyValidation($data, $uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
@@ -97,9 +98,12 @@ readonly class InternProcessor implements ProcessorInterface
         $infoForm->setInfoFormIntern($infoFormIntern);
 
         $infoFormOrganization = new InfoFormOrganization();
-        if ($data->infoFormOrganizationStatus !== null) {
-            $infoFormOrganization->setStatus($data->infoFormOrganizationStatus);
-        }
+        // if ($data->infoFormOrganizationStatus !== null) {
+        //     $infoFormOrganization->setStatus($data->infoFormOrganizationStatus);
+        // }
+            $infoFormOrganization->setStatus(InfoFormOrganizationStatus::INITIALIZED);
+                    
+
 
         $this->entityManager->persist($infoFormOrganization);
         $infoForm->setInfoFormOrganization($infoFormOrganization);
@@ -135,8 +139,10 @@ readonly class InternProcessor implements ProcessorInterface
             $infoForm->setInfoFormCompany($infoFormCompany);
         }
 
-        $this->entityManager->flush();
+         $this->entityManager->flush();
 
+        // remplir les identifiants attendus par ApiPlatform
+        $data->infoFormId = $infoForm->getId();
         $data->infoFormInternId = $infoFormIntern->getId();
 
         return $data;
