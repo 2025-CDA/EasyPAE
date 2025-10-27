@@ -114,11 +114,13 @@ readonly class OrganizationProcessor implements ProcessorInterface
         $this->entityManager->persist($user);
 
         $internMember = $this->internMemberRepository->findOneBy(['user' => $user]);
-        if (!$internMember) {
-            $internMember = new InternMember();
-            $internMember->setUser($user);
-            $this->entityManager->persist($internMember);
+        if ($internMember) {
+            throw new BadRequestHttpException('An intern member with this user already exists.');
         }
+
+        $internMember = new InternMember();
+        $internMember->setUser($user);
+        $this->entityManager->persist($internMember);
 
         foreach ($session->getInfoForms() as $existingInfoForm) {
             if ($existingInfoForm->getInternMember() === $internMember) {
