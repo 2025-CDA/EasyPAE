@@ -90,15 +90,6 @@ class InfoFormInternCompany
     ])]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups([
-        'read:info_form_intern_company',
-        'read:info_form_intern_company_collection',
-        'create:info_form_intern_company',
-        'update:info_form_intern_company'
-    ])]
-    private ?string $contactName = null;
-
     #[ORM\OneToOne(mappedBy: 'infoFormInternCompany', cascade: ['persist', 'remove'])]
     #[Groups([
         'read:info_form_intern_company',
@@ -121,6 +112,12 @@ class InfoFormInternCompany
         'read:info_form_intern_company_collection'
     ])]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $legalRepresentativeLastName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $legalRepresentativeFirstName = null;
 
     public function getId(): ?int
     {
@@ -159,18 +156,6 @@ class InfoFormInternCompany
     public function setEmail(?string $email): static
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    public function getContactName(): ?string
-    {
-        return $this->contactName;
-    }
-
-    public function setContactName(?string $contactName): static
-    {
-        $this->contactName = $contactName;
 
         return $this;
     }
@@ -217,6 +202,30 @@ class InfoFormInternCompany
     public function setCreatedAt(?\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getLegalRepresentativeLastName(): ?string
+    {
+        return $this->legalRepresentativeLastName;
+    }
+
+    public function setLegalRepresentativeLastName(?string $legalRepresentativeLastName): static
+    {
+        $this->legalRepresentativeLastName = $legalRepresentativeLastName;
+
+        return $this;
+    }
+
+    public function getLegalRepresentativeFirstName(): ?string
+    {
+        return $this->legalRepresentativeFirstName;
+    }
+
+    public function setLegalRepresentativeFirstName(?string $legalRepresentativeFirstName): static
+    {
+        $this->legalRepresentativeFirstName = $legalRepresentativeFirstName;
 
         return $this;
     }

@@ -2,166 +2,215 @@
 
 namespace App\Dto;
 
-use App\Enum\Gender;
-use App\Enum\WorkLocation;
+use ApiPlatform\Metadata\Patch;
+use App\Enum\InfoFormCompanyStatus;
+use App\Enum\InfoFormOrganizationStatus;
 use App\Enum\InfoFormStatus;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\Link;
+use App\State\CompanyProcessor;
 use App\State\CompanyProvider;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
-use App\Entity\Company;
-use App\Entity\InfoFormInternCompany;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
-   operations: [
-        // new Get(
-        //     uriTemplate: '/company/{id}/dashboard',
-        //     provider: CompanyProvider::class,
-        //     name: 'company_dashboard',
-        //     normalizationContext: ['groups' => ['read:company_dashboard']],
-        // ),
-        new Get( 
-            uriTemplate: '/company/form/{id}',
+    operations: [
+        new Get(
+            uriTemplate: '/company/infoForm/{infoFormId}/infoFormCompany/{infoFormCompanyId}',
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            uriVariables: ['infoFormId', 'infoFormCompanyId'],
+            normalizationContext: ['groups' => ['read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId']],
+            name: 'company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
             provider: CompanyProvider::class,
-            name: 'company_form',
-            normalizationContext: ['groups' => ['read:info_form_company']],
-       ),
-   ],
-   processor: null
-)]
+        ),
 
+
+        new Patch(
+            uriTemplate: '/company/infoForm/{infoFormId}/infoFormCompany/{infoFormCompanyId}',
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            uriVariables: ['infoFormId', 'infoFormCompanyId'],
+            normalizationContext: ['groups' => ['update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit']],
+            denormalizationContext: ['groups' => ['denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit']],
+            read: false,
+            name: 'company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+            processor: CompanyProcessor::class
+        ),
+
+        new Patch(
+            uriTemplate: '/company/infoForm/{infoFormId}/infoFormCompany/{infoFormCompanyId}/validation',
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            uriVariables: ['infoFormId', 'infoFormCompanyId'],
+            normalizationContext: ['groups' => ['update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation']],
+            denormalizationContext: ['groups' => ['denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation']],
+            read: false,
+            name: 'company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+            processor: CompanyProcessor::class
+        ),
+    ],
+)]
 class CompanyDTO
 {
 
     #[ApiProperty(identifier: true)]
+    #[Groups([
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
 
-    // #[Groups(['read:company_dashboard'])]
-    public ?int $id = null;
+    ])]
+    public ?int $infoFormId = null;
 
-    #[Groups(['read:info_form_company'])]
-    public ?string $fax = null;
+    #[ApiProperty(identifier: true)]
+    #[Groups([
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+    ])]
+    public ?int $infoFormCompanyId = null;
 
-    #[Groups(['read:info_form_company'])]
+    #[Groups([
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+    ])]
+    public ?string $name = null;
+
+    #[Groups([
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+    ])]
+    public ?string $address = null;
+
+    #[Groups([
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+    ])]
     public ?string $activity = null;
 
     #[Groups([
-        'read:info_form_company',
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
     ])]
-    public ?string $activityDescription = null;
+    public ?string $phoneNumber = null;
 
     #[Groups([
-        'read:info_form_company',
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
     ])]
-    public ?string $stamp = null;
+    public ?string $email = null;
 
     #[Groups([
-        'read:info_form_company',
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
     ])]
-    public ?Gender $legalRepresentativeGender = null;
+    public ?string $fax = null;
 
     #[Groups([
-        'read:info_form_company',
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
     ])]
-    public ?string $legalRepresentativeLastName = null;
+    public ?string $siret = null;
 
     #[Groups([
-        'read:info_form_company',
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
     ])]
     public ?string $legalRepresentativeFirstName = null;
 
     #[Groups([
-        'read:info_form_company',
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
     ])]
-    public ?string $legalRepresentativeSignature = null;
+    public ?string $legalRepresentativeLastName = null;
 
     #[Groups([
-        'read:info_form_company',
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
     ])]
     public ?string $legalRepresentativeEmail = null;
 
     #[Groups([
-        'read:info_form_company',
-    ])]
-    public ?\DateTimeImmutable $interviewStartDateTime = null;
-
-    #[Groups([
-        'read:info_form_company',
-    ])]
-    public ?\DateTimeImmutable $interviewEndDateTime = null;
-
-    #[Groups([
-        'read:info_form_company',
-    ])]
-    public ?bool $agreeTerms = null;
-
-    #[Groups([
-        'read:info_form_company',
-    ])]
-    public ?WorkLocation $workLocation = null;
-
-    #[Groups([
-        'read:info_form_company',
-    ])]
-    public ?Gender $tutorGender = null;
-
-    #[Groups([
-        'read:info_form_company',
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
     ])]
     public ?string $tutorFirstName = null;
 
     #[Groups([
-        'read:info_form_company',
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
     ])]
     public ?string $tutorLastName = null;
 
     #[Groups([
-        'read:info_form_company',
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
     ])]
     public ?string $tutorEmail = null;
 
     #[Groups([
-        'read:info_form_company',
+        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
     ])]
     public ?string $tutorPhoneNumber = null;
 
+
 // status
-    #[Groups(['read:company_dashboard'])]
-    public ?InfoFormStatus $status = null;
-
-
-// InfoFormInternCompany entity
-   
-    public ?int $idInfoFormInternCompany = null;
+    #[Groups([
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+    ])]
+    public ?InfoFormStatus $infoFormStatus = null;
 
     #[Groups([
-        'read:info_form_company',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
     ])]
-    public ?string $companyName = null;
+    public ?InfoFormCompanyStatus $infoFormCompanyStatus = null;
 
-   
-    public ?string $address = null;
-
-   
-    public ?string $email = null;
-
-   
-    public ?string $contactName = null;
-
-
-// Company entity
-   
-    public ?int $idCompany = null;
-
-   
-    public ?string $siret = null;
-
-   
-    public ?string $name = null;
-
-   
-    public ?string $phoneNumber = null;
-
-
+    #[Groups([
+        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+    ])]
+    public ?InfoFormOrganizationStatus $infoFormOrganizationStatus = null;
 }
