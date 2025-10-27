@@ -1,5 +1,5 @@
-import React from 'react'
-import TableRow from './TableRow'
+import React from "react"
+import TableRow from "./TableRow"
 
 function TableBody({columnsTbody, dataInTbody, onEdit, onDelete, classNameTbody, classNameTdataBody, classNameTdataAction, divAction }) {
    
@@ -17,4 +17,5 @@ function TableBody({columnsTbody, dataInTbody, onEdit, onDelete, classNameTbody,
     </tbody>    
   )
 }
+
 export default TableBody

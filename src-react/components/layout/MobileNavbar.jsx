@@ -1,6 +1,7 @@
 import { User, Folder, Bell, Lightbulb } from "lucide-react";
 import Button from "../ui/Button";
 
+
 export default function MobileNavbar() {
     const btnStyle =
         "flex-col items-center justify-center flex-1 text-[10px] sm:text-[12px] min-w-[60px] tracking-tight sm:tracking-wide";

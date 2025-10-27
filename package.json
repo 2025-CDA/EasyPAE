@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "serve": "symfony serve -no-tls",
-        "serve2": "frankenphp run --config Caddyfile",
+        "serve2": "frankenphp php-server --listen=localhost:8000 --root=public",
         "dev": "vite",
         "start": "concurrently \"npm run serve\" \"npm run dev\"",
         "start2": "concurrently \"npm run serve2\" \"npm run dev\"",
@@ -46,6 +46,6 @@
         "globals": "^16.4.0",
         "postcss": "^8.5.6",
         "tailwindcss": "^4.1.13",
-        "vite": "^7.1.6"
+        "vite": "^7.1.11"
     }
 }

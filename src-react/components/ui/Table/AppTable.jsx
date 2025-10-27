@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import PaginationTable from "./PaginationTable"
 import SearchBarTable from "./SearchBarTable"
 import Table from "./Table"
+import SearchBarTable from "./SearchBarTable"
+import PaginationTable from "./PaginationTable"
 
 function AppTable({
 
@@ -61,6 +63,7 @@ function AppTable({
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   )
+
   // Pagination après filtrage
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
@@ -138,9 +141,9 @@ function AppTable({
             </div>
           </div>
         </div>
+       </div>
       </div>
-    </div>
-  )
+    );
 }
 
-export default AppTable
+export default AppTable;

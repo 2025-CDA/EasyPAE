@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 
 function TableCellData({tdData, tdColumns, classNameTdataBody}) {
 
@@ -15,7 +15,7 @@ function TableCellData({tdData, tdColumns, classNameTdataBody}) {
         )
       })}
     </>
-
   )
 }
+
 export default TableCellData

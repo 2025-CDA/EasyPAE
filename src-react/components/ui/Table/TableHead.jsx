@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 
 function TableHead({columnsThead, classNameThead,classNameTdataHead }) {
   
@@ -22,4 +22,5 @@ function TableHead({columnsThead, classNameThead,classNameTdataHead }) {
     </thead> 
   )
 }
+
 export default TableHead

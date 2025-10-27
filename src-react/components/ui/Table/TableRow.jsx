@@ -1,6 +1,6 @@
-import React from 'react'
-import TableCellData from './TableCellData'
-import TableCellAction from './TableCellAction'
+import React from "react"
+import TableCellData from "./TableCellData"
+import TableCellAction from "./TableCellAction"
 
 function TableRow({ trData, trColumns, divAction, onEdit, onDelete, classNameTdataBody, classNameTdataAction}) {
 

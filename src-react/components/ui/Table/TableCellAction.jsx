@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 
 function TableCellAction({ keyAction, divAction, onEdit, onDelete}) {
  const divActionDefault = ( <div className="flex gap-3 justify-start">

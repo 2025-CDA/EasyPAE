@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import TableHead from "./TableHead"
 import TableBody from "./TableBody"
 
@@ -37,7 +37,7 @@ function Table(
         />
 
         <TableBody
-          dataInTbody={currentItems}
+          dataInTbody={displayData}
           columnsTbody={columns}
           onEdit={handleEdit}
           onDelete={handleDelete}
