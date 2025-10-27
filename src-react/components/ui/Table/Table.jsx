@@ -18,9 +18,6 @@ function Table(
       divAction,
     }
   ) {
-
-  // console.log(data)
-  // const displayData = currentItems && currentItems.length > 0 ? currentItems : data
   
   return (
     
@@ -37,7 +34,7 @@ function Table(
         />
 
         <TableBody
-          dataInTbody={displayData}
+          dataInTbody={currentItems}
           columnsTbody={columns}
           onEdit={handleEdit}
           onDelete={handleDelete}
