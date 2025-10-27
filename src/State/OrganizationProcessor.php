@@ -3,7 +3,6 @@
 namespace App\State;
 
 use App\Dto\OrganizationDTO;
-use App\Entity\InfoForm;
 use App\Entity\InternMember;
 use App\Entity\Training;
 use App\Entity\TrainingSession;
@@ -17,8 +16,13 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
 use App\Repository\TrainingSessionRepository;
+use Random\RandomException;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 readonly class OrganizationProcessor implements ProcessorInterface
@@ -31,6 +35,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
         private UserRepository               $userRepository,
         private InternMemberRepository       $internMemberRepository,
         private UserPasswordHasherInterface  $passwordHasher,
+        private MailerInterface $mailer,
     )
     {
     }
@@ -65,9 +70,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
 
         $training = $this->trainingRepository->findOneBy(['name' => $data->trainingName]);
         if (!$training) {
-            $training = new Training();
-            $training->setName($data->trainingName);
-            $this->entityManager->persist($training);
+            throw new NotFoundHttpException('Training not found.');
         }
 
         $session = new TrainingSession();
@@ -75,7 +78,6 @@ readonly class OrganizationProcessor implements ProcessorInterface
         $session->setOfferNumber($data->offerNumber);
         $session->setInternShipPeriodStart($data->internshipStart);
         $session->setInternshipPeriodEnd($data->internshipEnd);
-
         $session->addOrganizationMember($trainer);
 
         $this->entityManager->persist($session);
@@ -84,6 +86,9 @@ readonly class OrganizationProcessor implements ProcessorInterface
         return $data;
     }
 
+    /**
+     * @throws RandomException|TransportExceptionInterface
+     */
     private function organizationSessionSessionIdInternAdd(OrganizationDTO $data, array $uriVariables): OrganizationDTO|null
     {
         $sessionId = $uriVariables['sessionId'] ?? null;
@@ -106,10 +111,10 @@ readonly class OrganizationProcessor implements ProcessorInterface
         $user->setFirstName($data->internFirstName);
         $user->setLastName($data->internLastName);
         $user->setLogin($data->internLogin);
-        $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
+        $plainPassword = substr(base64_encode(random_bytes(12)), 0, 16); // 16 random chars with mixed case
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
         $user->setPassword($hashedPassword);
         $user->setRole(UserRole::INTERN);
-
 
         $this->entityManager->persist($user);
 
@@ -128,12 +133,30 @@ readonly class OrganizationProcessor implements ProcessorInterface
 
         $this->entityManager->flush();
 
-//        TODO: add mail logic here, unless we make an external service or something else.
+//      This is functional but we can change it if needed.
+        $email = (new TemplatedEmail())
+            ->from(new Address('inscription-stagiaire@easypae.com', 'EasyPAE'))
+            ->to(new Address($user->getEmail(), $user->getFirstName() . ' ' . $user->getLastName()))
+            ->subject('Bienvenue sur EasyPAE - Vos identifiants de connexion')
+            ->htmlTemplate('emails/intern_welcome.html.twig')
+            ->context([
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
+                'internEmail' => $user->getEmail(),
+                'login' => $user->getLogin(),
+                'password' => $plainPassword,
+                'trainingSession' => $session->getTraining()?->getName(),
+            ]);
+
+        $this->mailer->send($email);
+
+        $data->plainPassword = $plainPassword;
+//        TODO: change this later, this is just for testing.
 
         return $data;
     }
 
-    private function organizationSessionSessionIdEdit(OrganizationDTO $dto, array $uriVariables): OrganizationDTO|null
+    private function organizationSessionSessionIdEdit(OrganizationDTO $data, array $uriVariables): OrganizationDTO|null
     {
         $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
@@ -141,39 +164,39 @@ readonly class OrganizationProcessor implements ProcessorInterface
             throw new NotFoundHttpException('Training session not found.');
         }
 
-        if ($dto->trainingName !== null) {
+        if ($data->trainingName !== null) {
             $training = $session->getTraining();
             if ($training) {
-                $training->setName($dto->trainingName);
+                $training->setName($data->trainingName);
             }
         }
 
 //        TODO: fix this, it should change the relation, not change the names.
-//        Use something like addTrainingSession()
+//        Use something like setTraining()
 
-        if ($dto->trainerId !== null) {
-            $trainer = $this->organizationMemberRepository->find($dto->trainerId);
+        if ($data->trainerId !== null) {
+            $trainer = $this->organizationMemberRepository->find($data->trainerId);
             if (!$trainer) {
-                throw new NotFoundHttpException('The specified trainer with ID ' . $dto->trainerId . ' was not found.');
+                throw new NotFoundHttpException('The specified trainer with ID ' . $data->trainerId . ' was not found.');
             }
             $session->addOrganizationMember($trainer);
         }
 
-        if ($dto->offerNumber !== null) {
-            $session->setOfferNumber($dto->offerNumber);
+        if ($data->offerNumber !== null) {
+            $session->setOfferNumber($data->offerNumber);
         }
-        if ($dto->internshipStart !== null) {
-            $session->setInternShipPeriodStart($dto->internshipStart);
+        if ($data->internshipStart !== null) {
+            $session->setInternShipPeriodStart($data->internshipStart);
         }
-        if ($dto->internshipEnd !== null) {
-            $session->setInternshipPeriodEnd($dto->internshipEnd);
+        if ($data->internshipEnd !== null) {
+            $session->setInternshipPeriodEnd($data->internshipEnd);
         }
 
         $this->entityManager->flush();
 
-        $dto->sessionId = $sessionId;
+        $data->sessionId = $sessionId;
 
-        return $dto;
+        return $data;
     }
 
     private function organizationSessionSessionIdArchive(array $uriVariables): OrganizationDTO|null
@@ -198,5 +221,4 @@ readonly class OrganizationProcessor implements ProcessorInterface
 
         return $dto;
     }
-
 }
