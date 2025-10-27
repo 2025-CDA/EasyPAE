@@ -97,19 +97,21 @@ readonly class OrganizationProcessor implements ProcessorInterface
         }
 
         $user = $this->userRepository->findOneBy(['email' => $dto->internEmail]);
-        if (!$user) {
-            $user = new User();
-            $user->setEmail($dto->internEmail);
-            $user->setFirstName($dto->internFirstName);
-            $user->setLastName($dto->internLastName);
-            $user->setLogin($dto->internLogin);
-            $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
-            $user->setPassword($hashedPassword);
-            $user->setRole(UserRole::INTERN);
-
-
-            $this->entityManager->persist($user);
+        if ($user) {
+            throw new BadRequestHttpException('A user with this email already exists.');
         }
+
+        $user = new User();
+        $user->setEmail($dto->internEmail);
+        $user->setFirstName($dto->internFirstName);
+        $user->setLastName($dto->internLastName);
+        $user->setLogin($dto->internLogin);
+        $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
+        $user->setPassword($hashedPassword);
+        $user->setRole(UserRole::INTERN);
+
+
+        $this->entityManager->persist($user);
 
         $internMember = $this->internMemberRepository->findOneBy(['user' => $user]);
         if (!$internMember) {

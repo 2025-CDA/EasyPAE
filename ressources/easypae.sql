@@ -32,11 +32,6 @@ INSERT INTO `company_member` (`id`, `user_id`, `company_id`, `role`, `updated_at
 (12, 30, 8, 'legal_representative', '2025-10-22 09:11:00', '2025-02-01 10:11:00');
 
 INSERT INTO `info_form` (`id`, `intern_member_id`, `info_form_intern_id`, `info_form_organization_id`, `info_form_company_id`, `company_id`, `organization_id`, `training_session_id`, `status`, `updated_at`, `created_at`) VALUES
-(9,	2,	9,	9,	9,	5,	1,	2,	'completed_intern',	'2025-10-22 10:08:00',	'2025-10-22 09:08:00'),
-(10,	6,	8,	8,	8,	2,	1,	2,	'completed_intern',	'2025-10-22 10:09:00',	'2025-10-22 09:09:00'),
-(11,	7,	10,	10,	10,	3,	1,	2,	'fully_completed',	'2025-10-22 10:10:00',	'2025-10-22 09:10:00'),
-(12,	12,	11,	11,	11,	4,	1,	2,	'completed_company',	'2025-10-22 10:11:00',	'2025-10-22 09:11:00'),
-(13,	15,	12,	12,	12,	8,	1,	2,	'rejected',	'2025-10-22 10:12:00',	'2025-10-22 09:12:00'),
 (101,	101,	101,	101,	101,	1,	1,	1,	'fully_completed',	'2025-10-22 10:00:00',	'2025-10-22 09:00:00'),
 (102,	103,	102,	102,	102,	2,	1,	1,	'fully_completed',	'2025-10-22 10:01:00',	'2025-10-22 09:01:00'),
 (103,	104,	103,	103,	103,	3,	1,	1,	'completed_organization',	'2025-10-22 10:02:00',	'2025-10-22 09:02:00'),
