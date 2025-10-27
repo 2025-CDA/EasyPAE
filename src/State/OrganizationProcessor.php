@@ -70,9 +70,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
 
         $training = $this->trainingRepository->findOneBy(['name' => $data->trainingName]);
         if (!$training) {
-            $training = new Training();
-            $training->setName($data->trainingName);
-            $this->entityManager->persist($training);
+            throw new NotFoundHttpException('Training not found.');
         }
 
         $session = new TrainingSession();
@@ -80,7 +78,6 @@ readonly class OrganizationProcessor implements ProcessorInterface
         $session->setOfferNumber($data->offerNumber);
         $session->setInternShipPeriodStart($data->internshipStart);
         $session->setInternshipPeriodEnd($data->internshipEnd);
-
         $session->addOrganizationMember($trainer);
 
         $this->entityManager->persist($session);
@@ -118,7 +115,6 @@ readonly class OrganizationProcessor implements ProcessorInterface
         $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
         $user->setPassword($hashedPassword);
         $user->setRole(UserRole::INTERN);
-
 
         $this->entityManager->persist($user);
 
@@ -176,7 +172,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
         }
 
 //        TODO: fix this, it should change the relation, not change the names.
-//        Use something like addTrainingSession()
+//        Use something like setTraining()
 
         if ($data->trainerId !== null) {
             $trainer = $this->organizationMemberRepository->find($data->trainerId);
