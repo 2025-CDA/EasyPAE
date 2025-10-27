@@ -84,7 +84,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
         return $session;
     }
 
-    private function organizationSessionSessionIdInternAdd(OrganizationDTO $dto, array $uriVariables): OrganizationDTO
+    private function organizationSessionSessionIdInternAdd(OrganizationDTO $dto, array $uriVariables): OrganizationDTO|null
     {
         $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
@@ -97,19 +97,21 @@ readonly class OrganizationProcessor implements ProcessorInterface
         }
 
         $user = $this->userRepository->findOneBy(['email' => $dto->internEmail]);
-        if (!$user) {
-            $user = new User();
-            $user->setEmail($dto->internEmail);
-            $user->setFirstName($dto->internFirstName);
-            $user->setLastName($dto->internLastName);
-            $user->setLogin($dto->internLogin);
-            $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
-            $user->setPassword($hashedPassword);
-            $user->setRole(UserRole::INTERN);
-
-
-            $this->entityManager->persist($user);
+        if ($user) {
+            throw new BadRequestHttpException('A user with this email already exists.');
         }
+
+        $user = new User();
+        $user->setEmail($dto->internEmail);
+        $user->setFirstName($dto->internFirstName);
+        $user->setLastName($dto->internLastName);
+        $user->setLogin($dto->internLogin);
+        $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
+        $user->setPassword($hashedPassword);
+        $user->setRole(UserRole::INTERN);
+
+
+        $this->entityManager->persist($user);
 
         $internMember = $this->internMemberRepository->findOneBy(['user' => $user]);
         if (!$internMember) {
@@ -124,24 +126,15 @@ readonly class OrganizationProcessor implements ProcessorInterface
             }
         }
 
-        $infoForm = new InfoForm();
-        $infoForm->setTrainingSession($session);
-        $infoForm->setInternMember($internMember);
+//        $infoForm = new InfoForm();
+//        $infoForm->setTrainingSession($session);
+//        $infoForm->setInternMember($internMember);
 //        $infoForm->setStatus(InfoFormStatus::PENDING);
-
-        $this->entityManager->persist($infoForm);
+//        $this->entityManager->persist($infoForm);
 
         $this->entityManager->flush();
 
-
-        $responseDto = new OrganizationDTO();
-        $responseDto->sessionId = $session->getId();
-        $responseDto->internEmail = $dto->internEmail;
-        $responseDto->internFirstName = $dto->internFirstName;
-        $responseDto->internLastName = $dto->internLastName;
-        $responseDto->internLogin = $dto->internLogin;
-        
-        return $responseDto;
+        return $dto;
     }
 
     private function organizationSessionSessionIdEdit(OrganizationDTO $dto, array $uriVariables): OrganizationDTO
