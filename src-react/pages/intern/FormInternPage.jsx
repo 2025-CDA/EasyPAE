@@ -28,7 +28,7 @@ function FormInternPage() {
                     content={[
                         {
                             title: "Mes infos",
-                            stepContent: <InfoFormInternPae />,
+                            stepContent: <InfoFormInternPae nbFormation='483285'/>,
                         },
                         {
                             title: "L'Entreprise",

@@ -1,9 +1,9 @@
 import Container from "../../components/ui/Container";
 import Input from ".././ui/Input";
 
-function InfoFormInternPae() {
+function InfoFormInternPae(props) {
     return (
-        <Container className="flex flex-col w-full overflow-hidden">
+        <Container className="flex flex-col w-full overflow-hidden gap-2">
             {" "}
             {/* Masque les scrollbars horizontale et verticale */}
             <h1 className="text-primary font-semibold">Mes informations</h1>
@@ -11,13 +11,13 @@ function InfoFormInternPae() {
             <div className="flex flex-col md:flex-row w-full items-center md:items-start">
                 {" "}
                 {/* Changé en flex-col sur mobile pour éviter overflow horizontal */}
-                <p className="w-full md:w-20 whitespace-nowrap mb-2 md:mb-0">
+                <p className="w-full font-semibold self-center md:w-20 whitespace-nowrap mb-2 md:mb-0">
                     Prénom :
                 </p>{" "}
                 {/* Ajusté pour mobile */}
                 <div className="flex-1 w-full md:ml-4">
                     <Input
-                        id="prenom"
+                        id="firstName"
                         label={false}
                         type="text"
                         placeholder="Entrez votre prénom"
@@ -28,7 +28,7 @@ function InfoFormInternPae() {
                 </div>
             </div>
             <div className="flex flex-col md:flex-row w-full items-center md:items-start">
-                <p className="w-full md:w-20 whitespace-nowrap mb-2 md:mb-0">
+                <p className="w-full font-semibold self-center md:w-20 whitespace-nowrap mb-2 md:mb-0">
                     Nom :
                 </p>
                 <div className="flex-1 w-full md:ml-4">
@@ -44,7 +44,7 @@ function InfoFormInternPae() {
                 </div>
             </div>
             <div className="flex flex-col md:flex-row w-full items-center md:items-start">
-                <p className="w-full md:w-20 whitespace-nowrap mb-2 md:mb-0">
+                <p className="w-full font-semibold self-center md:w-20 whitespace-nowrap mb-2 md:mb-0">
                     Email :
                 </p>
                 <div className="flex-1 w-full md:ml-4">
@@ -60,23 +60,16 @@ function InfoFormInternPae() {
                 </div>
             </div>
             <div className="flex flex-col md:flex-row w-full items-center md:items-start">
-                <p className="w-full md:w-20 whitespace-nowrap mb-2 md:mb-0">
+                <p className="w-full font-semibold self-center md:w-20 whitespace-nowrap mb-2 md:mb-0">
                     Formation :
                 </p>
                 <div className="flex-1 w-full md:ml-4">
-                    <Input
-                        id="formation"
-                        label={false}
-                        type="text"
-                        placeholder="Entrez votre formation"
-                        required={false}
-                        withCopy={false}
-                        className=""
-                    />
+                    <p>N°{props.nbFormation}</p>
+                    
                 </div>
             </div>
             <h3 className="text-primary font-bold">Période en entreprise</h3>
-            <div className="flex flex-col md:flex-row w-full items-center md:items-start">
+            <div className="flex flex-col self-center md:flex-row w-full items-center md:items-start">
                 <p className="w-full md:w-20 whitespace-nowrap mb-2 md:mb-0">
                     Dates :
                 </p>
