@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Stepper from "./components/ui/stepper/Stepper";
-import HelpPage from "./pages/help/HelpPage";
-import HelpSheet from "./pages/help/HelpSheet";
-import HelpSheetFill from "./pages/help/HelpSheetFill";
-
 
 export default function App() {
     // const [showAlert, setShowAlert] = useState(true);
@@ -28,11 +24,5 @@ export default function App() {
 
     return (
             <div className="w-full">
-                <HelpPage/>
-                <HelpSheet/>
-                <HelpSheetFill/>
-            </div>
-            
-    );
+    </div>;
 }
-

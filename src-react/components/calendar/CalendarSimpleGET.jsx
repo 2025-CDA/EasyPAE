@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './Calendar.css';
-import Button from '../../ui/Button';
+import Button from '../../components/ui/Button';
 import { ChevronUp, Calendar, ChevronDown} from 'lucide-react';
 
 

@@ -23,7 +23,6 @@ class InfoFormProvider implements ProviderInterface
         private readonly InfoFormCompanyRepository $infoFormCompanyRepository,
         private readonly InfoFormInternRepository $infoFormInternRepository,
         private readonly InfoFormOrganizationRepository $infoFormOrganizationRepository,
-        private readonly InternMemberRepository $internMemberRepository,
         private readonly TrainingSessionRepository $trainingSessionRepository
     ) {
     }
@@ -176,7 +175,7 @@ class InfoFormProvider implements ProviderInterface
         $dto->companyName = $company->getName();
         $dto->companyAddress = null;
         // TODO: Ajouter la propriété address à l'entité Company
-        // Arnaud: C'est fait
+        // TODO: Arnaud: C'est fait. Mais en fait je suis pas sur que ca soit néccessaire?
         $dto->companyContactEmail = $companyUser?->getEmail(); // Utiliser l'email de l'utilisateur de l'entreprise
         $dto->companyPhoneNumber = $company->getPhoneNumber();
         $dto->tutorName = $tutorName;

@@ -9,6 +9,7 @@ function CardFormation({
   trainerName,
   startDateInternship,
   endDateInternship,
+  onClick
 }) {
 
   const isEmpty =
@@ -20,10 +21,11 @@ function CardFormation({
 
   if (isEmpty) {
   return (
-        <a href='/'><Button
-          className= 'flex flex-col  border-gray-200 rounded-x border shadow-2xs aspect-square cursor-pointer transition hover:shadow-lg'
+        <Button
+          className= 'flex flex-col  border-gray-200 rounded-x border shadow-2xs aspect-square cursor-pointer transition h-full w-full hover:shadow-lg'
           color='white'
           // }}
+          onClick={onClick}
           icon={
             // Icône SVG, taille et style pour centrer
             <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38" fill="none">
@@ -32,7 +34,7 @@ function CardFormation({
           }
         >
           <span className="block mt-2 text-lg text-secondary-text font-semibold">Ajouter une formation</span>
-        </Button></a>
+        </Button>
   );
 }
 

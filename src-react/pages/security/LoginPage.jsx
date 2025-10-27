@@ -44,7 +44,7 @@ function LoginPage({ initialStep = "login", className }) {
                         <img
                             src={logoNameFullWhite}
                             alt="logoNameInWhiteColor"
-                            className="w-[40%] py-8 md:py-0 md:mt-5 md:bg-green-800 lg:bg-red-800 xl:mt-5 xl:bg-yellow-200"
+                            className="w-[40%] py-8 md:py-0 md:mb-20 xl:mb-20"
                         />
                     </div>
 
