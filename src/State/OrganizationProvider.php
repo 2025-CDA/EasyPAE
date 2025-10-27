@@ -3,26 +3,23 @@
 namespace App\State;
 
 use App\Dto\OrganizationDTO;
-use App\Repository\OrganizationMemberRepository;
+use App\Enum\InfoFormStatus;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Repository\TrainingSessionRepository;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use App\Repository\OrganizationMemberRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class OrganizationProvider implements ProviderInterface
+readonly class OrganizationProvider implements ProviderInterface
 {
     public function __construct(
-        private readonly TrainingSessionRepository $trainingSessionRepository,
-        private readonly OrganizationMemberRepository $organizationMemberRepository,
-    )
-    {
-
-    }
+        private TrainingSessionRepository    $trainingSessionRepository,
+        private OrganizationMemberRepository $organizationMemberRepository,
+    ) {}
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-
         $operationName = $operation->getName();
 
         return match ($operationName) {
@@ -32,7 +29,6 @@ class OrganizationProvider implements ProviderInterface
             'organization_session_sessionId' => $this->getOrganizationSessionSessionId($uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
-
     }
 
     private function getOrganizationSessions(array $uriVariables): array
@@ -55,15 +51,38 @@ class OrganizationProvider implements ProviderInterface
                 if ($user = $firstMember?->getUser()) {
                     $dto->trainerFirstName = $user->getFirstName();
                     $dto->trainerLastName = $user->getLastName();
-
                 }
             }
 
             $dto->internshipStart = $trainingSession->getInternShipPeriodStart();
             $dto->internshipEnd = $trainingSession->getInternshipPeriodEnd();
 
-//            TODO: add percentage, I'm not sure what I'm supposed to do here.
-//            $dto->validationPercentage = $trainingSession->getValidationPercentage();
+            //            TODO: add percentage, I'm not sure what I'm supposed to do here.
+            //            $dto->validationPercentage = $trainingSession->getValidationPercentage();
+
+            $totalFormsWithStatus = 0;
+            $validatedForms = 0;
+
+            $trainingSessions = $this->trainingSessionRepository->findAll();
+            foreach ($trainingSessions as $trainingSession) {
+                $infoForms = $trainingSession->getInfoForms();
+
+                foreach ($infoForms as $infoForm) {
+                    if ($infoForm->getStatus() !== null) {
+                        $totalFormsWithStatus++;
+
+                        $status = $infoForm->getStatus();
+                        if ($status === InfoFormStatus::FULLY_COMPLETED) {
+                            $validatedForms++;
+                        }
+                    }
+                }
+            }
+
+            $validationPercentage = $totalFormsWithStatus > 0
+                ? ($validatedForms / $totalFormsWithStatus) * 100
+                : 0;
+            $dto->validationPercentage = round($validationPercentage, 2);
 
             $organizationDTO[] = $dto;
         }
@@ -74,8 +93,7 @@ class OrganizationProvider implements ProviderInterface
 
     private function getOrganizationOrganizationMemberIdSessions(array $uriVariables): array
     {
-
-        $organizationMemberId = $uriVariables['organizationMemberId'];
+        $organizationMemberId = $uriVariables['organizationMemberId'] ?? null;
 
         $organizationMember = $this->organizationMemberRepository->find($organizationMemberId);
 
@@ -118,7 +136,7 @@ class OrganizationProvider implements ProviderInterface
 
     private function getOrganizationSessionSessionIdInterns(array $uriVariables): array
     {
-        $sessionId = $uriVariables['sessionId'];
+        $sessionId = $uriVariables['sessionId'] ?? null;
 
         $session = $this->trainingSessionRepository->find($sessionId);
 
@@ -147,7 +165,7 @@ class OrganizationProvider implements ProviderInterface
                 $dto->internLogin = $user->getLogin();
             }
 
-            $dto->InfoFormStatus = $infoForm->getStatus();
+            $dto->infoFormStatus = $infoForm->getStatus();
 
             $dtoCollection[] = $dto;
         }
@@ -157,7 +175,7 @@ class OrganizationProvider implements ProviderInterface
 
     private function getOrganizationSessionSessionId(array $uriVariables): OrganizationDTO
     {
-        $sessionId = $uriVariables['sessionId'];
+        $sessionId = $uriVariables['sessionId'] ?? null;
 
         $session = $this->trainingSessionRepository->find($sessionId);
 
@@ -181,5 +199,4 @@ class OrganizationProvider implements ProviderInterface
 
         return $dto;
     }
-
 }

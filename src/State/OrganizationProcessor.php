@@ -5,7 +5,6 @@ namespace App\State;
 use App\Dto\OrganizationDTO;
 use App\Entity\InfoForm;
 use App\Entity\InternMember;
-use App\Entity\Organization;
 use App\Entity\Training;
 use App\Entity\TrainingSession;
 use ApiPlatform\Metadata\Operation;
@@ -22,21 +21,21 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-final class OrganizationProcessor implements ProcessorInterface
+readonly class OrganizationProcessor implements ProcessorInterface
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly OrganizationMemberRepository $organizationMemberRepository,
-        private readonly TrainingRepository $trainingRepository,
-        private readonly TrainingSessionRepository $trainingSessionRepository,
-        private readonly UserRepository $userRepository,
-        private readonly InternMemberRepository $internMemberRepository,
-        private readonly UserPasswordHasherInterface $passwordHasher,
+        private EntityManagerInterface       $entityManager,
+        private OrganizationMemberRepository $organizationMemberRepository,
+        private TrainingRepository           $trainingRepository,
+        private TrainingSessionRepository    $trainingSessionRepository,
+        private UserRepository               $userRepository,
+        private InternMemberRepository       $internMemberRepository,
+        private UserPasswordHasherInterface  $passwordHasher,
     )
     {
     }
 
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): ?TrainingSession
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): TrainingSession|OrganizationDTO|null
     {
         if (!$data instanceof OrganizationDTO) {
             return null;
@@ -48,7 +47,7 @@ final class OrganizationProcessor implements ProcessorInterface
             'organization_session_add' => $this->organizationSessionAdd($data),
             'organization_session_sessionId_intern_add' => $this->organizationSessionSessionIdInternAdd($data, $uriVariables),
             'organization_session_sessionId_edit' => $this->organizationSessionSessionIdEdit($data, $uriVariables),
-            'organization_session_sessionId_archive' => $this->organizationSessionSessionIdArchive($data, $uriVariables),
+            'organization_session_sessionId_archive' => $this->organizationSessionSessionIdArchive($uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
     }
@@ -87,7 +86,7 @@ final class OrganizationProcessor implements ProcessorInterface
 
     private function organizationSessionSessionIdInternAdd(OrganizationDTO $dto, array $uriVariables): TrainingSession
     {
-        $sessionId = $uriVariables['sessionId'];
+        $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
         if (!$session) {
             throw new NotFoundHttpException('Training session not found.');
@@ -137,9 +136,9 @@ final class OrganizationProcessor implements ProcessorInterface
         return $session;
     }
 
-    private function organizationSessionSessionIdEdit(OrganizationDTO $dto, array $uriVariables): TrainingSession
+    private function organizationSessionSessionIdEdit(OrganizationDTO $dto, array $uriVariables): OrganizationDTO
     {
-        $sessionId = $uriVariables['sessionId'];
+        $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
         if (!$session) {
             throw new NotFoundHttpException('Training session not found.');
@@ -175,26 +174,32 @@ final class OrganizationProcessor implements ProcessorInterface
 
         $this->entityManager->flush();
 
-        return $session;
+        $dto->sessionId = $sessionId;
+
+        return $dto;
     }
 
-    private function organizationSessionSessionIdArchive(OrganizationDTO $dto, array $uriVariables): TrainingSession
+    private function organizationSessionSessionIdArchive(array $uriVariables): OrganizationDTO
     {
-        $sessionId = $uriVariables['sessionId'];
+        $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
+
         if (!$session) {
             throw new NotFoundHttpException('Training session not found.');
         }
 
-        if ($dto->infoFormStatus === null) {
-            throw new BadRequestHttpException('A sessionStatus is required to archive a session.');
+        if ($session->hasEnded()) {
+            throw new BadRequestHttpException('Training session is already archived.');
         }
 
-        $session->setStatus($dto->infoFormStatus);
-
+        $session->setHasEnded(1);
         $this->entityManager->flush();
 
-        return $session;
+        $dto = new OrganizationDTO();
+        $dto->hasEnded = 1;
+        $dto->sessionId = $sessionId;
+
+        return $dto;
     }
 
 }

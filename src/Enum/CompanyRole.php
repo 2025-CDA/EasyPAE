@@ -4,9 +4,8 @@ namespace App\Enum;
 
 enum CompanyRole: string
 {
-    case TUTOR = 'Tuteur';
-    case LEGAL_REPRESENTATIVE = 'Représentant légal';
-    case CEO = 'CEO';
+    case TUTOR = 'tutor';
+    case LEGAL_REPRESENTATIVE = 'legal_representative';
 
     public function toString(): string
     {

@@ -2,7 +2,7 @@ import React from "react";
 
 function StepperNavbar({ validated, currentStep, finishedStep = [], content }) {
     return (
-        <ul className="w-full flex justify-center md:items-center h-[500px] flex-col md:flex-row gap-2">
+        <ul className="w-full flex justify-center md:items-center flex-col md:flex-row gap-2">
             {content.map((step, i) => (
                 <StepItem
                     key={i}

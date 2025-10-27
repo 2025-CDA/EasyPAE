@@ -3,7 +3,6 @@ import axios from "axios";
 import Stepper from "./components/ui/stepper/Stepper";
 import FicheStagiaire from "./pages/support_service/FicheStagiaire";
 
-
 export default function App() {
     // const [showAlert, setShowAlert] = useState(true);
 

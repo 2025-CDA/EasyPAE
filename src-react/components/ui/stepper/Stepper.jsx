@@ -60,7 +60,7 @@ function Stepper({
     };
 
     return (
-        <Container className="flex flex-col justify-center items-center p-4">
+        <Container className="flex flex-col justify-center items-center">
             <StepperNavbar
                 content={content}
                 currentStep={step}

@@ -1,16 +1,19 @@
 import React from "react"
 
-function TableCellData({ tdData, tdColumns }) {
+function TableCellData({tdData, tdColumns, classNameTdataBody}) {
+
   return (
     <>
-      {tdColumns.map((col, index) => (
-        <td
-          key={index}
-          className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800"
-        >
-          {tdData[col.key]}
-        </td>
-      ))}
+      {tdColumns.map((col, index) => {
+        return (
+          <td   
+            key={index} 
+            className={classNameTdataBody || "px-6 py-4 whitespace-nowrap text-sm text-gray-800"}
+          >
+            {tdData[col.key]}
+          </td> 
+        )
+      })}
     </>
   )
 }

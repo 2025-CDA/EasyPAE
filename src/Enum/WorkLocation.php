@@ -4,11 +4,11 @@ namespace App\Enum;
 
 enum WorkLocation: string
 {
-    case ON_SITE = 'Présentiel';
+    case ON_SITE = 'on_site';
 
-    case REMOTE = 'Distanciel';
+    case REMOTE = 'remote';
 
-    case HYBRID = 'Hybrid';
+    case HYBRID = 'hybrid';
 
     public function toString(): string
     {

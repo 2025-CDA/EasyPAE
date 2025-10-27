@@ -4,11 +4,10 @@ namespace App\Enum;
 
 enum InfoFormInternStatus: string
 {
-    case VALIDATED = 'wesh';
-
-    case INVALIDATED = 'pas cool';
-
-    case PENDING = 'En cours';
+    case VALIDATED = 'validated';
+    case PENDING = 'pending';
+    case INVALIDATED = 'invalidated';
+    case INITIALIZED = 'initialized';
 
     public function toString(): string
     {
