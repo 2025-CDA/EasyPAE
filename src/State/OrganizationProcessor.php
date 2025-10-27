@@ -144,13 +144,10 @@ readonly class OrganizationProcessor implements ProcessorInterface
         }
 
         if ($dto->trainingName !== null) {
-            $training = $this->trainingRepository->findOneBy(['name' => $dto->trainingName]);
-            if (!$training) {
-                $training = new Training();
+            $training = $session->getTraining();
+            if ($training) {
                 $training->setName($dto->trainingName);
-                $this->entityManager->persist($training);
             }
-            $session->setTraining($training);
         }
 
         if ($dto->trainerId !== null) {
