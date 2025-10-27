@@ -122,12 +122,10 @@ readonly class OrganizationProcessor implements ProcessorInterface
         $internMember->setUser($user);
         $this->entityManager->persist($internMember);
 
-        foreach ($session->getInfoForms() as $existingInfoForm) {
-            if ($existingInfoForm->getInternMember() === $internMember) {
-                throw new BadRequestHttpException('This intern is already part of the session.');
-            }
+        if ($session->getInternMembers()->contains($internMember)) {
+            throw new BadRequestHttpException('This intern is already part of the session.');
         }
-//        TODO: ^ Fix this condition, it shouldn't check from the infoForm anymore.
+
 
 //        $infoForm = new InfoForm();
 //        $infoForm->setTrainingSession($session);
