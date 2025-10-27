@@ -2,8 +2,8 @@ SET NAMES utf8;
 SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
-
 SET NAMES utf8mb4;
+
 
 INSERT INTO `training` (`id`, `name`, `updated_at`, `created_at`) VALUES
 (1,	'CDA',	'2025-10-22 09:00:00',	'2025-01-10 10:00:00'),
@@ -11,9 +11,11 @@ INSERT INTO `training` (`id`, `name`, `updated_at`, `created_at`) VALUES
 (3,	'DWWM',	'2025-10-22 09:02:00',	'2025-01-10 10:02:00'),
 (4,	'DevOps Engineer',	'2025-10-24 12:06:57',	'2025-10-24 12:06:57');
 
+
 INSERT INTO `organization` (`id`, `siret`, `name`, `updated_at`, `created_at`) VALUES
 (1,	'12345678901234',	'AFPA Bégles',	'2025-10-22 09:00:00',	'2025-01-10 10:00:00'),
 (2,	'12345678901235',	'AFPA Paris',	'2025-10-22 09:01:00',	'2025-01-10 10:01:00');
+
 
 INSERT INTO `company` (`id`, `siret`, `name`, `phone_number`, `updated_at`, `created_at`, `address`) VALUES
 (1,	'82341567800012',	'Meta',	'0145678912',	'2025-10-22 09:00:00',	'2025-01-15 10:00:00',	'10 Rue de la Tech, 75001 Paris, France'),
@@ -24,6 +26,7 @@ INSERT INTO `company` (`id`, `siret`, `name`, `phone_number`, `updated_at`, `cre
 (6,	'82341567800067',	'Netflix',	'0145678917',	'2025-10-22 09:05:00',	'2025-01-15 10:05:00',	'60 Avenue du Streaming, 75006 Paris, France'),
 (7,	'82341567800078',	'Tesla',	'0145678918',	'2025-10-22 09:06:00',	'2025-01-15 10:06:00',	'70 Route Électrique, 75007 Paris, France'),
 (8,	'82341567800089',	'Spotify',	'0145678919',	'2025-10-22 09:07:00',	'2025-01-15 10:07:00',	'80 Rue de la Musique, 75008 Paris, France');
+
 
 INSERT INTO `notification` (`id`, `title`, `content`, `updated_at`, `created_at`) VALUES
 (1,	'Nouveau formulaire de stage disponible',	'Un nouveau formulaire de suivi de stage est maintenant disponible pour votre formation CDA. Veuillez le compléter avant la fin de la semaine.',	'2025-10-22 08:00:00',	'2025-10-22 08:00:00'),
@@ -70,6 +73,7 @@ INSERT INTO `user` (`id`, `email`, `password`, `first_name`, `last_name`, `login
 (29, 'legaltesla@gmail.com', '$2y$13$abcd1234567890abcdef', 'Elon', 'Musk', 'legaltesla', '2025-10-22 10:04:00', '2025-10-22 10:04:00', 'company', 1, 0, 'https://randomuser.me/api/portraits/men/17.jpg', '0612345706', '70 Route Électrique, 75007 Paris, France', '1971-06-28', 0),
 (30, 'legalspotify@gmail.com', '$2y$13$abcd1234567890abcdef', 'Daniel', 'Ek', 'legalspotify', '2025-10-22 10:05:00', '2025-10-22 10:05:00', 'company', 1, 1, 'https://randomuser.me/api/portraits/men/18.jpg', '0612345707', '80 Rue de la Musique, 75008 Paris, France', '1983-02-21', 0);
 
+
 INSERT INTO `intern_member` (`id`, `user_id`, `updated_at`, `created_at`) VALUES
 (101,	3,	'2025-10-22 09:00:00',	'2025-02-01 10:00:00'),
 (102,	17,	'2025-10-22 09:01:00',	'2025-02-01 10:01:00'),
@@ -90,10 +94,12 @@ INSERT INTO `intern_member` (`id`, `user_id`, `updated_at`, `created_at`) VALUES
 (117,	19,	'2025-10-22 09:16:00',	'2025-02-01 10:16:00'),
 (118,	20,	'2025-10-22 09:17:00',	'2025-02-01 10:17:00');
 
+
 INSERT INTO `organization_member` (`id`, `user_id`, `organization_id`, `role`, `updated_at`, `created_at`) VALUES
 (1, 1, 1, 'trainer', '2025-10-22 09:00:00', '2025-02-01 10:00:00'),
 (2, 6, 1, 'monique', '2025-10-24 13:15:38', '2025-02-01 10:01:00'),
 (3, 2, 1, 'trainer', '2025-10-22 09:02:00', '2025-02-01 10:02:00');
+
 
 INSERT INTO `company_member` (`id`, `user_id`, `company_id`, `role`, `updated_at`, `created_at`) VALUES
 (1, 18, 1, 'tutor', '2025-10-22 09:00:00', '2025-02-01 10:00:00'),
@@ -109,10 +115,12 @@ INSERT INTO `company_member` (`id`, `user_id`, `company_id`, `role`, `updated_at
 (11, 29, 7, 'legal_representative', '2025-10-22 09:10:00', '2025-02-01 10:10:00'),
 (12, 30, 8, 'legal_representative', '2025-10-22 09:11:00', '2025-02-01 10:11:00');
 
+
 INSERT INTO `training_session` (`id`, `training_id`, `offer_number`, `internship_period_start`, `internship_period_end`, `training_period_start`, `training_period_end`, `updated_at`, `created_at`, `has_ended`) VALUES
 (1,	4,	'OFF-2024-001',	'2025-11-01',	'2025-12-31',	'2025-03-01',	'2026-02-28',	'2025-10-24 13:33:17',	'2025-03-01 10:00:00',	1),
 (2,	2,	'OFF-2024-002',	'2025-11-01',	'2025-12-31',	'2025-03-15',	'2026-03-14',	'2025-10-22 09:00:00',	'2025-03-15 10:00:00',	0),
 (3,	3,	'OFF-2024-003',	'2025-11-15',	'2026-01-15',	'2025-04-01',	'2026-03-31',	'2025-10-22 09:01:00',	'2025-04-01 10:00:00',	0);
+
 
 INSERT INTO `organization_member_training_session` (`organization_member_id`, `training_session_id`) VALUES
 (1,	2),
@@ -140,6 +148,7 @@ INSERT INTO `training_session_intern_member` (`training_session_id`, `intern_mem
 (2, 114),
 (2, 115);
 
+
 INSERT INTO `info_form_intern_company` (`id`, `company_name`, `address`, `email`, `updated_at`, `created_at`, `legal_representative_last_name`, `legal_representative_first_name`) VALUES
 (101,	'Société Générale Technologies',	'15 Avenue des Champs-Élysées, 75008 Paris, France',	'contact@sgtech.fr',	'2025-10-25 05:56:08',	'2025-10-25 05:56:08',	'Dupont',	'Marie'),
 (102,	'Tech Solutions SARL',	'25 Rue de la République, 69002 Lyon, France',	'contact@techsolutions.fr',	'2025-10-22 10:01:00',	'2025-10-22 10:01:00',	'Martin',	'Jean'),
@@ -164,6 +173,7 @@ INSERT INTO `info_form_intern_company` (`id`, `company_name`, `address`, `email`
 (121,	'CyberSec Solutions',	'70 Boulevard Haussmann, 75008 Paris, France',	'info@cybersec.fr',	'2025-10-22 11:12:00',	'2025-10-22 11:12:00',	'Johnson',	'Lisa'),
 (122,	'UX Design Studio',	'80 Rue de Rivoli, 75008 Paris, France',	'contact@uxdesign.fr',	'2025-10-22 11:13:00',	'2025-10-22 11:13:00',	'Brown',	'Mike'),
 (123,	'Data Analytics Corp',	'90 Place Vendôme, 75008 Paris, France',	'hello@dataanalytics.fr',	'2025-10-22 11:14:00',	'2025-10-22 11:14:00',	'Davis',	'Sarah');
+
 
 INSERT INTO `info_form_intern` (`id`, `info_form_intern_company_id`, `date_start`, `date_end`, `gender`, `updated_at`, `created_at`, `status`) VALUES
 (101, 101, '2025-11-01', '2025-12-31', 'male', '2025-10-25 05:58:27', '2025-10-22 10:00:00', 'validated'),
@@ -191,31 +201,31 @@ INSERT INTO `info_form_intern` (`id`, `info_form_intern_company_id`, `date_start
 (123, 123, '2025-11-01', '2025-12-31', 'female', '2025-10-22 11:14:00', '2025-10-22 11:14:00', 'validated');
 
 
-
 INSERT INTO `info_form_company` (`id`, `fax`, `activity`, `activity_description`, `stamp`, `legal_representative_gender`, `legal_representative_last_name`, `legal_representative_first_name`, `legal_representative_signature`, `legal_representative_email`, `interview_start_date_time`, `interview_end_date_time`, `agree_terms`, `work_location`, `tutor_gender`, `tutor_first_name`, `tutor_last_name`, `tutor_email`, `tutor_phone_number`, `updated_at`, `created_at`, `status`) VALUES
-(101, '01 42 68 53 00', 'Développement de logiciels et conseil en technologies de l\'information', 'Société spécialisée dans le développement de solutions logicielles sur mesure, le conseil en transformation digitale et l\'intégration de systèmes d\'information pour les entreprises du secteur financier et bancaire.', 'stamp-101.png', 'female', 'Dupont', 'Marie', 'signature-101.png', 'marie.dupont@sgtech.fr', '2025-11-15 09:00:00', '2025-11-15 11:00:00', 1, 'Hybrid', 'male', 'Jean', 'Martin', 'jean.martin@sgtech.fr', '01 42 68 53 15', '2025-10-25 06:13:24', '2025-10-22 10:00:00', 'validated'),
-(102, '01 45 67 89 20', 'Conseil en systèmes informatiques', 'Expertise en cloud computing et infrastructure', 'stamp-102.png', 'male', 'Johnson', 'Mark', 'signature-102.png', 'mark.johnson@apple.com', '2025-11-15 14:00:00', '2025-11-15 16:00:00', 1, 'Présentiel', 'female', 'Sophie', 'Bernard', 'sophie.bernard@apple.com', '01 45 67 89 21', '2025-10-22 10:01:00', '2025-10-22 10:01:00', 'validated'),
-(103, '01 45 67 89 30', 'Edition de logiciels applicatifs', 'Solutions professionnelles pour entreprises', 'stamp-103.png', 'male', 'Gates', 'William', 'signature-103.png', 'william.gates@microsoft.com', '2025-11-16 09:00:00', '2025-11-16 11:00:00', 1, 'Hybrid', 'male', 'Pierre', 'Durant', 'pierre.durant@microsoft.com', '01 45 67 89 31', '2025-10-22 10:02:00', '2025-10-22 10:02:00', 'validated'),
-(104, '01 45 67 89 40', 'Commerce électronique', 'Plateforme de vente en ligne', 'stamp-104.png', 'male', 'Bezos', 'Jeff', 'signature-104.png', 'jeff.bezos@amazon.com', '2025-11-16 14:00:00', '2025-11-16 16:00:00', 1, 'Distanciel', 'female', 'Marie', 'Leclerc', 'marie.leclerc@amazon.com', '01 45 67 89 41', '2025-10-22 10:03:00', '2025-10-22 10:03:00', 'validated'),
-(105, '01 45 67 89 50', 'Moteur de recherche et services web', 'Technologies de recherche et publicité en ligne', 'stamp-105.png', 'male', 'Pichai', 'Sundar', 'signature-105.png', 'sundar.pichai@google.com', '2025-11-17 09:00:00', '2025-11-17 11:00:00', 1, 'Hybrid', 'male', 'Thomas', 'Petit', 'thomas.petit@google.com', '01 45 67 89 51', '2025-10-22 10:04:00', '2025-10-22 10:04:00', 'validated'),
-(106, '01 45 67 89 60', 'Streaming vidéo', 'Production et distribution de contenus audiovisuels', 'stamp-106.png', 'male', 'Hastings', 'Reed', 'signature-106.png', 'reed.hastings@netflix.com', '2025-11-17 14:00:00', '2025-11-17 16:00:00', 1, 'Présentiel', 'female', 'Julie', 'Moreau', 'julie.moreau@netflix.com', '01 45 67 89 61', '2025-10-22 10:05:00', '2025-10-22 10:05:00', 'validated'),
-(107, '01 45 67 89 70', 'Construction automobile électrique', 'Véhicules électriques et énergies renouvelables', 'stamp-107.png', 'male', 'Musk', 'Elon', 'signature-107.png', 'elon.musk@tesla.com', '2025-11-18 09:00:00', '2025-11-18 11:00:00', 0, 'Hybrid', 'male', 'Luc', 'Robert', 'luc.robert@tesla.com', '01 45 67 89 71', '2025-10-22 10:06:00', '2025-10-22 10:06:00', 'invalidated'),
-(108, '01 45 67 89 80', 'Streaming audio', 'Plateforme de musique en streaming', 'stamp-108.png', 'male', 'Ek', 'Daniel', 'signature-108.png', 'daniel.ek@spotify.com', '2025-11-18 14:00:00', '2025-11-18 16:00:00', 1, 'Distanciel', 'female', 'Claire', 'Simon', 'claire.simon@spotify.com', '01 45 67 89 81', '2025-10-22 10:07:00', '2025-10-22 10:07:00', 'validated'),
-(109, '01 45 67 89 90', 'Réseaux sociaux', 'Plateforme de communication et partage', 'stamp-109.png', 'male', 'Zuckerberg', 'Mark', 'signature-109.png', 'mark.zuck@meta.com', '2025-11-19 09:00:00', '2025-11-19 11:00:00', 1, 'Hybrid', 'male', 'Antoine', 'Roux', 'antoine.roux@meta.com', '01 45 67 89 91', '2025-10-22 11:00:00', '2025-10-22 11:00:00', 'validated'),
-(110, '01 45 67 89 92', 'Conseil en systèmes informatiques', 'Solutions cloud et data centers', 'stamp-110.png', 'female', 'Cook', 'Linda', 'signature-110.png', 'linda.cook@apple.com', '2025-11-19 14:00:00', '2025-11-19 16:00:00', 1, 'Présentiel', 'male', 'François', 'Lefebvre', 'francois.lefebvre@apple.com', '01 45 67 89 93', '2025-10-22 11:01:00', '2025-10-22 11:01:00', 'pending'),
-(111, '01 45 67 89 94', 'Edition de logiciels système', 'Systèmes d\'exploitation et outils', 'stamp-111.png', 'male', 'Nadella', 'Satya', 'signature-111.png', 'satya.nadella@microsoft.com', '2025-11-20 09:00:00', '2025-11-20 11:00:00', 1, 'Hybrid', 'female', 'Emma', 'Garnier', 'emma.garnier@microsoft.com', '01 45 67 89 95', '2025-10-22 11:02:00', '2025-10-22 11:02:00', 'validated'),
-(112, '01 45 67 89 96', 'Commerce électronique', 'Logistique et livraison express', 'stamp-112.png', 'male', 'Jassy', 'Andy', 'signature-112.png', 'andy.jassy@amazon.com', '2025-11-20 14:00:00', '2025-11-20 16:00:00', 1, 'Distanciel', 'male', 'David', 'Faure', 'david.faure@amazon.com', '01 45 67 89 97', '2025-10-22 11:03:00', '2025-10-22 11:03:00', 'pending'),
-(113, '01 45 67 89 98', 'Intelligence artificielle', 'Recherche et développement IA', 'stamp-113.png', 'male', 'Dean', 'Jeff', 'signature-113.png', 'jeff.dean@google.com', '2025-11-21 09:00:00', '2025-11-21 11:00:00', 1, 'Hybrid', 'female', 'Isabelle', 'Mercier', 'isabelle.mercier@google.com', '01 45 67 89 99', '2025-10-22 11:04:00', '2025-10-22 11:04:00', 'pending'),
-(114, '01 45 67 90 00', 'Production audiovisuelle', 'Création de contenus originaux', 'stamp-114.png', 'female', 'Sarandos', 'Teresa', 'signature-114.png', 'teresa.sarandos@netflix.com', '2025-11-21 14:00:00', '2025-11-21 16:00:00', 0, 'Présentiel', 'male', 'Nicolas', 'Boyer', 'nicolas.boyer@netflix.com', '01 45 67 90 01', '2025-10-22 11:05:00', '2025-10-22 11:05:00', 'invalidated'),
-(115, '01 45 67 90 02', 'Mobilité électrique', 'Innovation en transport durable', 'stamp-115.png', 'male', 'Straubel', 'JB', 'signature-115.png', 'jb.straubel@tesla.com', '2025-11-22 09:00:00', '2025-11-22 11:00:00', 1, 'Hybrid', 'female', 'Céline', 'Laurent', 'celine.laurent@tesla.com', '01 45 67 90 03', '2025-10-22 11:06:00', '2025-10-22 11:06:00', 'validated'),
-(116, '01 45 67 90 04', 'Distribution musicale', 'Catalogue musical mondial', 'stamp-116.png', 'male', 'Lorentzon', 'Martin', 'signature-116.png', 'martin.lorentzon@spotify.com', '2025-11-22 14:00:00', '2025-11-22 16:00:00', 1, 'Distanciel', 'male', 'Julien', 'Blanc', 'julien.blanc@spotify.com', '01 45 67 90 05', '2025-10-22 11:07:00', '2025-10-22 11:07:00', 'pending'),
-(117, '01 45 67 90 06', 'Réalité virtuelle', 'Technologies immersives', 'stamp-117.png', 'male', 'Bosworth', 'Andrew', 'signature-117.png', 'andrew.bosworth@meta.com', '2025-11-23 09:00:00', '2025-11-23 11:00:00', 1, 'Hybrid', 'female', 'Camille', 'Girard', 'camille.girard@meta.com', '01 45 67 90 07', '2025-10-22 11:08:00', '2025-10-22 11:08:00', 'validated'),
-(118, '01 45 67 90 08', 'Services cloud', 'Infrastructure as a Service', 'stamp-118.png', 'male', 'Federighi', 'Craig', 'signature-118.png', 'craig.federighi@apple.com', '2025-11-23 14:00:00', '2025-11-23 16:00:00', 1, 'Présentiel', 'male', 'Maxime', 'Vincent', 'maxime.vincent@apple.com', '01 45 67 90 09', '2025-10-22 11:09:00', '2025-10-22 11:09:00', 'validated'),
-(119, '01 45 67 90 10', 'DevOps', 'Infrastructure et déploiement', 'stamp-119.png', 'female', 'Wilson', 'Kate', 'signature-119.png', 'kate.wilson@company.com', '2025-11-24 09:00:00', '2025-11-24 11:00:00', 1, 'Hybrid', 'male', 'Pierre', 'Martin', 'pierre.martin@company.com', '01 45 67 90 11', '2025-10-22 11:10:00', '2025-10-22 11:10:00', 'validated'),
-(120, '01 45 67 90 12', 'Machine Learning', 'IA et apprentissage automatique', 'stamp-120.png', 'male', 'Anderson', 'Tom', 'signature-120.png', 'tom.anderson@company.com', '2025-11-24 14:00:00', '2025-11-24 16:00:00', 1, 'Distanciel', 'female', 'Sophie', 'Durand', 'sophie.durand@company.com', '01 45 67 90 13', '2025-10-22 11:11:00', '2025-10-22 11:11:00', 'validated'),
-(121, '01 45 67 90 14', 'Cybersécurité', 'Protection des données', 'stamp-121.png', 'female', 'Johnson', 'Lisa', 'signature-121.png', 'lisa.johnson@company.com', '2025-11-25 09:00:00', '2025-11-25 11:00:00', 1, 'Présentiel', 'male', 'Marc', 'Dubois', 'marc.dubois@company.com', '01 45 67 90 15', '2025-10-22 11:12:00', '2025-10-22 11:12:00', 'validated'),
-(122, '01 45 67 90 16', 'UX/UI Design', 'Expérience utilisateur', 'stamp-122.png', 'male', 'Brown', 'Mike', 'signature-122.png', 'mike.brown@company.com', '2025-11-25 14:00:00', '2025-11-25 16:00:00', 1, 'Hybrid', 'female', 'Émilie', 'Leroy', 'emilie.leroy@company.com', '01 45 67 90 17', '2025-10-22 11:13:00', '2025-10-22 11:13:00', 'validated'),
-(123, '01 45 67 90 18', 'Data Science', 'Analyse de données avancée', 'stamp-123.png', 'female', 'Davis', 'Sarah', 'signature-123.png', 'sarah.davis@company.com', '2025-11-26 09:00:00', '2025-11-26 11:00:00', 1, 'Distanciel', 'male', 'Alexandre', 'Moreau', 'alexandre.moreau@company.com', '01 45 67 90 19', '2025-10-22 11:14:00', '2025-10-22 11:14:00', 'validated');
+(101, '01 42 68 53 00', 'Développement de logiciels et conseil en technologies de l\'information', 'Société spécialisée dans le développement de solutions logicielles sur mesure, le conseil en transformation digitale et l\'intégration de systèmes d\'information pour les entreprises du secteur financier et bancaire.', 'stamp-101.png', 'female', 'Dupont', 'Marie', 'signature-101.png', 'marie.dupont@sgtech.fr', '2025-11-15 09:00:00', '2025-11-15 11:00:00', 1, 'hybrid', 'male', 'Jean', 'Martin', 'jean.martin@sgtech.fr', '01 42 68 53 15', '2025-10-25 06:13:24', '2025-10-22 10:00:00', 'validated'),
+(102, '01 45 67 89 20', 'Conseil en systèmes informatiques', 'Expertise en cloud computing et infrastructure', 'stamp-102.png', 'male', 'Johnson', 'Mark', 'signature-102.png', 'mark.johnson@apple.com', '2025-11-15 14:00:00', '2025-11-15 16:00:00', 1, 'on_site', 'female', 'Sophie', 'Bernard', 'sophie.bernard@apple.com', '01 45 67 89 21', '2025-10-22 10:01:00', '2025-10-22 10:01:00', 'validated'),
+(103, '01 45 67 89 30', 'Edition de logiciels applicatifs', 'Solutions professionnelles pour entreprises', 'stamp-103.png', 'male', 'Gates', 'William', 'signature-103.png', 'william.gates@microsoft.com', '2025-11-16 09:00:00', '2025-11-16 11:00:00', 1, 'hybrid', 'male', 'Pierre', 'Durant', 'pierre.durant@microsoft.com', '01 45 67 89 31', '2025-10-22 10:02:00', '2025-10-22 10:02:00', 'validated'),
+(104, '01 45 67 89 40', 'Commerce électronique', 'Plateforme de vente en ligne', 'stamp-104.png', 'male', 'Bezos', 'Jeff', 'signature-104.png', 'jeff.bezos@amazon.com', '2025-11-16 14:00:00', '2025-11-16 16:00:00', 1, 'remote', 'female', 'Marie', 'Leclerc', 'marie.leclerc@amazon.com', '01 45 67 89 41', '2025-10-22 10:03:00', '2025-10-22 10:03:00', 'validated'),
+(105, '01 45 67 89 50', 'Moteur de recherche et services web', 'Technologies de recherche et publicité en ligne', 'stamp-105.png', 'male', 'Pichai', 'Sundar', 'signature-105.png', 'sundar.pichai@google.com', '2025-11-17 09:00:00', '2025-11-17 11:00:00', 1, 'hybrid', 'male', 'Thomas', 'Petit', 'thomas.petit@google.com', '01 45 67 89 51', '2025-10-22 10:04:00', '2025-10-22 10:04:00', 'validated'),
+(106, '01 45 67 89 60', 'Streaming vidéo', 'Production et distribution de contenus audiovisuels', 'stamp-106.png', 'male', 'Hastings', 'Reed', 'signature-106.png', 'reed.hastings@netflix.com', '2025-11-17 14:00:00', '2025-11-17 16:00:00', 1, 'on_site', 'female', 'Julie', 'Moreau', 'julie.moreau@netflix.com', '01 45 67 89 61', '2025-10-22 10:05:00', '2025-10-22 10:05:00', 'validated'),
+(107, '01 45 67 89 70', 'Construction automobile électrique', 'Véhicules électriques et énergies renouvelables', 'stamp-107.png', 'male', 'Musk', 'Elon', 'signature-107.png', 'elon.musk@tesla.com', '2025-11-18 09:00:00', '2025-11-18 11:00:00', 0, 'hybrid', 'male', 'Luc', 'Robert', 'luc.robert@tesla.com', '01 45 67 89 71', '2025-10-22 10:06:00', '2025-10-22 10:06:00', 'invalidated'),
+(108, '01 45 67 89 80', 'Streaming audio', 'Plateforme de musique en streaming', 'stamp-108.png', 'male', 'Ek', 'Daniel', 'signature-108.png', 'daniel.ek@spotify.com', '2025-11-18 14:00:00', '2025-11-18 16:00:00', 1, 'remote', 'female', 'Claire', 'Simon', 'claire.simon@spotify.com', '01 45 67 89 81', '2025-10-22 10:07:00', '2025-10-22 10:07:00', 'validated'),
+(109, '01 45 67 89 90', 'Réseaux sociaux', 'Plateforme de communication et partage', 'stamp-109.png', 'male', 'Zuckerberg', 'Mark', 'signature-109.png', 'mark.zuck@meta.com', '2025-11-19 09:00:00', '2025-11-19 11:00:00', 1, 'hybrid', 'male', 'Antoine', 'Roux', 'antoine.roux@meta.com', '01 45 67 89 91', '2025-10-22 11:00:00', '2025-10-22 11:00:00', 'validated'),
+(110, '01 45 67 89 92', 'Conseil en systèmes informatiques', 'Solutions cloud et data centers', 'stamp-110.png', 'female', 'Cook', 'Linda', 'signature-110.png', 'linda.cook@apple.com', '2025-11-19 14:00:00', '2025-11-19 16:00:00', 1, 'on_site', 'male', 'François', 'Lefebvre', 'francois.lefebvre@apple.com', '01 45 67 89 93', '2025-10-22 11:01:00', '2025-10-22 11:01:00', 'pending'),
+(111, '01 45 67 89 94', 'Edition de logiciels système', 'Systèmes d\'exploitation et outils', 'stamp-111.png', 'male', 'Nadella', 'Satya', 'signature-111.png', 'satya.nadella@microsoft.com', '2025-11-20 09:00:00', '2025-11-20 11:00:00', 1, 'hybrid', 'female', 'Emma', 'Garnier', 'emma.garnier@microsoft.com', '01 45 67 89 95', '2025-10-22 11:02:00', '2025-10-22 11:02:00', 'validated'),
+(112, '01 45 67 89 96', 'Commerce électronique', 'Logistique et livraison express', 'stamp-112.png', 'male', 'Jassy', 'Andy', 'signature-112.png', 'andy.jassy@amazon.com', '2025-11-20 14:00:00', '2025-11-20 16:00:00', 1, 'remote', 'male', 'David', 'Faure', 'david.faure@amazon.com', '01 45 67 89 97', '2025-10-22 11:03:00', '2025-10-22 11:03:00', 'pending'),
+(113, '01 45 67 89 98', 'Intelligence artificielle', 'Recherche et développement IA', 'stamp-113.png', 'male', 'Dean', 'Jeff', 'signature-113.png', 'jeff.dean@google.com', '2025-11-21 09:00:00', '2025-11-21 11:00:00', 1, 'hybrid', 'female', 'Isabelle', 'Mercier', 'isabelle.mercier@google.com', '01 45 67 89 99', '2025-10-22 11:04:00', '2025-10-22 11:04:00', 'pending'),
+(114, '01 45 67 90 00', 'Production audiovisuelle', 'Création de contenus originaux', 'stamp-114.png', 'female', 'Sarandos', 'Teresa', 'signature-114.png', 'teresa.sarandos@netflix.com', '2025-11-21 14:00:00', '2025-11-21 16:00:00', 0, 'on_site', 'male', 'Nicolas', 'Boyer', 'nicolas.boyer@netflix.com', '01 45 67 90 01', '2025-10-22 11:05:00', '2025-10-22 11:05:00', 'invalidated'),
+(115, '01 45 67 90 02', 'Mobilité électrique', 'Innovation en transport durable', 'stamp-115.png', 'male', 'Straubel', 'JB', 'signature-115.png', 'jb.straubel@tesla.com', '2025-11-22 09:00:00', '2025-11-22 11:00:00', 1, 'hybrid', 'female', 'Céline', 'Laurent', 'celine.laurent@tesla.com', '01 45 67 90 03', '2025-10-22 11:06:00', '2025-10-22 11:06:00', 'validated'),
+(116, '01 45 67 90 04', 'Distribution musicale', 'Catalogue musical mondial', 'stamp-116.png', 'male', 'Lorentzon', 'Martin', 'signature-116.png', 'martin.lorentzon@spotify.com', '2025-11-22 14:00:00', '2025-11-22 16:00:00', 1, 'remote', 'male', 'Julien', 'Blanc', 'julien.blanc@spotify.com', '01 45 67 90 05', '2025-10-22 11:07:00', '2025-10-22 11:07:00', 'pending'),
+(117, '01 45 67 90 06', 'Réalité virtuelle', 'Technologies immersives', 'stamp-117.png', 'male', 'Bosworth', 'Andrew', 'signature-117.png', 'andrew.bosworth@meta.com', '2025-11-23 09:00:00', '2025-11-23 11:00:00', 1, 'hybrid', 'female', 'Camille', 'Girard', 'camille.girard@meta.com', '01 45 67 90 07', '2025-10-22 11:08:00', '2025-10-22 11:08:00', 'validated'),
+(118, '01 45 67 90 08', 'Services cloud', 'Infrastructure as a Service', 'stamp-118.png', 'male', 'Federighi', 'Craig', 'signature-118.png', 'craig.federighi@apple.com', '2025-11-23 14:00:00', '2025-11-23 16:00:00', 1, 'on_site', 'male', 'Maxime', 'Vincent', 'maxime.vincent@apple.com', '01 45 67 90 09', '2025-10-22 11:09:00', '2025-10-22 11:09:00', 'validated'),
+(119, '01 45 67 90 10', 'DevOps', 'Infrastructure et déploiement', 'stamp-119.png', 'female', 'Wilson', 'Kate', 'signature-119.png', 'kate.wilson@company.com', '2025-11-24 09:00:00', '2025-11-24 11:00:00', 1, 'hybrid', 'male', 'Pierre', 'Martin', 'pierre.martin@company.com', '01 45 67 90 11', '2025-10-22 11:10:00', '2025-10-22 11:10:00', 'validated'),
+(120, '01 45 67 90 12', 'Machine Learning', 'IA et apprentissage automatique', 'stamp-120.png', 'male', 'Anderson', 'Tom', 'signature-120.png', 'tom.anderson@company.com', '2025-11-24 14:00:00', '2025-11-24 16:00:00', 1, 'remote', 'female', 'Sophie', 'Durand', 'sophie.durand@company.com', '01 45 67 90 13', '2025-10-22 11:11:00', '2025-10-22 11:11:00', 'validated'),
+(121, '01 45 67 90 14', 'Cybersécurité', 'Protection des données', 'stamp-121.png', 'female', 'Johnson', 'Lisa', 'signature-121.png', 'lisa.johnson@company.com', '2025-11-25 09:00:00', '2025-11-25 11:00:00', 1, 'on_site', 'male', 'Marc', 'Dubois', 'marc.dubois@company.com', '01 45 67 90 15', '2025-10-22 11:12:00', '2025-10-22 11:12:00', 'validated'),
+(122, '01 45 67 90 16', 'UX/UI Design', 'Expérience utilisateur', 'stamp-122.png', 'male', 'Brown', 'Mike', 'signature-122.png', 'mike.brown@company.com', '2025-11-25 14:00:00', '2025-11-25 16:00:00', 1, 'hybrid', 'female', 'Émilie', 'Leroy', 'emilie.leroy@company.com', '01 45 67 90 17', '2025-10-22 11:13:00', '2025-10-22 11:13:00', 'validated'),
+(123, '01 45 67 90 18', 'Data Science', 'Analyse de données avancée', 'stamp-123.png', 'female', 'Davis', 'Sarah', 'signature-123.png', 'sarah.davis@company.com', '2025-11-26 09:00:00', '2025-11-26 11:00:00', 1, 'remote', 'male', 'Alexandre', 'Moreau', 'alexandre.moreau@company.com', '01 45 67 90 19', '2025-10-22 11:14:00', '2025-10-22 11:14:00', 'validated');
+
 
 INSERT INTO `info_form_company_calendar_row` (`id`, `info_form_company_id`, `day`, `start_morning`, `end_morning`, `start_afternoon`, `end_afternoon`, `work_location`, `updated_at`, `created_at`) VALUES
 (1, 101, 'monday', '09:00:00', '12:00:00', '14:00:00', '18:00:00', 'remote', '2025-10-25 06:14:19', '2025-10-25 06:14:19'),
@@ -252,11 +262,6 @@ INSERT INTO `info_form_organization` (`id`, `validation_date`, `signature`, `upd
 
 
 INSERT INTO `info_form` (`id`, `intern_member_id`, `info_form_intern_id`, `info_form_organization_id`, `info_form_company_id`, `company_id`, `organization_id`, `training_session_id`, `status`, `updated_at`, `created_at`) VALUES
-(9,	106,	109,	109,	109,	5,	1,	2,	'completed_intern',	'2025-10-22 10:08:00',	'2025-10-22 09:08:00'),
-(10,	107,	116,	116,	116,	2,	1,	2,	'completed_intern',	'2025-10-22 10:09:00',	'2025-10-22 09:09:00'),
-(11,	108,	110,	110,	110,	3,	1,	2,	'fully_completed',	'2025-10-22 10:10:00',	'2025-10-22 09:10:00'),
-(12,	109,	111,	111,	111,	4,	1,	2,	'completed_company',	'2025-10-22 10:11:00',	'2025-10-22 09:11:00'),
-(13,	110,	112,	112,	112,	8,	1,	2,	'rejected',	'2025-10-22 10:12:00',	'2025-10-22 09:12:00'),
 (101,	101,	101,	101,	101,	1,	1,	1,	'fully_completed',	'2025-10-22 10:00:00',	'2025-10-22 09:00:00'),
 (102,	103,	102,	102,	102,	2,	1,	1,	'fully_completed',	'2025-10-22 10:01:00',	'2025-10-22 09:01:00'),
 (103,	104,	103,	103,	103,	3,	1,	1,	'completed_organization',	'2025-10-22 10:02:00',	'2025-10-22 09:02:00'),
@@ -299,7 +304,7 @@ INSERT INTO `user_notification` (`id`, `user_id`, `notification_id`, `is_read`, 
 (19,	8,	6,	0,	0,	'2025-10-22 16:30:00',	'2025-10-22 16:30:00'),
 (20,	8,	8,	1,	1,	'2025-10-21 15:45:00',	'2025-10-21 15:45:00'),
 (21,	9,	5,	1,	0,	'2025-10-22 14:00:00',	'2025-10-22 14:00:00'),
-(22,	10,	5,	0,	0,	'2025-10-22 14:00:00',	'2025-10-22 14:00:00'), 
+(22,	10,	5,	0,	0,	'2025-10-22 14:00:00',	'2025-10-22 14:00:00'),
 (23,	10,	8,	1,	1,	'2025-10-21 15:45:00',	'2025-10-21 15:45:00'),
 (24,	18,	2,	1,	1,	'2025-10-22 09:30:00',	'2025-10-22 09:30:00'),
 (25,	19,	2,	0,	0,	'2025-10-22 09:30:00',	'2025-10-22 09:30:00'),
