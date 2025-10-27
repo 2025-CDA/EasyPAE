@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Stepper from "./components/ui/stepper/Stepper";
+import HelpPage from "./pages/help/HelpPage";
+import HelpSheet from "./pages/help/HelpSheet";
+import HelpSheetFill from "./pages/help/HelpSheetFill";
 
 
 export default function App() {
@@ -25,7 +28,9 @@ export default function App() {
 
     return (
             <div className="w-full">
-                <Stepper />
+                <HelpPage/>
+                <HelpSheet/>
+                <HelpSheetFill/>
             </div>
             
     );
