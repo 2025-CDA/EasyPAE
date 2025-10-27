@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // import { useState } from "react";
 // import CalendarSimpleGET from "./components/calendar/CalendarSimpleGET";
 // import { useState } from 'react';
@@ -7,12 +6,6 @@ import Textarea from './components/ui/Textarea';
 import Checkbox from './components/ui/RadioButtonsGroup';
 import ProfilePage from './pages/profile/ProfilePage';
 // import axios from "axios";
-=======
-import { useEffect, useState } from "react";
-import axios from "axios";
-import Stepper from "./components/ui/stepper/Stepper";
-import FicheStagiaire from "./pages/support_service/FicheStagiaire";
->>>>>>> origin
 
 
 export default function App() {
@@ -39,19 +32,11 @@ export default function App() {
 
     // console.log(data[0])
 
-<<<<<<< HEAD
     // const [Choice, setChoice] = useState(0);
 
     return (
         <div>
-            {/* <CalendarSimpleGET
-                dates={currentFormation}
-                shrinkable={true} // optionnel, si vous ne souhaitez pas qu'il ait l'option rétractable, supprimer la ligne, pas besoin de la mettre en false
-            /> */}
             <ProfilePage></ProfilePage>
         </div>
     );
-=======
-    return <div className="w-full"></div>;
->>>>>>> origin
 }

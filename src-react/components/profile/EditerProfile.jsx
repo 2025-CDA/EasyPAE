@@ -22,9 +22,9 @@ function EditerProfile() {
     };
 
     return (
-        <Container className="flex-col w-full max-w-xl mb-5">
-            <h4 className='text-primary font-semibold text-lg mb-4 text-center'>Changer vos informations</h4>
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <Container className="mb-5 flex flex-col border-transparent md:border-gray-200">
+            <h4 className='text-primary font-semibold text-lg mb-4 text-center hidden md:flex'>Changer vos informations</h4>
+            <form className="flex flex-col gap-4 w-[80%] m-auto md:w-full" onSubmit={handleSubmit}>
                 <div className="flex gap-4">
                     <div className="flex-1">
                         <label className="block text-sm font-medium mb-1" htmlFor="prenom">Prénom</label>
@@ -101,7 +101,13 @@ function EditerProfile() {
                 </div>
                 <button
                     type="submit"
-                    className="mt-2 px-4 py-2 border-primary border justify-center text-primary rounded hover:bg-blue-700 hover:text-white transition"
+                    className="
+                        w-100 mx-auto
+                        mt-2 px-4 py-2 rounded
+                        md:text-primary md:border md:border-primary md:bg-transparent
+                        md:hover:bg-blue-700 md:hover:text-white transition
+                        text-white bg-blue-700
+                        hover:bg-white hover:text-primary hover:border hover:border-primary"
                 >
                     Enregistrer les modifications
                 </button>

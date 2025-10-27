@@ -21,8 +21,8 @@ function ModifPictureProfile() {
     };
 
     return (
-        <Container className={'mb-5'}>
-            <Avatar size={18} color={"yellow"} />
+        <Container className={'mb-5 flex'}>
+            <Avatar size={'sm'} color={"yellow"} />
             <div className='flex flex-col ml-5 w-full'>
                 <h4 className='text-primary font-semibold'> Modifier la photo de profil</h4>
                 <p className='text-secondary-text mb-3'>Format acceptés : *.png, *.jpg</p>
@@ -33,7 +33,7 @@ function ModifPictureProfile() {
                     style={{ display: "none" }}
                     onChange={handleFileChange}
                 />
-                <Button type="button" onClick={handleButtonClick}>Modifier {'>'}</Button>
+                <Button className={'w-25'} type="button" onClick={handleButtonClick}>Modifier {'>'}</Button>
             </div>
         </Container>
     )

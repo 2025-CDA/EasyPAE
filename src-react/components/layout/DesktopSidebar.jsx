@@ -6,11 +6,7 @@ import {
     Lightbulb,
     ArrowRightFromLine,
 } from "lucide-react";
-<<<<<<< HEAD
-import Avatar from "../ui/Avatar";
-=======
 import Avatar from "../../components/ui/Avatar.jsx";
->>>>>>> origin
 import logo from "../../assets/Logo-light.png";
 
 export default function DesktopSidebar({
@@ -24,11 +20,7 @@ export default function DesktopSidebar({
     // ------------------------------------ L'affichage ------------------------------------
     return (
         <div
-<<<<<<< HEAD
-            className={`hidden  md:flex flex-col left-0 top-0 h-screen bg-primary text-white
-=======
-            className={`hidden md:flex flex-col left-0 top-0  bg-primary text-white 
->>>>>>> origin
+            className={`hidden md:flex flex-col left-0 top-0  bg-primary text-white
         ${
             collapsed ? "w-20" : "w-60"
         } transition-all duration-300 relative rounded-tr-xl`}

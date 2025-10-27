@@ -1,6 +1,4 @@
 import placeholder from "../../assets/profile.jpg";
-<<<<<<< HEAD
-=======
 
 function Avatar({ url = placeholder, size = "xl", color = "red", className }) {
     const sizeClasses = {
@@ -8,7 +6,6 @@ function Avatar({ url = placeholder, size = "xl", color = "red", className }) {
         md: "w-20 h-20",
         xl: "w-24 h-24",
     };
->>>>>>> origin
 
     return (
         <img
