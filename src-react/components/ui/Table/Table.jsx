@@ -18,9 +18,6 @@ function Table(
       divAction,
     }
   ) {
-
-  // console.log(data)
-  // const displayData = currentItems && currentItems.length > 0 ? currentItems : data
   
   return (
     
