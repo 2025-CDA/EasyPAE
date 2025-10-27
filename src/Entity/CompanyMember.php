@@ -18,27 +18,27 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: CompanyMemberRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(
-    operations: [
-        new Get(
-            normalizationContext: ['groups' => ['read:company_member']]
-        ),
-        new GetCollection(
-            normalizationContext: ['groups' => ['read:company_member_collection']]
-        ),
-        new Post(
-            denormalizationContext: ['groups' => ['create:company_member']]
-        ),
-        new Patch(
-            denormalizationContext: ['groups' => ['update:company_member']]
-        ),
-        new Put(
-            denormalizationContext: ['groups' => ['update:company_member']]
-        ),
-        new Delete()
-    ],
-    order: ['createdAt' => 'DESC']
-)]
+// #[ApiResource(
+//     operations: [
+//         new Get(
+//             normalizationContext: ['groups' => ['read:company_member']]
+//         ),
+//         new GetCollection(
+//             normalizationContext: ['groups' => ['read:company_member_collection']]
+//         ),
+//         new Post(
+//             denormalizationContext: ['groups' => ['create:company_member']]
+//         ),
+//         new Patch(
+//             denormalizationContext: ['groups' => ['update:company_member']]
+//         ),
+//         new Put(
+//             denormalizationContext: ['groups' => ['update:company_member']]
+//         ),
+//         new Delete()
+//     ],
+//     order: ['createdAt' => 'DESC']
+// )]
 class CompanyMember
 {
     #[ORM\PrePersist]

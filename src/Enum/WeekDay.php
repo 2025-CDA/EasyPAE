@@ -10,6 +10,7 @@ enum WeekDay: string
     case THURSDAY = 'Jeudi';
     case FRIDAY = 'Vendredi';
     case SATURDAY = 'Samedi';
+    case SUNDAY = 'Dimanche';
 
     public function toString(): string
     {

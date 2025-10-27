@@ -18,27 +18,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: InfoFormOrganizationRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(
-    operations: [
-        new Get(
-            normalizationContext: ['groups' => ['read:info_form_organization']]
-        ),
-        new GetCollection(
-            normalizationContext: ['groups' => ['read:info_form_organization_collection']]
-        ),
-        new Post(
-            denormalizationContext: ['groups' => ['create:info_form_organization']]
-        ),
-        new Patch(
-            denormalizationContext: ['groups' => ['update:info_form_organization']]
-        ),
-        new Put(
-            denormalizationContext: ['groups' => ['update:info_form_organization']]
-        ),
-        new Delete()
-    ],
-    order: ['createdAt' => 'DESC']
-)]
+// #[ApiResource(
+//     operations: [
+//         new Get(
+//             normalizationContext: ['groups' => ['read:info_form_organization']]
+//         ),
+//         new GetCollection(
+//             normalizationContext: ['groups' => ['read:info_form_organization_collection']]
+//         ),
+//         new Post(
+//             denormalizationContext: ['groups' => ['create:info_form_organization']]
+//         ),
+//         new Patch(
+//             denormalizationContext: ['groups' => ['update:info_form_organization']]
+//         ),
+//         new Put(
+//             denormalizationContext: ['groups' => ['update:info_form_organization']]
+//         ),
+//         new Delete()
+//     ],
+//     order: ['createdAt' => 'DESC']
+// )]
 class InfoFormOrganization
 {
     #[ORM\PrePersist]

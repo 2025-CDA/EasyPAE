@@ -3,28 +3,22 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use App\Entity\User;
 
 class SecurityController extends AbstractController
 {
-    // #[Route(path: '/api/login_check', name: 'app_login', methods: ['POST'])]
-    // public function login(#[CurrentUser] ?User $user): Response
-    // {
-    //     if (null === $user) {
-    //         return $this->json([
-    //             'message' => 'Missing credentials or invalid login',
-    //         ], Response::HTTP_UNAUTHORIZED);
-    //     }
-
-    //     // Ici vous pouvez renvoyer des infos sur l'utilisateur ou un token
-    //     return $this->json([
-    //         'user' => $user->getUserIdentifier(),
-    //         // 'token' => ... (le token JWT est envoyé automatiquement si LexikJWT est configuré)
-    //     ]);
-    // }
+     #[Route(path: '/api/login', name: 'app_login', methods: ['POST'])]
+     public function login(): JsonResponse
+     {
+         // This controller will not be executed,
+         // as the security system will intercept the request before it reaches this point.
+         // If it is executed, it means there is a misconfiguration in your security.yaml.
+         throw new \LogicException('This code should not be reached!');
+     }
 
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void

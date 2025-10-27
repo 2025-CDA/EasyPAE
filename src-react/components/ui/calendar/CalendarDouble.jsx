@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import './Calendar.css';
+import Container from '../ui/Container';
+import CircleProgress from '../ui/CircleProgress';
+import Button from '../ui/Button'
 
 // ----------------------
 // Constantes pour labels
@@ -149,6 +152,22 @@ function CalendarDouble({ multi, onSaveMulti }) {
         }
     };
 
+    // Calcul du nombre de jours avant/après la période
+    let jValue = null;
+    if (localStartDate) {
+        const todayDate = new Date();
+        const start = new Date(localStartDate.getFullYear(), localStartDate.getMonth(), localStartDate.getDate());
+        const diff = Math.floor((start - todayDate) / (1000 * 60 * 60 * 24));
+        if (diff > 0) {
+            jValue = `J - ${diff}`;
+        } else if (diff === 0) {
+            jValue = "J 0";
+        } else {
+            // J+N depuis le début de la période
+            jValue = `J + ${Math.abs(diff)}`;
+        }
+    }
+
     // --------------------------
     // Vérifie si une date est dans la période sélectionnée
     // --------------------------
@@ -173,7 +192,7 @@ function CalendarDouble({ multi, onSaveMulti }) {
         const todayD = today.getDate();
 
         return (
-            <div className="p-3 bg-white ">
+            <div className="p-3 bg-white">
                 <div className="flex pb-1.5">
                     {DAYS_FR.map((d) => (
                         <span key={d} className="m-px w-10 block text-center text-xs text-gray-500">
@@ -254,91 +273,113 @@ function CalendarDouble({ multi, onSaveMulti }) {
     // --------------------------
     // Rendu principal du composant
     // --------------------------
-        return (
-        <div className="flex flex-col w-full bg-color-background shadow rounded">
-            <div className="flex w-full">
-                {/* Liste des formations à gauche */}
-                <div className="flex flex-col min-w-[220px] border-r border-b border-gray-200 bg-gray-50 py-4 px-2">
-                    {multi && multi.length > 0 ? (
-                        multi.map((formation, idx) => (
+    return (
+        <div>
+            <h1 className='font-semibold m-5'>
+                Calendrier PAE
+                {selectedFormation && (
+                    <> &gt; {selectedFormation.title} </>
+                )}
+            </h1>
+            <h6 className='m-5 text-secondary-text'>Dashboard {'>'} ... {'>'} <span className='text-primary-text font-semibold'>Calendrier</span></h6>
+            <div className="flex flex-col w-230 bg-color-background shadow rounded border border-gray-200 ml-5">
+                <div className="flex w-full">
+                    {/* Liste des formations à gauche */}
+                    <div className="flex flex-col min-w-[220px] border-r border-b border-gray-200 bg-gray-50 py-4 px-2">
+                        {multi && multi.length > 0 ? (
+                            multi.map((formation, idx) => (
+                                <button
+                                    key={formation.id}
+                                    className={`text-left px-3 py-2 rounded-lg mb-1 transition font-medium text-sm ${
+                                        idx === selectedIdx
+                                            ? "border-2 border-primary"
+                                            : "hover:text-primary"
+                                    }`}
+                                    onClick={() => setSelectedIdx(idx)}
+                                >
+                                    {formation.title}
+                                </button>
+                            ))
+                        ) : (
+                            <div className="text-gray-400 italic">Aucune formation</div>
+                        )}
+                    </div>
+                    {/* Calendrier double à droite */}
+                    <div className="flex-1 space-y-4 p-3 bg-white border-b border-gray-200">
+                        {/* Navigation mois/année */}
+                        <div className="flex items-center justify-between px-2">
                             <button
-                                key={formation.id}
-                                className={`text-left px-3 py-2 rounded-lg mb-1 transition font-medium text-sm ${
-                                    idx === selectedIdx
-                                        ? "border-2 border-primary"
-                                        : "hover:text-primary"
-                                }`}
-                                onClick={() => setSelectedIdx(idx)}
-                            >
-                                {formation.title}
+                                type="button"
+                                className="size-8 flex justify-center items-center text-primary-text hover:bg-gray-100 rounded-full disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100"
+                                aria-label="Précédent"
+                                onClick={handlePrev}>
+                                <svg className="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                             </button>
-                        ))
-                    ) : (
-                        <div className="text-gray-400 italic">Aucune formation</div>
-                    )}
-                </div>
-                {/* Calendrier double à droite */}
-                <div className="flex-1 space-y-4 p-3 bg-white border-b border-gray-200">
-                    {/* Navigation mois/année */}
-                    <div className="flex items-center justify-between px-2">
-                        <button
-                            type="button"
-                            className="size-8 flex justify-center items-center text-primary-text hover:bg-gray-100 rounded-full disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100"
-                            aria-label="Précédent"
-                            onClick={handlePrev}>
-                            <svg className="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                        </button>
-                        <div className="flex font-regular gap-65 text-lg">
-                            <span>
-                                {MONTHS_FR[month]} {year}
-                            </span>
-                            <span>
-                                {MONTHS_FR[(month + 1) % 12]} {month === 11 ? year + 1 : year}
-                            </span>
+                            <div className="flex font-regular gap-65 text-lg">
+                                <span>
+                                    {MONTHS_FR[month]} {year}
+                                </span>
+                                <span>
+                                    {MONTHS_FR[(month + 1) % 12]} {month === 11 ? year + 1 : year}
+                                </span>
+                            </div>
+                            <button
+                                type="button"
+                                className="size-8 flex justify-center items-center text-primary-text hover:bg-gray-100 rounded-full disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100"
+                                aria-label="Suivant"
+                                onClick={handleNext}>
+                                <svg className="shrink-0 size-4" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                            </button>
                         </div>
+
+                        {/* Double calendrier côte à côte */}
+                        <div className="flex gap-4">
+                            {renderCalendar(month, year)}
+                            {renderCalendar((month + 1) % 12, month === 11 ? year + 1 : year)}
+                        </div>
+                    </div>
+                </div>
+                {/* Affichage de la période sélectionnée */}
+                {(localStartDate && localEndDate) && (
+                    <div className="w-full flex justify-end items-center gap-2 mt-4 pr-8 pb-4">
+                        <span className="block text-center xxs text-gray-700 font-medium">
+                            {localStartDate.toLocaleDateString()} - {localEndDate.toLocaleDateString()}
+                        </span>
                         <button
-                            type="button"
-                            className="size-8 flex justify-center items-center text-primary-text hover:bg-gray-100 rounded-full disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100"
-                            aria-label="Suivant"
-                            onClick={handleNext}>
-                            <svg className="shrink-0 size-4" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                            className="px-4 py-2 rounded-md border border-gray-300 bg-white text-xs text-gray-700 hover:bg-gray-100 transition"
+                            onClick={() => {
+                                setLocalStartDate(selectedFormation?.periodStart || null);
+                                setLocalEndDate(selectedFormation?.periodEnd || null);
+                            }}
+                        >
+                            Annuler
+                        </button>
+                        <button
+                            className="px-4 py-2 rounded-md bg-primary text-white font-semibold text-xs hover:bg-secondary transition"
+                            onClick={() => {
+                                if (onSaveMulti && selectedFormation) {
+                                    onSaveMulti(selectedFormation.id, localStartDate, localEndDate);
+                                }
+                            }}
+                        >
+                            Sauvegarder
                         </button>
                     </div>
-
-                    {/* Double calendrier côte à côte */}
-                    <div className="flex gap-4">
-                        {renderCalendar(month, year)}
-                        {renderCalendar((month + 1) % 12, month === 11 ? year + 1 : year)}
-                    </div>
-                </div>
+                )}
             </div>
-            {/* Affichage de la période sélectionnée */}
-            {(localStartDate && localEndDate) && (
-                <div className="w-full flex justify-end items-center gap-2 mt-4 pr-8 pb-4">
-                    <span className="block text-center xxs text-gray-700 font-medium">
-                        {localStartDate.toLocaleDateString()} - {localEndDate.toLocaleDateString()}
-                    </span>
-                    <button
-                        className="px-4 py-2 rounded-md border border-gray-300 bg-white text-xs text-gray-700 hover:bg-gray-100 transition"
-                        onClick={() => {
-                            setLocalStartDate(selectedFormation?.periodStart || null);
-                            setLocalEndDate(selectedFormation?.periodEnd || null);
-                        }}
-                    >
-                        Annuler
-                    </button>
-                    <button
-                        className="px-4 py-2 rounded-md bg-primary text-white font-semibold text-xs hover:bg-secondary transition"
-                        onClick={() => {
-                            if (onSaveMulti && selectedFormation) {
-                                onSaveMulti(selectedFormation.id, localStartDate, localEndDate);
-                            }
-                        }}
-                    >
-                        Sauvegarder
-                    </button>
-                </div>
-            )}
+            <div className='flex '>
+                <Container className={'mt-5 ml-5 w-112 h-30 justify-center gap-5 items-center border-gray-200'}>
+                    <p className='text-4xl font-bold' >{jValue}</p>
+                    <p className='text-s font-semibold' >{jValue.startsWith("J - ") ? "avant le début de stage" : "depuis le début de stage"}</p>
+                </Container>
+                <Container className={'mt-5 ml-5 w-113 h-30 justify-center gap-5 items-center border-gray-200'}>
+                    <p className='text-secondary-text font-semibold'> PAE validées </p>
+                    <CircleProgress statusPae='25%'/>
+                    {/* TODO: envoyer dynamiquement la moyenne en % des validations de PAE sur SelectedFormation */}
+                    <Button className={'px-4'}>Liste Stagiaires</Button>
+                    {/* TODO: envoyer dynamiquement à la page de liste stagiaires de la SelectedFormation */}
+                </Container>
+            </div>
         </div>
     );
 }

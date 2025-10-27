@@ -1,5 +1,9 @@
 import { User, Folder, Bell, Lightbulb } from "lucide-react";
 import Button from "../ui/Button";
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin
 
 export default function MobileNavbar() {
     const btnStyle =

@@ -5,6 +5,7 @@ function Checkbox({
     disabled = false,
     value,
     onChange,
+    sizeLabel,
 }) {
     //State pour utilisés dans la composante parent
     // const [checkValue, setCheckValue] = useState(false);
@@ -14,14 +15,14 @@ function Checkbox({
         <div className="flex items-center">
             <input
                 type="checkbox"
-                className="shrink-0 mt-0.5 accent-primary  rounded-sm text-primary focus:ring-primary checked:border-primary disabled:opacity-50 disabled:pointer-events-none"
+                className="shrink-0 mt-0.5 accent-primary rounded-sm text-primary focus:ring-primary checked:border-primary disabled:opacity-50 disabled:pointer-events-none"
                 id={id}
                 disabled={disabled}
                 onChange={onChange}
                 checked={value}
             />
             <div className="flex flex-col">
-                <label htmlFor="hs-default-checkbox" className="text-sm ms-3">
+                <label htmlFor="hs-default-checkbox" className={`text-${sizeLabel} ms-3`}>
                     {label}
                 </label>
                 <p
