@@ -2,7 +2,7 @@ import React from "react";
 
 function StepperNavbar({ validated, currentStep, finishedStep = [], content }) {
     return (
-        <ul className="w-full flex justify-center md:items-center h-[500px] flex-col md:flex-row gap-2">
+        <ul className="w-full flex justify-center flex-col md:flex-row gap-2 md:min-h-[130px]">
             {content.map((step, i) => (
                 <StepItem
                     key={i}
@@ -47,14 +47,16 @@ function StepItem({ step, title, description, isValidated, isActive, isDone }) {
                 </span>
 
                 <div
-                    className={`${barClass} mt-2 w-1 h-full md:mt-0 md:ms-2 md:w-full md:h-px md:flex-1 bg-gray-100 group-last:hidden`}
+                    className={`${barClass} mt-2 w-1 h-7 md:h-1 md:mt-0 md:ms-2 md:w-full md:flex-1 bg-gray-100 group-last:hidden`}
                 ></div>
             </div>
             <div className="grow md:grow-0 md:mt-3 pb-5">
                 <span className="block text-sm font-medium text-gray-800">
                     {title}
                 </span>
-                <p className="text-sm text-gray-500">{description}</p>
+                {isActive && (
+                    <p className="text-sm text-gray-500">{description}</p>
+                )}
             </div>
         </li>
     );

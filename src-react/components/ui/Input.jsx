@@ -9,14 +9,14 @@ export default function Input({
     label = "Email",
     icon, // Si avec icon  par example <User size={18}/>
     withShowPassword = false, // Si avec icon pour afficher le mot de passe
-    withCopy = true, // Si avec icon pour afficher le mot de passe
+    withCopy = false, // Si avec icon pour afficher le mot de passe
     className,
+    value,
+    onChange,
     props,
 }) {
     const [showPassword, setShowPassword] = useState(false);
-    const [value, setValue] = useState("");
     return (
-
         <div>
             <label htmlFor={id} className="">
                 {label} {required && <span className="text-red-500">*</span>}
@@ -35,7 +35,7 @@ export default function Input({
                         icon && "ps-11"
                     } ${withShowPassword && "pe-11"} ${className}`}
                     placeholder={placeholder}
-                    onChange={(e) => setValue(e.target.value)}
+                    onChange={onChange}
                     required={required}
                     value={value}
                     {...props}

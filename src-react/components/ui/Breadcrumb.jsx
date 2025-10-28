@@ -1,23 +1,25 @@
 import React from "react";
 
-function Breadcrumb() {
+function Breadcrumb({
+    content = [
+        { title: "Home", link: "#", isFinal: false, current: false },
+        { title: "Application", link: "#", isFinal: true, current: true },
+    ],
+}) {
     return (
         <ol className="flex items-center whitespace-nowrap">
-            <BreadcrumbItem />
+            {content.map((item, i) => (
+                <BreadcrumbItem key={i} item={item}></BreadcrumbItem>
+            ))}
         </ol>
     );
 }
 
 export default Breadcrumb;
 
-function BreadcrumbItem({
-    content = [
-        { title: "Home", link: "#", isFinal: false, current: false },
-        { title: "Application", link: "#", isFinal: true, current: true },
-    ],
-}) {
-    return content.map((item, index) => (
-        <li key={index} className="inline-flex items-center">
+function BreadcrumbItem({ item }) {
+    return (
+        <li className="inline-flex items-center">
             <a
                 className={`flex items-center text-sm ${
                     item.current
@@ -45,5 +47,5 @@ function BreadcrumbItem({
                 </svg>
             )}
         </li>
-    ));
+    );
 }
