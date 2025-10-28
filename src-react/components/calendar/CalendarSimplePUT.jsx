@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './Calendar.css';
-import Button from '../../ui/Button';
+import Button from '../ui/Button';
 import { ChevronUp, Calendar, ChevronDown} from 'lucide-react';
 
 const MONTHS_FR = [
