@@ -302,15 +302,6 @@ class InfoFormCompany
         return $this->infoForm?->getInfoFormIntern()?->getInfoFormInternCompany()?->getEmail();
     }
 
-    #[Groups([
-        'read:info_form_company',
-        'read:info_form_company_collection'
-    ])]
-    public function getContactName(): ?string
-    {
-        return $this->infoForm?->getInfoFormIntern()?->getInfoFormInternCompany()?->getContactName();
-    }
-
     public function __construct()
     {
         $this->infoFormCompanyCalendarRow = new ArrayCollection();
