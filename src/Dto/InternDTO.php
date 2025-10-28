@@ -77,7 +77,7 @@ class InternDTO
     #[ApiProperty(identifier: true)]
     #[Groups([
         'read:intern_infoForm_infoFormId_infoFormIntern',
-        'create:intern_infoForm_add',
+        // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_edit',
     ])]
     public ?int $infoFormInternId = null;
@@ -89,16 +89,16 @@ class InternDTO
     ])]
     public ?int $infoFormId = null;
 
-    #[Groups([
-        'create:intern_infoForm_add',
-    ])]
-    public ?int $trainingSessionId = null;
+    // #[Groups([
+    //     'create:intern_infoForm_add',
+    // ])]
+    // public ?int $trainingSessionId = null;
 
 
-    #[Groups([
-        'create:intern_infoForm_add',
-    ])]
-    public ?int $organizationId = null;
+    // #[Groups([
+    //     'create:intern_infoForm_add',
+    // ])]
+    // public ?int $organizationId = null;
 
     #[Groups([
         'create:intern_infoForm_add',
@@ -107,16 +107,16 @@ class InternDTO
 
 
     #[Groups([
-        'create:intern_infoForm_add',
+        // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
     ])]
     public ?InfoFormStatus $infoFormStatus = null;
 
-    #[Groups([
-        'create:intern_infoForm_add',
-    ])]
-    public ?int $infoFormOrganizationId = null;
+    // #[Groups([
+    //     'create:intern_infoForm_add',
+    // ])]
+    // public ?int $infoFormOrganizationId = null;
 
     // #[Groups([
     //     'create:intern_infoForm_add',
