@@ -22,16 +22,12 @@ function Stepper({
             description: "lorem ipsum3",
             stepContent: <h1>Test3</h1>,
         },
-        {
-            title: "test3",
-            description: "lorem ipsum3",
-            stepContent: <h1>Test3</h1>,
-        },
     ],
     withBack = true,
     handleLastEvent, //par example download file
     lastEventButtonTitle = "Download",
     handleValidateEvent, // par example pour navigate apres validation
+    className,
 }) {
     const [step, setStep] = useState(0);
     const [finishedSteps, setFinishedSteps] = useState([]);
@@ -60,7 +56,13 @@ function Stepper({
     };
 
     return (
+<<<<<<< HEAD
+        <Container
+            className={`flex flex-col justify-center items-center p-4 ${className}`}
+        >
+=======
         <Container className="flex flex-col justify-center items-center">
+>>>>>>> origin/dev
             <StepperNavbar
                 content={content}
                 currentStep={step}
