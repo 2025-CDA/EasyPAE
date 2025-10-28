@@ -82,7 +82,7 @@ class InternDTO
     ])]
     public ?int $infoFormInternId = null;
 
-    #[ApiProperty(identifier: true)]
+    // #[ApiProperty(identifier: true)]
     #[Groups([
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',

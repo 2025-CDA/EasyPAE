@@ -25,7 +25,7 @@ readonly class InternProvider implements ProviderInterface
         $operationName = $operation->getName();
 
         return match ($operationName) {
-            'intern_infoForm_InfoFormIntern_infoFormInternId' => $this->getInfoFormInfoFormIntern($uriVariables),
+            'intern_infoForm_infoFormId_infoFormIntern' => $this->getInfoFormInfoFormIntern($uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
 
@@ -33,7 +33,7 @@ readonly class InternProvider implements ProviderInterface
 
     private function getInfoFormInfoFormIntern(array $uriVariables): InternDTO
     {
-        $infoFormInternId = $uriVariables['infoFormInternId'] ?? null;
+        $infoFormInternId = $uriVariables['infoFormId'] ?? null;
 
         if (!$infoFormInternId) {
             throw new BadRequestHttpException('Info form intern ID is required');
