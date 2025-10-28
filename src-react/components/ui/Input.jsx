@@ -17,11 +17,7 @@ export default function Input({
 }) {
     const [showPassword, setShowPassword] = useState(false);
     return (
-<<<<<<< HEAD
-        <div>
-=======
         <div className="">
->>>>>>> origin/dev
             <label htmlFor={id} className="">
                 {label} {required && <span className="text-red-500">*</span>}
             </label>
