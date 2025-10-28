@@ -40,13 +40,13 @@ readonly class CompanyProcessor implements ProcessorInterface
     private function companyInfoFormInfoFormCompanyEdit(CompanyDTO $data, array $uriVariables): CompanyDTO
     {
         $infoFormId = $uriVariables['infoFormId'] ?? null;
-        $infoFormCompanyId = $uriVariables['infoFormCompanyId'] ?? null;
 
-        if (!$infoFormId || !$infoFormCompanyId) {
+        if (!$infoFormId) {
             throw new BadRequestHttpException('Missing required URI variables');
         }
 
         $infoForm = $this->infoFormRepository->find($infoFormId);
+        $infoFormCompanyId = $infoForm->getInfoFormCompany()->getId() ?? null;
         if (!$infoForm) {
             throw new NotFoundHttpException('InfoForm not found');
         }
@@ -113,11 +113,12 @@ readonly class CompanyProcessor implements ProcessorInterface
         $infoFormId = $uriVariables['infoFormId'] ?? null;
         $infoFormCompanyId = $uriVariables['infoFormCompanyId'] ?? null;
 
-        if (!$infoFormId || !$infoFormCompanyId) {
+        if (!$infoFormId) {
             throw new BadRequestHttpException('Missing required URI variables');
         }
 
         $infoForm = $this->infoFormRepository->find($infoFormId);
+           $infoFormCompanyId = $infoForm->getInfoFormCompany()->getId() ?? null;
         if (!$infoForm) {
             throw new NotFoundHttpException('InfoForm not found');
         }
