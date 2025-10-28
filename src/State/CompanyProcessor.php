@@ -31,8 +31,8 @@ readonly class CompanyProcessor implements ProcessorInterface
         $operationName = $operation->getName();
 
         return match ($operationName) {
-            'company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit' => $this->companyInfoFormInfoFormCompanyEdit($data, $uriVariables),
-            'company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation' => $this->companyInfoFormInfoFormCompanyValidation($data, $uriVariables),
+            'company_infoForm_infoFormId_infoFormCompany_edit' => $this->companyInfoFormInfoFormCompanyEdit($data, $uriVariables),
+            'company_infoForm_infoFormId_infoFormCompany_validation' => $this->companyInfoFormInfoFormCompanyValidation($data, $uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
     }

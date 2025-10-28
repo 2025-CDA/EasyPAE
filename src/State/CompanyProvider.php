@@ -23,7 +23,7 @@ readonly class CompanyProvider implements ProviderInterface
         $operationName = $operation->getName();
 
         return match ($operationName) {
-            'company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId' => $this->getCompanyInfoFormInfoFormCompany($uriVariables),
+            'company_infoForm_infoFormId_infoFormCompany' => $this->getCompanyInfoFormInfoFormCompany($uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
     }
