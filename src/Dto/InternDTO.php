@@ -31,17 +31,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Post(
             uriTemplate: '/intern/infoForm',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-            denormalizationContext: ['groups' => ['create:intern_infoForm_add']],
             normalizationContext: ['groups' => ['read:intern_infoForm_infoFormId_infoFormIntern']],
+            denormalizationContext: ['groups' => ['create:intern_infoForm_add']],
             name: 'intern_infoForm_add',
             processor: InternProcessor::class,
         ),
 
 
         new Patch(
-            uriTemplate: '/intern/infoForm/infoFormIntern/{infoFormInternId}',
+            uriTemplate: '/intern/infoForm/{infoFormId}/infoFormIntern',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-            uriVariables: ['infoFormInternId'],
+            uriVariables: ['infoFormId'],
             normalizationContext: ['groups' => ['update:intern_infoForm_infoFormId_infoFormIntern_edit']],
             denormalizationContext: ['groups' => ['denorm-update:intern_infoForm_infoFormId_infoFormIntern_edit']],
             read: false,
