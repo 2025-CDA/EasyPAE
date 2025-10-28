@@ -31,7 +31,7 @@ function ProfilePage() {
     });
 
     return (
-        <MainLayout withSearchbar={false} >
+        <MainLayout withSearchbar={false} withHeader={false} >
             <div className="hidden md:flex min-h-screen">
                 {/* Contenu principal */}
                 <div className="flex-1 pl-0 md:pl-0 ml-5 " >
