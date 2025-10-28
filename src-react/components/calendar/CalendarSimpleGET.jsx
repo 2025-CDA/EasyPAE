@@ -209,7 +209,7 @@ function CalendarSimple({ dates, shrinkable = false, className, justToday = fals
                         )}
                     </div>
                 )}
-                <div className={` flex flex-col bg-white shadow-lg rounded-xl overflow-hidden ${justToday ? '' : 'border border-gray-200'}`}>
+                <div className={` flex flex-col bg-white rounded-xl overflow-hidden ${justToday ? '' : 'shadow-lg border border-gray-200'}`}>
                     <div className="p-3 space-y-0.5">
 
                         {/* ---------- */}
