@@ -4,9 +4,9 @@ namespace App\Enum;
 
 enum OrganizationRole: string
 {
-    case TRAINER = 'Formateur';
-    case MONIQUE = 'Monique';
-    case DIRECTOR = 'Directeur';
+    case TRAINER = 'trainer';
+    case MONIQUE = 'monique';
+    case DIRECTOR = 'director';
 
     public function toString(): string
     {

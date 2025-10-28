@@ -23,7 +23,6 @@ class InfoFormProvider implements ProviderInterface
         private readonly InfoFormCompanyRepository $infoFormCompanyRepository,
         private readonly InfoFormInternRepository $infoFormInternRepository,
         private readonly InfoFormOrganizationRepository $infoFormOrganizationRepository,
-        private readonly InternMemberRepository $internMemberRepository,
         private readonly TrainingSessionRepository $trainingSessionRepository
     ) {
     }
@@ -76,7 +75,7 @@ class InfoFormProvider implements ProviderInterface
             // 1. Trouver le membre avec un rôle spécifique (formateur, référent, etc.)
             // 2. Utiliser une relation directe InfoForm -> OrganizationMember
             // 3. Créer un champ "responsable" dans InfoForm
-            
+
             // Pour l'instant : prendre le premier membre
             $firstOrganizationMember = $organization->getOrganizationMembers()->first();
             if ($firstOrganizationMember) {
@@ -161,7 +160,7 @@ class InfoFormProvider implements ProviderInterface
             // 1. Filtrer par rôle : $company->getCompanyMembers()->filter(fn($m) => $m->getRole() === 'TUTEUR')
             // 2. Utiliser les données InfoFormCompany (tutor_first_name, tutor_last_name)
             // 3. Créer une relation directe InfoForm -> CompanyMember (tuteur)
-            
+
             // Pour l'instant : prendre le premier membre
             $firstCompanyMember = $company->getCompanyMembers()->first();
             if ($firstCompanyMember) {
@@ -174,7 +173,9 @@ class InfoFormProvider implements ProviderInterface
         $dto->id = 'company_resume_card_' . $infoFormId;
         $dto->companyUserAvatar = $companyUser?->getAvatar();
         $dto->companyName = $company->getName();
-        $dto->companyAddress = null; // TODO: Ajouter la propriété address à l'entité Company
+        $dto->companyAddress = null;
+        // TODO: Ajouter la propriété address à l'entité Company
+        // TODO: Arnaud: C'est fait. Mais en fait je suis pas sur que ca soit néccessaire?
         $dto->companyContactEmail = $companyUser?->getEmail(); // Utiliser l'email de l'utilisateur de l'entreprise
         $dto->companyPhoneNumber = $company->getPhoneNumber();
         $dto->tutorName = $tutorName;
@@ -196,33 +197,33 @@ class InfoFormProvider implements ProviderInterface
 
         $dto = new InfoFormDTO();
         $dto->id = 'full_resume_form_' . $infoFormId;
-        
+
         $internMember = $infoForm->getInternMember();
         $trainingSession = $infoForm->getTrainingSession();
         $company = $infoForm->getCompany();
-        
+
         if ($internMember && $internMember->getUser()) {
             $user = $internMember->getUser();
             $dto->internFirstNameFull = $user->getFirstName();
             $dto->internLastNameFull = $user->getLastName();
             $dto->internEmailFull = $user->getEmail();
         }
-        
+
         if ($trainingSession) {
             $dto->trainingNameFull = $trainingSession->getTraining()?->getName();
             $dto->trainingOfferNumberFull = $trainingSession->getOfferNumber();
             $dto->internshipStartDateFull = $trainingSession->getInternshipPeriodStart();
             $dto->internshipEndDateFull = $trainingSession->getInternshipPeriodEnd();
         }
-        
+
         if ($company) {
             $dto->companyNameFull = $company->getName();
             $dto->companyPhoneNumberFull = $company->getPhoneNumber();
             $dto->companySiretFull = $company->getSiret();
-            
+
             $tutorMember = null;
             $legalRepMember = null;
-            
+
             foreach ($company->getCompanyMembers() as $member) {
                 if ($member->getRole() === 'Tuteur' && !$tutorMember) {
                     $tutorMember = $member;
@@ -230,27 +231,27 @@ class InfoFormProvider implements ProviderInterface
                     $legalRepMember = $member;
                 }
             }
-            
+
             if ($tutorMember && $tutorMember->getUser()) {
                 $tutorUser = $tutorMember->getUser();
                 $dto->tutorFirstNameFull = $tutorUser->getFirstName();
                 $dto->tutorLastNameFull = $tutorUser->getLastName();
                 $dto->tutorEmailFull = $tutorUser->getEmail();
             }
-            
+
             if ($legalRepMember && $legalRepMember->getUser()) {
                 $legalRepUser = $legalRepMember->getUser();
                 $dto->legalResponsibleFirstNameFull = $legalRepUser->getFirstName();
                 $dto->legalResponsibleLastNameFull = $legalRepUser->getLastName();
                 $dto->legalResponsibleEmailFull = $legalRepUser->getEmail();
             }
-            
+
             // Utiliser les infos générales de l'entreprise
             $dto->companyNameFull = $company->getName();
             $dto->companyContactEmailFull = $tutorMember?->getUser()?->getEmail();
             $dto->companyEmailFull = $tutorMember?->getUser()?->getEmail();
         }
-        
+
         return $dto;
     }
 
@@ -268,7 +269,7 @@ class InfoFormProvider implements ProviderInterface
 
         $dto = new InfoFormDTO();
         $dto->id = 'info_form_status_' . $infoFormId;
-        
+
         $status = $infoForm->getStatus();
         $dto->infoFormStatus = $status?->value ?? 'unknown';
 
@@ -301,8 +302,8 @@ class InfoFormProvider implements ProviderInterface
             // Fallback en cas de problème
             $dto = new InfoFormDTO();
             $dto->id = 'company_status_' . $infoFormCompanyId;
-            $dto->companyStatus = 'Validé'; // Valeur par défaut
-            
+            $dto->companyStatus = \App\Enum\InfoFormStatus::COMPLETED_COMPANY_VALIDATION->value;
+
             return $dto;
         }
     }
@@ -331,7 +332,7 @@ class InfoFormProvider implements ProviderInterface
             $dto = new InfoFormDTO();
             $dto->id = 'intern_status_' . $infoFormInternId;
             $dto->internStatus = \App\Enum\InfoFormStatus::COMPLETED_INTERN_VALIDATION->value;
-            
+
             return $dto;
         }
     }
@@ -360,7 +361,7 @@ class InfoFormProvider implements ProviderInterface
             $dto = new InfoFormDTO();
             $dto->id = 'organization_status_' . $infoFormOrganizationId;
             $dto->organizationStatus = \App\Enum\InfoFormStatus::COMPLETED_ORGANIZATION_VALIDATION->value;
-            
+
             return $dto;
         }
     }
@@ -424,14 +425,14 @@ class InfoFormProvider implements ProviderInterface
         }
 
         $infoForms = $trainingSession->getInfoForms();
-        
+
         $totalFormsWithStatus = 0;
         $validatedForms = 0;
 
         foreach ($infoForms as $infoForm) {
             if ($infoForm->getStatus() !== null) {
                 $totalFormsWithStatus++;
-                
+
                 $status = $infoForm->getStatus();
                 if ($status === InfoFormStatus::FULLY_COMPLETED) {
                     $validatedForms++;
@@ -439,8 +440,8 @@ class InfoFormProvider implements ProviderInterface
             }
         }
 
-        $validationPercentage = $totalFormsWithStatus > 0 
-            ? ($validatedForms / $totalFormsWithStatus) * 100 
+        $validationPercentage = $totalFormsWithStatus > 0
+            ? ($validatedForms / $totalFormsWithStatus) * 100
             : 0;
 
         $dto = new InfoFormDTO();

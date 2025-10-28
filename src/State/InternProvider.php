@@ -7,86 +7,69 @@ use ApiPlatform\Metadata\Operation;
 use App\Repository\InfoFormRepository;
 use ApiPlatform\State\ProviderInterface;
 use App\Repository\InternMemberRepository;
-use ApiPlatform\Metadata\CollectionOperationInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use App\Entity\InternMember;
 
-class InternProvider implements ProviderInterface
+readonly class InternProvider implements ProviderInterface
 {
     public function __construct(
-        private readonly InternMemberRepository $internMemberRepository,
-        private readonly InfoFormRepository $infoFormRepository,
+        private InternMemberRepository $internMemberRepository,
+        private InfoFormRepository     $infoFormRepository,
     )
     {
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array|object|null
     {
-    
-        if ($operation instanceof CollectionOperationInterface) {
-            $interns = $this->internMemberRepository->findAll();
-            $dtos = [];
 
-            // infos intern
-            foreach ($interns as $intern) {
-                $dto = new InternDTO();
-                $dto->id = $intern->getId();
-                                $user = $intern->getUser();
-                                $dto->firstName = $user?->getFirstName();
-                                $dto->lastName = $user?->getLastName();
-                                $dto->email = $user?->getEmail();
+        $operationName = $operation->getName();
 
-                    // Récupération du nom de la formation
-                    foreach ($intern->getTrainingSession() as $session) {
-                        $name = $session->getTraining()->getName();
-                       
-                    }
-                    $dto->trainingName = $name;
+        return match ($operationName) {
+            'intern_infoForm_InfoFormIntern_infoFormInternId' => $this->getInfoFormInfoFormIntern($uriVariables),
+            default => throw new BadRequestHttpException('Operation not supported')
+        };
 
+    }
 
-                    // Récupération des dates de début et de fin de stage
-                    foreach ($intern->getTrainingSession() as $session) {
-                    $dto->internshipStartDate =  $session->getInternShipPeriodStart();
-                    $dto->internshipEndDate = $session->getInternshipPeriodEnd();
-                }
+    private function getInfoFormInfoFormIntern(array $uriVariables): InternDTO
+    {
+        $infoFormInternId = $uriVariables['infoFormInternId'] ?? null;
 
-                $dtos[] = $dto;
-            }
-
-            return $dtos;
+        if (!$infoFormInternId) {
+            throw new BadRequestHttpException('Info form intern ID is required');
         }
 
+        $internMember = $this->internMemberRepository->find((int)$infoFormInternId);
 
-
-        if (isset($uriVariables['id'])) {
-            $intern = $this->internMemberRepository->find((int)$uriVariables['id']);
-            if (!$intern) {
-                throw new NotFoundHttpException('Intern member not found.');
-            }
-            $dto = new InternDTO();
-            $dto->id = $intern->getId();
-                            $user = $intern->getUser();
-                            $dto->firstName = $user?->getFirstName();
-                            $dto->lastName = $user?->getLastName();
-                            $dto->email = $user?->getEmail();
-                            
-                // Récupération du nom de la formation
-                            foreach ($intern->getTrainingSession() as $session) {
-                                $name = $session->getTraining()->getName();
-                          
-                            }
-                            $dto->trainingName = $name;
-                         
-            // Récupération des dates de début et de fin de stage
-            foreach ($intern->getTrainingSession() as $session) {
-
-                    $dto->internshipStartDate =  $session->getInternShipPeriodStart();
-                    $dto->internshipEndDate = $session->getInternshipPeriodEnd();
-            }
-
-            return $dto;
+        if (!$internMember) {
+            throw new NotFoundHttpException('Intern member not found');
         }
-      
-        return null;
+
+        $infoForm = $this->infoFormRepository->findOneBy([
+            'internMember' => $internMember
+        ]);
+
+        if (!$infoForm) {
+            throw new NotFoundHttpException('Info form not found for this intern');
+        }
+
+        $dto = new InternDTO();
+        $dto->infoFormInternId = $internMember->getId();
+
+        if ($user = $internMember->getUser()) {
+            $dto->internFirstName = $user->getFirstName();
+            $dto->internLastName = $user->getLastName();
+            $dto->internEmail = $user->getEmail();
+        }
+
+        $trainingSession = $infoForm->getTrainingSession();
+        if ($trainingSession) {
+            $dto->trainingName = $trainingSession->getTraining()?->getName();
+            $dto->offerNumber = $trainingSession->getOfferNumber();
+            $dto->internshipStart = $trainingSession->getInternShipPeriodStart();
+            $dto->internshipEnd = $trainingSession->getInternshipPeriodEnd();
+        }
+
+        return $dto;
     }
 }

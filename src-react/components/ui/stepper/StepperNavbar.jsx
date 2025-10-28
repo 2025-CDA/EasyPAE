@@ -2,7 +2,11 @@ import React from "react";
 
 function StepperNavbar({ validated, currentStep, finishedStep = [], content }) {
     return (
+<<<<<<< HEAD
         <ul className="w-full flex justify-center flex-col md:flex-row gap-2 md:min-h-[130px]">
+=======
+        <ul className="w-full flex justify-center md:items-center flex-col md:flex-row gap-2">
+>>>>>>> origin/dev
             {content.map((step, i) => (
                 <StepItem
                     key={i}

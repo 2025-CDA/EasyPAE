@@ -4,9 +4,9 @@ namespace App\Enum;
 
 enum Gender: string
 {
-    case FEMALE = 'Mme';
-    case MALE = 'M';
-    case OTHER = 'Autres';
+    case FEMALE = 'female';
+    case MALE = 'male';
+    case OTHER = 'other';
 
     public function toString(): string
     {

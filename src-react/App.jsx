@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Stepper from "./components/ui/stepper/Stepper";
-import InformationSheet from "./pages/company/InformationSheet";
-import GlobalStateHistory from "./components/assistant/GlobalStateHistory";
 
 export default function App() {
     // const [showAlert, setShowAlert] = useState(true);
@@ -24,9 +21,5 @@ export default function App() {
 
     // console.log(data[0])
 
-    return (
-        <div className="w-full">
-            <GlobalStateHistory></GlobalStateHistory>
-        </div>
-    );
+    return <div className="w-full"></div>;
 }
