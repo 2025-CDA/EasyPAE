@@ -1,78 +1,85 @@
 import Container from "../../components/ui/Container";
 import Input from ".././ui/Input";
 
-function InfoFormInternPae(props) {
+function InfoFormInternPae({firstNameIntern, mailIntern, nameCourse,nbCourse,startDateInternship,endDateInternship,lastNameIntern,data}) {
     return (
-        <Container className="flex flex-col w-full overflow-hidden gap-2">
+        <Container className="flex flex-col w-full overflow-hidden gap-3 pl-5 border-hidden">
             {" "}
             {/* Masque les scrollbars horizontale et verticale */}
             <h1 className="text-primary font-semibold">Mes informations</h1>
             {/* Labels avec w-20 pour responsive, écart uniforme */}
-            <div className="flex flex-col md:flex-row w-full items-center md:items-start">
+            <div className="flex flex-row w-full items-start pl-2">
                 {" "}
                 {/* Changé en flex-col sur mobile pour éviter overflow horizontal */}
-                <p className="w-full font-semibold self-center md:w-20 whitespace-nowrap mb-2 md:mb-0">
+                <p className="font-semibold self-center whitespace-nowrap mb-">
                     Prénom :
                 </p>{" "}
                 {/* Ajusté pour mobile */}
-                <div className="flex-1 w-full md:ml-4">
+                <div className="flex-1 w-full ml-7">
                     <Input
-                        id="firstName"
+                        id="firstNameIntern"
                         label={false}
                         type="text"
-                        placeholder="Entrez votre prénom"
+                        placeholder={false}
                         required={false}
                         withCopy={false}
+                        disabled
+                        value={data.firstNameIntern}
                         className=""
                     />
                 </div>
             </div>
-            <div className="flex flex-col md:flex-row w-full items-center md:items-start">
-                <p className="w-full font-semibold self-center md:w-20 whitespace-nowrap mb-2 md:mb-0">
+            <div className="flex flex-row w-full items-start pl-2">
+                <p className="font-semibold self-center whitespace-nowrap mb-2">
                     Nom :
                 </p>
-                <div className="flex-1 w-full md:ml-4">
+                <div className="flex-1 w-full ml-12.5">
                     <Input
-                        id="nom"
+                        id="lastNameIntern"
                         label={false}
                         type="text"
-                        placeholder="Entrez votre nom"
+                        placeholder={false}
+                        value={data.lastNameIntern}
                         required={false}
                         withCopy={false}
+                        disabled
                         className=""
                     />
                 </div>
             </div>
-            <div className="flex flex-col md:flex-row w-full items-center md:items-start">
-                <p className="w-full font-semibold self-center md:w-20 whitespace-nowrap mb-2 md:mb-0">
+            <div className="flex flex-row w-full items-start pl-2">
+                <p className="font-semibold self-center whitespace-nowrap mb-2">
                     Email :
                 </p>
-                <div className="flex-1 w-full md:ml-4">
+                <div className="flex-1 w-full ml-12">
                     <Input
-                        id="email"
+                        id="emailIntern"
                         label={false}
                         type="email"
-                        placeholder="Entrez votre email"
+                        value={data.mailIntern}
+                        placeholder={false}
                         required={false}
                         withCopy={false}
+                        disabled
                         className=""
                     />
                 </div>
             </div>
-            <div className="flex flex-col md:flex-row w-full items-center md:items-start">
-                <p className="w-full font-semibold self-center md:w-20 whitespace-nowrap mb-2 md:mb-0">
+            <div className="flex flex-row w-full items-start pl-2">
+                <p className=" font-semibold self-center whitespace-nowrap mb-2">
                     Formation :
                 </p>
-                <div className="flex-1 w-full md:ml-4">
-                    <p>N°{props.nbFormation}</p>
+                <div className="flex w-full ml-4">
+                    <p className="text-secondary-text font-medium">{data.nameCourse} N°{data.nbCourse}</p>
                     
                 </div>
             </div>
             <h3 className="text-primary font-bold">Période en entreprise</h3>
-            <div className="flex flex-col self-center md:flex-row w-full items-center md:items-start">
-                <p className="w-full md:w-20 whitespace-nowrap mb-2 md:mb-0">
-                    Dates :
+            <div className="flex  self-center flex-row w-full  items-start gap-4 pl-2">
+                <p className=" mb-2 font-semibold mr-2">
+                    Dates : 
                 </p>
+                <p className='text-secondary-text font-semibold'>Du {data.startDateInternship} au {data.endDateInternship}</p>
             </div>
         </Container>
     );

@@ -32,6 +32,7 @@ function Stepper({
     handleLastEvent, //par example download file
     lastEventButtonTitle = "Download",
     handleValidateEvent, // par example pour navigate apres validation
+    isHorizontal = false
 }) {
     const [step, setStep] = useState(0);
     const [finishedSteps, setFinishedSteps] = useState([]);
@@ -67,6 +68,7 @@ function Stepper({
                 nextStep={step + 1}
                 finishedStep={finishedSteps}
                 validated={validated}
+                isHorizontal={isHorizontal}
             />
 
             <StepContent content={content[step].stepContent} />
