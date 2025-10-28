@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './Calendar.css';
-import Button from '../../components/ui/Button';
+import Button from '../ui/Button';
 import { ChevronUp, Calendar, ChevronDown} from 'lucide-react';
 
 
@@ -176,8 +176,7 @@ function CalendarSimple({ dates, shrinkable = false }) {
                             {/* Période PAE du : {periodStart} au {periodEnd} */}
                             {shrinkable && (
                                 <Button
-                                    width={7}
-                                    height={7}
+                                    shape='circle'
                                     onClick={() => setOpened(o => !o)}
                                     icon={<ChevronDown />}
                                 />
@@ -199,13 +198,13 @@ function CalendarSimple({ dates, shrinkable = false }) {
                         }
                         {shrinkable && (
                             <>
+                                {jValue} {jValue.startsWith("J - ") ? "avant le début de stage" : "depuis le début de stage"}
                                 <Button
-                                    width={7}
-                                    height={7}
+                                    className={'ml-2'}
+                                    shape='circle'
                                     onClick={() => setOpened(o => !o)}
                                     icon={<ChevronUp />}
                                 />
-                                {jValue} {jValue.startsWith("J - ") ? "avant le début de stage" : "depuis le début de stage"}
                             </>
                         )}
                     </div>
