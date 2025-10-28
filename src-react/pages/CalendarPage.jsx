@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
 import CalendarDouble from '../components/calendar/CalendarDouble'
+import CalendarSimplePUT from '../components/calendar/CalendarSimplePUT'
 import MainLayout from '../components/layout/MainLayout'
 
 function CalendarPage() {
@@ -35,10 +36,18 @@ const [multiCalendar, setMultiCalendar] = useState([
 
     return (
         <MainLayout>
-            <CalendarDouble
-                multi={multiCalendar}
-                onSaveMulti={setMultiCalendar}
-            />
+            <div className={'hidden md:flex'}>
+                <CalendarDouble
+                    multi={multiCalendar}
+                    onSaveMulti={setMultiCalendar}
+                />
+            </div>
+            <div className='md:hidden w-[80%] m-auto'>
+                <CalendarSimplePUT
+                    multi={multiCalendar}
+                    onSaveMulti={setMultiCalendar}
+                />
+            </div>
         </MainLayout>
     )
 }

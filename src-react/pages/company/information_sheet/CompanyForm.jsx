@@ -2,10 +2,8 @@ import React from "react";
 import Container from "../../../components/ui/Container";
 import Input from "../../../components/ui/Input";
 
-export default function CompanyForm({
-    companyDetails,
-    handleCompanyDetailsChange,
-}) {
+
+export default function CompanyForm({ companyDetails, handleCompanyDetailsChange }) {
     return (
         <Container className={"flex flex-col p-5 gap-5 md:w-[65%]"}>
             <h3 className="text-primary font-semibold">L’entreprise</h3>

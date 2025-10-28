@@ -175,7 +175,7 @@ class InfoFormIntern
     ])]
     public function getOfferNumber(): ?string
     {
-        return $this->infoForm?->getInternMember()?->getTrainingSession()->first()?->getOfferNumber();
+        return $this->infoForm?->getInternMember()?->getTrainingSessions()->first()?->getOfferNumber();
     }
 
     #[Groups([
@@ -184,7 +184,7 @@ class InfoFormIntern
     ])]
     public function getTrainingSessionName(): ?string
     {
-        return $this->infoForm?->getInternMember()?->getTrainingSession()->first()?->getTraining()?->getName();
+        return $this->infoForm?->getInternMember()?->getTrainingSessions()->first()?->getTraining()?->getName();
     }
 
     #[Groups([
@@ -193,7 +193,7 @@ class InfoFormIntern
     ])]
     public function getTrainers(): ?array
     {
-        $organizationMembers = $this->infoForm?->getInternMember()?->getTrainingSession()?->first()?->getOrganizationMembers();
+        $organizationMembers = $this->infoForm?->getInternMember()?->getTrainingSessions()?->first()?->getOrganizationMembers();
 
         if (!$organizationMembers instanceof Collection) {
             return [];

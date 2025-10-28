@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import AssistantPage from "./pages/assistant/AssistantPage";
+import AssistantFicheRenseignement from "./pages/assistant/AssistantFicheRenseignement";
+import DemandePae from "./pages/assistant/DemandePae";
+import CalendarSimpleGet from "./components/calendar/CalendarSimpleGET";
 
 export default function App() {
     // const [showAlert, setShowAlert] = useState(true);
@@ -21,5 +25,10 @@ export default function App() {
 
     // console.log(data[0])
 
-    return <div className="w-full"></div>;
+    return <div className="w-full">
+        {/* <AssistantPage /> */}
+        {/* <AssistantFicheRenseignement /> */}
+        <DemandePae /> 
+        {/* <CalendarSimpleGet justToday={true} /> */}
+    </div>;
 }
