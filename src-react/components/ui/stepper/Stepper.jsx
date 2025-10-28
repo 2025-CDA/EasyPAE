@@ -32,6 +32,7 @@ function Stepper({
     lastEventButtonTitle = "Download",
     handleValidateEvent, // par example pour navigate apres validation
     isHorizontal = false,
+    className,
 }) {
     const [step, setStep] = useState(0);
     const [finishedSteps, setFinishedSteps] = useState([]);
@@ -60,7 +61,9 @@ function Stepper({
     };
 
     return (
-        <Container className={`flex flex-col justify-center items-center`}>
+        <Container
+            className={`flex flex-col justify-center items-center ${className}`}
+        >
             <StepperNavbar
                 content={content}
                 currentStep={step}
