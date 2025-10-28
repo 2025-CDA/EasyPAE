@@ -2,7 +2,6 @@ import { useState } from "react";
 import StepperNavbar from "./StepperNavbar";
 import StepContent from "./StepContent";
 import Button from "../Button";
-import StepperButton from "./StepperButton";
 import Container from "../Container";
 
 function Stepper({
@@ -32,7 +31,7 @@ function Stepper({
     handleLastEvent, //par example download file
     lastEventButtonTitle = "Download",
     handleValidateEvent, // par example pour navigate apres validation
-    isHorizontal = false
+    isHorizontal = false,
 }) {
     const [step, setStep] = useState(0);
     const [finishedSteps, setFinishedSteps] = useState([]);
@@ -61,9 +60,7 @@ function Stepper({
     };
 
     return (
-        <Container
-            className={`flex flex-col justify-center items-center ${className}`}
-        >
+        <Container className={`flex flex-col justify-center items-center`}>
             <StepperNavbar
                 content={content}
                 currentStep={step}
