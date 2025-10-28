@@ -26,9 +26,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 
         new Patch(
-            uriTemplate: '/company/infoForm/{infoFormId}/infoFormCompany/{infoFormCompanyId}',
+            uriTemplate: '/company/infoForm/{infoFormId}/infoFormCompany/',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-            uriVariables: ['infoFormId', 'infoFormCompanyId'],
+            uriVariables: ['infoFormId'],
             normalizationContext: ['groups' => ['update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit']],
             denormalizationContext: ['groups' => ['denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit']],
             read: false,
@@ -37,9 +37,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
 
         new Patch(
-            uriTemplate: '/company/infoForm/{infoFormId}/infoFormCompany/{infoFormCompanyId}/validation',
+            uriTemplate: '/company/infoForm/{infoFormId}/infoFormCompany/validation',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-            uriVariables: ['infoFormId', 'infoFormCompanyId'],
+            uriVariables: ['infoFormId'],
             normalizationContext: ['groups' => ['update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation']],
             denormalizationContext: ['groups' => ['denorm-update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation']],
             read: false,
@@ -53,16 +53,16 @@ class CompanyDTO
 
     #[ApiProperty(identifier: true)]
     #[Groups([
-        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
-        'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
-        'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
+        'read:company_infoForm_infoFormId_infoFormCompany',
+        'update:company_infoForm_infoFormId_infoFormCompany_edit',
+        'update:update:company_infoForm_infoFormId_infoFormCompany_validation',
 
     ])]
     public ?int $infoFormId = null;
 
     #[ApiProperty(identifier: true)]
     #[Groups([
-        'read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
+        'read:company_infoForm_infoFormId_infoFormCompany',
         'update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_edit',
         'update:update:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId_validation',
     ])]
