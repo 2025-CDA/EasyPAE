@@ -8,16 +8,28 @@ function Breadcrumb({
 }) {
     return (
         <ol className="flex items-center whitespace-nowrap">
+<<<<<<< HEAD
+            {content.map((item, i) => (
+                <BreadcrumbItem key={i} item={item}></BreadcrumbItem>
+            ))}
+=======
             {content.map((item,i)=> <BreadcrumbItem key={i} item={item} ></BreadcrumbItem>)}
+>>>>>>> origin/dev
         </ol>
     );
 }
 
 export default Breadcrumb;
 
+<<<<<<< HEAD
+function BreadcrumbItem({ item }) {
+    return (
+        <li className="inline-flex items-center">
+=======
 function BreadcrumbItem({item}) {
     return (
         <li  className="inline-flex items-center">
+>>>>>>> origin/dev
             <a
                 className={`flex items-center text-sm ${
                     item.current

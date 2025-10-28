@@ -13,6 +13,7 @@ function MainLayout({
     children,
     avatarColor = "#f31c1c",
     withSearchbar = true,
+    withHeader = true,
 }) {
     return (
         <div className="flex flex-col md:flex-row flex-grow min-h-screen w-screen">
@@ -46,17 +47,21 @@ function MainLayout({
                             <SearchBar className={""}></SearchBar>
                         </div>
                     )}
-                    <div className="flex justify-end gap-5 items-center">
-                        <Avatar
-                            className={"md:hidden"}
-                            size="sm"
-                            color={"#eddf16"}
-                        />
-                        <div className="w-full">
-                            <h4 className="font-medium">{userName}</h4>
-                            <span className="text-secondary-text">{role}</span>
+                    {withHeader && (
+                        <div className="flex justify-end gap-5 items-center">
+                            <Avatar
+                                className={"md:hidden"}
+                                size="sm"
+                                color={"#eddf16"}
+                            />
+                            <div className="w-full">
+                                <h4 className="font-medium">{userName}</h4>
+                                <span className="text-secondary-text">
+                                    {role}
+                                </span>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
                 <div className="flex flex-col flex-grow w-full h-full">
                     {children}

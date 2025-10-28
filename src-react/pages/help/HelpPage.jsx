@@ -11,8 +11,14 @@ function HelpPage() {
     
     return ( 
             <MainLayout withSearchbar = {false} >
+
+                <h1 className='ml-5 font-semibold'>Aides</h1>
+                <h6 className='ml-5 mb-5 text-secondary-text'>Ici vous retrouverez toutes les réponses à vos interrogations.</h6>
                 
-                <div className="flex w-full justify-center m-5">
+
+
+                
+                <div className="flex w-full m-5 ">
                     <SearchBar className={"w-[90%] md:w-[80%]"} />
                 </div>
 
@@ -24,12 +30,10 @@ function HelpPage() {
                     </h5>
 
                     <div className=" mt-5 flex flex-row gap-5 justify-center overflow-x-auto p-4 snap-x snap-mandatory">
-
-
-                        <FrequentlyAsked color={"#BEF264"} description={"Où puis-je télécharger la fiche de renseignement ?"}/>
-                        <FrequentlyAsked color={"#BEF264"} description={"Comment remplir la fiche de renseignement ?"}/>
-                        <FrequentlyAsked color={"#BEF264"} description={"Comment suivre l'avancée des signatures"}/>
-                        <FrequentlyAsked color={"#BEF264"} description={"Comment sont organisés les heures en entreprise ?"}/>
+                        <FrequentlyAsked color={"green"} description={"Où puis-je télécharger la fiche de renseignement ?"}/>
+                        <FrequentlyAsked color={"green"} description={"Comment remplir la fiche de renseignement ?"}/>
+                        <FrequentlyAsked color={"green"} description={"Comment suivre l'avancée des signatures"}/>
+                        <FrequentlyAsked color={"green"} description={"Comment sont organisés les heures en entreprise ?"}/>
 
 
                     </div>
@@ -42,7 +46,7 @@ function HelpPage() {
                        Thèmes
                     </h5>
 
-                    <div className="flex flex-col gap-5 mt-5 justify-center">
+                    <div className="flex flex-col gap-5 mt-5 justify-center font-semibold">
 
                         <ThemeItem description={"articles"} NArticles={2} icon={<FileText strokeWidth={1} />} titre={"Fiche de renseignement"}    />
                         <ThemeItem description={"articles"} NArticles={6} icon={<GraduationCap strokeWidth={1} />} titre={"Stagiaires"}    />

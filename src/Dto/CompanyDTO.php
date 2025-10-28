@@ -16,9 +16,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     operations: [
         new Get(
-            uriTemplate: '/company/infoForm/{infoFormId}/infoFormCompany/{infoFormCompanyId}',
+            uriTemplate: '/company/infoForm/{infoFormId}/infoFormCompany/',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-            uriVariables: ['infoFormId', 'infoFormCompanyId'],
+            uriVariables: ['infoFormId'],
             normalizationContext: ['groups' => ['read:company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId']],
             name: 'company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId',
             provider: CompanyProvider::class,
