@@ -165,14 +165,13 @@ readonly class OrganizationProcessor implements ProcessorInterface
         }
 
         if ($data->trainingName !== null) {
-            $training = $session->getTraining();
+            $training = $this->trainingRepository->findOneBy(['name' => $data->trainingName]);
             if ($training) {
-                $training->setName($data->trainingName);
+                $session->setTraining($training);
+            } else {
+                throw new NotFoundHttpException('Training name not found.');
             }
         }
-
-//        TODO: fix this, it should change the relation, not change the names.
-//        Use something like setTraining()
 
         if ($data->trainerId !== null) {
             $trainer = $this->organizationMemberRepository->find($data->trainerId);
