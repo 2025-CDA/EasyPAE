@@ -1,8 +1,8 @@
 import React from "react";
 
-function StepperNavbar({ validated, currentStep, finishedStep = [], content }) {
+function StepperNavbar({ validated, currentStep, finishedStep = [], content , isHorizontal}) {
     return (
-        <ul className="w-full flex justify-center md:items-center flex-col md:flex-row gap-2">
+        <ul className={`w-full flex justify-center md:items-center ${!isHorizontal && 'flex-col'} md:flex-row gap-2`}>
             {content.map((step, i) => (
                 <StepItem
                     key={i}
@@ -12,6 +12,7 @@ function StepperNavbar({ validated, currentStep, finishedStep = [], content }) {
                     isActive={i === currentStep}
                     isDone={finishedStep.includes(i)}
                     isValidated={validated}
+                    isHorizontal
                 />
             ))}
         </ul>
@@ -20,7 +21,7 @@ function StepperNavbar({ validated, currentStep, finishedStep = [], content }) {
 
 export default StepperNavbar;
 
-function StepItem({ step, title, description, isValidated, isActive, isDone }) {
+function StepItem({ step, title, description, isValidated, isActive, isDone, isHorizontal=false }) {
     let stepCircleClass = "bg-gray-100 text-gray-400";
     if (isValidated) {
         stepCircleClass = "bg-validate-text text-white";
@@ -38,8 +39,8 @@ function StepItem({ step, title, description, isValidated, isActive, isDone }) {
     }
 
     return (
-        <li className="md:shrink md:basis-0 flex-1 group flex gap-x-2 md:block">
-            <div className=" min-w-7 min-h-7 flex flex-col items-center md:w-full md:inline-flex md:flex-wrap md:flex-row text-xs align-middle">
+        <li className="md:shrink md:basis-0 flex-1 group  gap-x-2 md:block">
+            <div className={` min-w-7 min-h-7 flex ${!isHorizontal && 'flex-col' } items-center md:w-full md:inline-flex md:flex-wrap md:flex-row text-xs align-middle`}>
                 <span
                     className={` ${stepCircleClass} size-8 flex justify-center items-center shrink-0 font-medium rounded-full`}
                 >
@@ -47,7 +48,7 @@ function StepItem({ step, title, description, isValidated, isActive, isDone }) {
                 </span>
 
                 <div
-                    className={`${barClass} mt-2 w-1 h-full md:mt-0 md:ms-2 md:w-full md:h-px md:flex-1 bg-gray-100 group-last:hidden`}
+                    className={`${barClass} ${!isHorizontal && 'w-1 h-full mt-2  md:mt-0 md:ms-2 md:w-full md:h-px md:flex-1 bg-gray-100 group-last:hidden'} ${isHorizontal && 'mt-0 ms-2 w-full h-px flex-1 bg-gray-100 group-last:hidden'}`}
                 ></div>
             </div>
             <div className="grow md:grow-0 md:mt-3 pb-5">

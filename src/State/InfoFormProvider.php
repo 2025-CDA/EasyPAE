@@ -302,7 +302,7 @@ class InfoFormProvider implements ProviderInterface
             // Fallback en cas de problème
             $dto = new InfoFormDTO();
             $dto->id = 'company_status_' . $infoFormCompanyId;
-            $dto->companyStatus = 'Validé'; // Valeur par défaut
+            $dto->companyStatus = \App\Enum\InfoFormStatus::COMPLETED_COMPANY_VALIDATION->value;
 
             return $dto;
         }

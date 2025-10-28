@@ -1,0 +1,112 @@
+import { useState } from "react";
+import CardFormation from "../../components/ui/CardFormation";
+import Select from "../../components/ui/Select";
+import CalendarSimpleGet from "../../components/calendar/CalendarSimpleGET";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input"
+import MainLayout from "../../components/layout/MainLayout";
+
+
+function Dashboard({
+    selectDiv, // props pour gérer l'affichage du select dans le header
+    calendarDiv, // props pour gérer l'affichage du calendrier dans la grille principale
+}) {
+ const [selected, setSelected] = useState("");
+ const [showForm, setShowForm] = useState(false); // État pour contrôler l'affichage du formulaire
+
+
+ const options = [
+   { value: "formation1", label: "Formation 1" },
+   { value: "formation2", label: "Formation 2" },
+   { value: "formation3", label: "Formation 3" },
+ ];
+
+
+ // Fonction pour basculer l'affichage du formulaire
+ const toggleForm = () => {
+   console.log("showForm")
+   setShowForm(!showForm);
+ };
+console.log(selectDiv)
+
+ return (
+    <MainLayout>
+{/* -------------------------------------------------Header--------------------------------------- */}
+       <div className="w-full flex flex-row justify-between items-center px-6">
+           <h1 className="text-2xl font-bold">Dashboard</h1>
+            <div className={selectDiv}>
+                <Select options={options} value={selected} onChange={setSelected} />
+            </div>
+       </div>
+
+{/* --------------------Grille principale: cartes à gauche, calendrier à droite --------------------*/}
+        <div className="flex flex-col flex-1 w-full p-6">
+        <h1 className="text-2xl font-semibold mb-6">Informatique - Numérique</h1>
+
+        <div className="flex flex-col lg:flex-row gap-6 w-full">
+            {/* ------Cartes de formations (2/3 sur desktop) ------ */}
+            <div className="w-full lg:w-2/3 flex flex-col">
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <CardFormation
+                        trainingTitle="Nom de la formation 1"
+                        nbOffer="xxxxxx"
+                        trainerName="Nom du formateur"
+                        startDateInternship="00/00/0000"
+                        endDateInternship="00/00/0000"
+                        />
+                        <CardFormation
+                        trainingTitle="Nom de la formation 2"
+                        nbOffer="xxxxxx"
+                        trainerName="Nom du formateur"
+                        startDateInternship="00/00/0000"
+                        endDateInternship="00/00/0000"
+                        />
+                        <CardFormation
+                        trainingTitle="Nom de la formation 3"
+                        nbOffer="xxxxxx"
+                        trainerName="Nom du formateur"
+                        startDateInternship="00/00/0000"
+                        endDateInternship="00/00/0000"
+                        />
+                        <div className="h-88">
+                        <CardFormation onClick={toggleForm}>
+                            {showForm ? "Masquer le formulaire" : "Ajouter un stagiaire"}
+                        </CardFormation>
+                    </div>
+                </div>
+            </div>
+
+            {/* Calendrier (1/3 sur desktop) */}
+            <div className="w-full lg:w-1/3 flex flex-col gap-2">
+            <div className={calendarDiv || "border-1 border-gray-200 flex flex-col shadow-xl rounded-2xl overflow-hidden h-110 bg-white"}>
+                <div className="calendarDiv flex items-center justify-center mb-4">
+                <CalendarSimpleGet />
+                </div>
+                <div className="border-t border-gray-200 py-3 flex items-center justify-center">
+                <Button>
+                    Accéder aux calendriers des formations
+                </Button>
+                </div>
+            </div>
+            <div className={`transition-all duration-300 ${showForm ? 'max-h-full' : 'max-h-0 overflow-hidden'}`}>
+                {showForm && (
+                <div className="p-5 border-1 border-gray-200 flex flex-col shadow-xl rounded-2xl overflow-hidden h-auto bg-white mb-6">
+                    <h3 className="mb-4">Nouveau stagiaire</h3>
+                    <Input type="text" label="Nom" withCopy={false} className="mb-5" placeholder="" />
+                    <Input type="text" label="Prénom" withCopy={false} className="mb-5" placeholder="" />
+                    <Input type="text" label="Adresse email" withCopy={false} className="mb-5" placeholder="" />
+                    <Input type="text" label="N° de stagiaire" withCopy={false} className="mb-5" placeholder="" />
+                    <Button>Envoyer l'invitation</Button>
+                </div>
+                )}
+            </div>
+            </div>
+        </div>
+        </div>
+    </MainLayout>
+ );
+}
+
+
+export default Dashboard;

@@ -34,7 +34,7 @@ readonly class CompanyProvider implements ProviderInterface
         $infoFormId = $uriVariables['infoFormId'] ?? null;
         $infoFormCompanyId = $uriVariables['infoFormCompanyId'] ?? null;
 
-        if (!$infoFormId || !$infoFormCompanyId) {
+        if (!$infoFormId) {
             throw new BadRequestHttpException('Info form ID and info form company ID are required');
         }
 
