@@ -252,6 +252,13 @@ readonly class InternProcessor implements ProcessorInterface
 
             if ($existingUser) {
 
+                $companyMember = $existingUser->getCompanyMember();
+
+                if ($companyMember) {
+                    $companyMember->addInfoForm($infoForm);
+                    $this->entityManager->flush();
+                }
+
                 // TODO: move this part in the mailer service
                 $email = (new TemplatedEmail())
                     ->from(new Address('connexion-entreprise@easypae.com', 'EasyPAE'))
@@ -273,6 +280,7 @@ readonly class InternProcessor implements ProcessorInterface
                     'email' => $infoFormInternCompany?->getEmail(),
                     'companyName' => $infoFormInternCompany?->getCompanyName(),
                     'companyAddress' => $infoFormInternCompany?->getAddress(),
+                    'infoFormId' => $infoFormId,
                     'expires' => time() + 86400  // 24h
                 ];
 
@@ -298,8 +306,8 @@ readonly class InternProcessor implements ProcessorInterface
                         'registrationLink' => $registrationLink,
                     ]);
 
-                $this->mailer->send($email);
             }
+            $this->mailer->send($email);
         }
         return $data;
     }

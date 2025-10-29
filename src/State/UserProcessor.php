@@ -12,6 +12,7 @@ use App\Enum\CompanyRole;
 use App\Enum\UserRole;
 use App\Repository\CompanyMemberRepository;
 use App\Repository\CompanyRepository;
+use App\Repository\InfoFormRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserNotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,6 +28,7 @@ readonly class UserProcessor implements ProcessorInterface
         private UserNotificationRepository $userNotificationRepository,
         private CompanyRepository          $companyRepository,
         private CompanyMemberRepository    $companyMemberRepository,
+        private InfoFormRepository         $infoFormRepository,
         private EntityManagerInterface     $entityManager,
         private RequestStack               $requestStack,
         private string                     $projectDir,
@@ -291,6 +293,13 @@ readonly class UserProcessor implements ProcessorInterface
                 }
 
                 $this->entityManager->persist($companyMember);
+
+                if ($data->infoFormId) {
+                    $infoForm = $this->infoFormRepository->find($data->infoFormId);
+                    if ($infoForm) {
+                        $companyMember->addInfoForm($infoForm);
+                    }
+                }
             }
         }
 

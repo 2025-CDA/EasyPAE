@@ -117,6 +117,12 @@ class UserDTO
     public ?string $id = null;
 
     #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?int $infoFormId = null;
+
+    #[Groups([
         'read:user_basic',
         'read:user_info',
         'write:user_info',
