@@ -302,10 +302,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatar = null;
 
-    #[Vich\UploadableField(mapping: 'avatars', fileNameProperty: 'avatar')]
-    private ?File $avatarFile = null;
-
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $phone = null;
 
@@ -559,20 +555,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->avatar = $avatar;
 
         return $this;
-    }
-
-    public function getAvatarFile(): ?File
-    {
-        return $this->avatarFile;
-    }
-
-    public function setAvatarFile(?File $avatarFile): void
-    {
-        $this->avatarFile = $avatarFile;
-
-        if ($avatarFile) {
-            $this->updatedAt = new \DateTimeImmutable();
-        }
     }
 
     public function getPhone(): ?string

@@ -156,9 +156,17 @@ readonly class UserProcessor implements ProcessorInterface
 
         $request = $this->requestStack->getCurrentRequest();
         $uploadedFile = $request?->files->get('avatar');
-
         if (!$uploadedFile) {
             throw new BadRequestHttpException('No avatar file uploaded');
+        }
+
+        // Delete old avatar if exists
+        $oldAvatar = $user->getAvatar();
+        if ($oldAvatar) {
+            $oldFilePath = $this->projectDir . '/public/uploads/avatars/' . $oldAvatar;
+            if (file_exists($oldFilePath)) {
+                unlink($oldFilePath);
+            }
         }
 
         // Generate unique filename
@@ -172,7 +180,6 @@ readonly class UserProcessor implements ProcessorInterface
 
         // Update user
         $user->setAvatar($filename);
-
         $this->entityManager->flush();
 
         $dto = new UserDTO();
