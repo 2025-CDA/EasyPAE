@@ -22,8 +22,8 @@
     . nouveau "user" via "Ajouter un stagiaire" OK
     . mot de passe oublié OK
     . nouveau "user" via "Suivant" (ajout d'un company_member)
-    . modification du statuts
--   user/change-password
+    . modification des statuts
+- user/change-password
 
 **Max**
 
@@ -36,6 +36,6 @@
 -   problème du POST (création de sessions) de OrganizationDTO où ça fait une erreur 400 iri mais que ça met bien en BDD
 
 ### TO FINISH :
-
--   contrôle de toutes les routes
--   suppression des components inutiles (MailerController, templates/pages)
+- contrôle de toutes les routes
+- sécurisation des routes
+- suppression des components inutiles (MailerController, templates/pages)
