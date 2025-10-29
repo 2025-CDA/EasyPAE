@@ -57,8 +57,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             denormalizationContext: ['groups' => ['create:organization_session_add']],
             name: 'organization_session_add',
             processor: OrganizationProcessor::class,
-            read: false,
-            output: false,
         ),
         new Post(
             uriTemplate: '/organization/session/{sessionId}/intern',
