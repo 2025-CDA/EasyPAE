@@ -272,6 +272,7 @@ readonly class InfoFormProvider implements ProviderInterface
 
         $status = $infoForm->getStatus();
         $dto->infoFormStatus = $status?->value ?? 'unknown';
+        $dto->updated_at = $infoForm->getUpdatedAt();
 
         // Log pour debug en production
         error_log("InfoForm {$infoFormId} status: " . ($status?->value ?? 'null'));
@@ -295,6 +296,7 @@ readonly class InfoFormProvider implements ProviderInterface
             $dto = new InfoFormDTO();
             $dto->id = 'company_status_' . $infoFormCompanyId;
             $dto->companyStatus = $infoFormCompany->getStatus()->value;
+            $dto->updated_at = $infoFormCompany->getUpdatedAt();
 
             return $dto;
 
@@ -324,6 +326,7 @@ readonly class InfoFormProvider implements ProviderInterface
             $dto = new InfoFormDTO();
             $dto->id = 'intern_status_' . $infoFormInternId;
             $dto->internStatus = $infoFormIntern->getStatus()->value;
+            $dto->updated_at = $infoFormIntern->getUpdatedAt();
 
             return $dto;
 
@@ -353,6 +356,7 @@ readonly class InfoFormProvider implements ProviderInterface
             $dto = new InfoFormDTO();
             $dto->id = 'organization_status_' . $infoFormOrganizationId;
             $dto->organizationStatus = $infoFormOrganization->getStatus()->value;
+            $dto->updated_at = $infoFormOrganization->getUpdatedAt();
 
             return $dto;
 
