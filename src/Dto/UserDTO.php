@@ -2,14 +2,17 @@
 
 namespace App\Dto;
 
-use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Post;
+use DateTimeImmutable;
 use App\State\UserProvider;
 use App\State\UserProcessor;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Context;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ApiResource(
     operations: [
@@ -259,4 +262,23 @@ class UserDTO
 
     #[Groups(['read:notification_status',])]
     public ?string $message = null;
+
+    #[Groups([
+        'read:user_info',
+        'write:user_info'
+    ])]
+    public ?string $phone  = null;
+
+        #[Groups([
+        'read:user_info',
+        'write:user_info'
+    ])]
+    public ?string $address  = null;
+
+    #[Groups([
+        'read:user_info',
+        'write:user_info'
+    ])]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
+    public ?DateTimeImmutable $birthday = null;
 }
