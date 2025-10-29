@@ -8,8 +8,6 @@ use App\Dto\UserDTO;
 use App\Repository\UserRepository;
 use App\Repository\UserNotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Exception\ORMException;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -20,8 +18,8 @@ readonly class UserProcessor implements ProcessorInterface
         private UserRepository             $userRepository,
         private UserNotificationRepository $userNotificationRepository,
         private EntityManagerInterface     $entityManager,
-        private readonly RequestStack      $requestStack,
-        private readonly string $projectDir,
+        private RequestStack               $requestStack,
+        private string                     $projectDir,
     )
     {
     }
@@ -35,6 +33,7 @@ readonly class UserProcessor implements ProcessorInterface
             'update_user_preferences' => $this->updateUserPreferences($data, $uriVariables),
             'mark_notification_as_read' => $this->markNotificationAsRead($data ?? new UserDTO(), $uriVariables),
             'upload_user_avatar' => $this->uploadUserAvatar($uriVariables),
+            'user_companyMember' => $this->createCompanyMemberAndCompany($data),
             default => throw new BadRequestHttpException('Operation not supported')
         };
     }
@@ -160,7 +159,6 @@ readonly class UserProcessor implements ProcessorInterface
             throw new BadRequestHttpException('No avatar file uploaded');
         }
 
-        // Delete old avatar if exists
         $oldAvatar = $user->getAvatar();
         if ($oldAvatar) {
             $oldFilePath = $this->projectDir . '/public/uploads/avatars/' . $oldAvatar;
@@ -169,16 +167,13 @@ readonly class UserProcessor implements ProcessorInterface
             }
         }
 
-        // Generate unique filename
         $filename = uniqid('', true) . '.' . $uploadedFile->guessExtension();
 
-        // Move file
         $uploadedFile->move(
             $this->projectDir . '/public/uploads/avatars',
             $filename
         );
 
-        // Update user
         $user->setAvatar($filename);
         $this->entityManager->flush();
 
@@ -189,6 +184,10 @@ readonly class UserProcessor implements ProcessorInterface
         $dto->lastName = $user->getLastName();
 
         return $dto;
+    }
+
+    private function createCompanyMemberAndCompany(array $uriVariables)
+    {
     }
 
 }

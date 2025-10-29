@@ -46,10 +46,7 @@ readonly class CompanyProcessor implements ProcessorInterface
         }
 
         $infoForm = $this->infoFormRepository->find($infoFormId);
-        $infoFormCompanyId = $infoForm->getInfoFormCompany()->getId() ?? null;
-        if (!$infoForm) {
-            throw new NotFoundHttpException('InfoForm not found');
-        }
+        $infoFormCompanyId = $infoForm->getInfoFormCompany()?->getId();
 
         $infoFormCompany = $this->infoFormCompanyRepository->find($infoFormCompanyId);
         if (!$infoFormCompany) {

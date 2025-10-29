@@ -12,12 +12,11 @@ use App\Entity\InfoFormOrganization;
 use App\Entity\InfoFormInternCompany;
 use App\Repository\InfoFormRepository;
 use App\Enum\InfoFormOrganizationStatus;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
 use App\Repository\InternMemberRepository;
-use App\Repository\OrganizationRepository;
 use App\Repository\InfoFormInternRepository;
-use App\Repository\TrainingSessionRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -27,8 +26,7 @@ readonly class InternProcessor implements ProcessorInterface
         private InfoFormRepository $infoFormRepository,
         private InfoFormInternRepository $infoFormInternRepository,
         private InternMemberRepository $internMemberRepository,
-        private OrganizationRepository $organizationRepository,
-        private TrainingSessionRepository $trainingSessionRepository,
+        private UserRepository $userRepository,
         private EntityManagerInterface $entityManager
     )
     {
@@ -53,20 +51,6 @@ readonly class InternProcessor implements ProcessorInterface
 
     private function internInfoFormAdd(InternDTO $data): InternDTO
     {
-        // if (!$data->trainingSessionId || !$data->organizationId || !$data->internId) {
-        //     throw new BadRequestHttpException('Missing required fields: trainingSessionId, organizationId, or internId');
-        // }
-
-        // $trainingSession = $this->trainingSessionRepository->find($data->trainingSessionId);
-        // if (!$trainingSession) {
-        //     throw new NotFoundHttpException('Training session not found');
-        // }
-
-        // $organization = $this->organizationRepository->find($data->organizationId);
-        // if (!$organization) {
-        //     throw new NotFoundHttpException('Organization not found');
-        // }
-
         $internMember = $this->internMemberRepository->find($data->internId);
         if (!$internMember) {
             throw new NotFoundHttpException('Intern member not found');
@@ -77,7 +61,7 @@ readonly class InternProcessor implements ProcessorInterface
         // $infoForm->setOrganization($organization);
         // $infoForm->setTrainingSession($trainingSession);
         $infoForm->setStatus(InfoFormStatus::INITIALIZED);
-        
+
 
         $this->entityManager->persist($infoForm);
 
@@ -100,7 +84,7 @@ readonly class InternProcessor implements ProcessorInterface
         //     $infoFormOrganization->setStatus($data->infoFormOrganizationStatus);
         // }
             $infoFormOrganization->setStatus(InfoFormOrganizationStatus::INITIALIZED);
-                    
+
         $this->entityManager->persist($infoFormOrganization);
         $infoForm->setInfoFormOrganization($infoFormOrganization);
 
@@ -250,6 +234,21 @@ readonly class InternProcessor implements ProcessorInterface
 
         $this->entityManager->flush();
 
+        $infoFormInternCompany = $infoFormIntern?->getInfoFormInternCompany();
+        $email = $infoFormInternCompany?->getEmail();
+
+        if ($email) {
+            $existingUser = $this->userRepository->findOneBy(['email' => $email]);
+
+//            TODO: add email sending the email here.
+            if ($existingUser) {
+                // send connection mail
+            } else {
+                //  send account creation mail
+            }
+        }
+
         return $data;
     }
+
 }
