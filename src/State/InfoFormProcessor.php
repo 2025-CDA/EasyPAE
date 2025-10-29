@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Doctrine\ORM\EntityManagerInterface;
 
-class InfoFormProcessor implements ProcessorInterface
+readonly class InfoFormProcessor implements ProcessorInterface
 {
     public function __construct(
         private readonly InfoFormRepository $infoFormRepository,
@@ -42,7 +42,7 @@ class InfoFormProcessor implements ProcessorInterface
             if (!$infoForm) {
                 throw new NotFoundHttpException('InfoForm not found');
             }
-            
+
             $infoForm->setStatus(\App\Enum\InfoFormStatus::FULLY_COMPLETED);
             $this->entityManager->flush();
             
@@ -67,7 +67,7 @@ class InfoFormProcessor implements ProcessorInterface
             $dto->validationMessage = 'Resume form validation processed successfully';
 
             return $dto;
-            
+
         } catch (\Exception $e) {
             throw new BadRequestHttpException('Validation failed: ' . $e->getMessage());
         }

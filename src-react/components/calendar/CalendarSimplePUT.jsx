@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import './Calendar.css';
-import Button from '../../ui/Button';
+import Button from '../ui/Button';
+import Container from '../ui/Container';
+import CircleProgress from '../ui/CircleProgress';
 import { ChevronUp, Calendar, ChevronDown} from 'lucide-react';
 
 const MONTHS_FR = [
@@ -62,7 +64,7 @@ function getCalendarRows(month, year) {
     return weeks;
 }
 
-function CalendarSimplePUT({ multi = null, single = null, onSaveSingle = null, onSaveMulti = null }) {
+function CalendarSimplePUT({ multi = null, single = null, onSaveSingle = null, onSaveMulti = null, className }) {
     // Détection du mode
     const isMulti = Array.isArray(multi) && multi.length > 0;
     const isSingle = !!single && !isMulti;
@@ -195,7 +197,7 @@ function CalendarSimplePUT({ multi = null, single = null, onSaveSingle = null, o
     const [showMenu, setShowMenu] = useState(false);
 
     return (
-        <div>
+        <div className={`${className}`}>
             {!isMulti && isSingle &&(
                 <div>
                     <p className='text-3xl font-semibold' >Période PAE</p>
@@ -290,16 +292,16 @@ function CalendarSimplePUT({ multi = null, single = null, onSaveSingle = null, o
                                 </div>
                             </div>
                             {/* Jours de la semaine */}
-                            <div className="flex pb-1.5">
+                            <div className="flex pb-1.5 w-full">
                                 {DAYS_FR.map((d) => (
-                                    <span key={d} className="m-px w-10 block text-center text-xs text-gray-500">
+                                    <span key={d} className="w-[14.2857%] block text-center text-xs text-gray-500">
                                         {d}
                                     </span>
                                 ))}
                             </div>
                             {/* Jours du calendrier */}
                             {weeks.map((week, i) => (
-                                <div className="flex" key={i}>
+                                <div className="flex w-full" key={i}>
                                     {week.map(({ day, currentMonth, key, date }, dayIdx) => {
                                         // Détection du premier et dernier jour de la période
                                         const isStart = startDate && date.getFullYear() === startDate.getFullYear() && date.getMonth() === startDate.getMonth() && date.getDate() === startDate.getDate();
@@ -314,7 +316,7 @@ function CalendarSimplePUT({ multi = null, single = null, onSaveSingle = null, o
                                         const isToday = date.getFullYear() === todayY && date.getMonth() === todayM && date.getDate() === todayD;
 
                                         // Classes pour arrondir le fond logo
-                                        let logoBgClass = "absolute z-0 w-10 h-10 bg-logo";
+                                        let logoBgClass = "absolute z-0 w-full h-10 bg-logo";
                                         if (inPeriod && currentMonth && !isStart && !isEnd) {
                                             if (isFirstOfWeek) {
                                                 logoBgClass += " rounded-l-full";
@@ -346,7 +348,7 @@ function CalendarSimplePUT({ multi = null, single = null, onSaveSingle = null, o
                                         }
 
                                         return (
-                                            <div key={key} className="relative flex justify-center items-center">
+                                            <div key={key} className="relative w-[14.2857%] flex justify-center items-center">
                                                 {inPeriod && currentMonth && (
                                                     <div className={logoBgClass} />
                                                 )}
@@ -416,6 +418,17 @@ function CalendarSimplePUT({ multi = null, single = null, onSaveSingle = null, o
                 </div>
             ) : (
                 <div className="mt-4">Aucune formation sélectionnée</div>
+            )}
+            { isMulti && (
+                <div className='flex w-full'>
+                    <Container className={'mt-5 flex-1 h-30 flex justify-center gap-5 items-center border-gray-200'}>
+                        <p className='text-secondary-text text-xs font-semibold'> PAE validées </p>
+                        <CircleProgress statusPae='25%'/>
+                        {/* TODO: envoyer dynamiquement la moyenne en % des validations de PAE sur SelectedFormation */}
+                        <Button className={'px-4 text-xs'}>Liste Stagiaires</Button>
+                        {/* TODO: envoyer dynamiquement à la page de liste stagiaires de la SelectedFormation */}
+                    </Container>
+                </div>
             )}
         </div>
     )

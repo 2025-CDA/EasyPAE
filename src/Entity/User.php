@@ -28,7 +28,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -245,7 +246,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     ])]
     private ?string $login = null;
 
-    #[ORM\OneToOne(mappedBy: 'user', targetEntity: CompanyMember::class)]
+    #[ORM\OneToOne(targetEntity: CompanyMember::class, mappedBy: 'user')]
     #[MaxDepth(1)]
     #[Groups([
         'read:user',
@@ -255,7 +256,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     ])]
     private ?CompanyMember $companyMember = null;
 
-    #[ORM\OneToOne(mappedBy: 'user', targetEntity: OrganizationMember::class)]
+    #[ORM\OneToOne(targetEntity: OrganizationMember::class, mappedBy: 'user')]
     #[MaxDepth(1)]
     #[Groups([
         'read:user',
@@ -265,7 +266,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     ])]
     private ?OrganizationMember $organizationMember = null;
 
-    #[ORM\OneToOne(mappedBy: 'user', targetEntity: InternMember::class)]
+    #[ORM\OneToOne(targetEntity: InternMember::class, mappedBy: 'user')]
     #[MaxDepth(1)]
     #[Groups([
         'read:user',

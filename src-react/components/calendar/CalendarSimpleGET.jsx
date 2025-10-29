@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './Calendar.css';
-import Button from '../../components/ui/Button';
+import Button from '../ui/Button';
 import { ChevronUp, Calendar, ChevronDown} from 'lucide-react';
 
 
@@ -63,7 +63,7 @@ function getCalendarRows(month, year) {
     return weeks;
 }
 
-function CalendarSimple({ dates, shrinkable = false }) {
+function CalendarSimple({ dates, shrinkable = false, className, justToday = false }) {
     // Supporte la prop dates (objet contenant periodStart et periodEnd)
     // Si dates est fourni, on l'utilise, sinon on prend periodStart/periodEnd des props (pour compatibilité)
     let periodStart = null;
@@ -152,9 +152,9 @@ function CalendarSimple({ dates, shrinkable = false }) {
     }
 
     return (
-        <div>
+        <div className={`${className}`}>
             {shrinkable && (
-                <div className={`w-80 pl-2 pr-2 mb-3 flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden`}>
+                <div className={`w-full pl-2 pr-2 mb-3 flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden`}>
                     {/* Affichage du J- / J+ */}
                     {jValue && (
                         <div className="mt-2 pb-5 text-center text-s font-bold text-primary-text">
@@ -176,8 +176,7 @@ function CalendarSimple({ dates, shrinkable = false }) {
                             {/* Période PAE du : {periodStart} au {periodEnd} */}
                             {shrinkable && (
                                 <Button
-                                    width={7}
-                                    height={7}
+                                    shape='circle'
                                     onClick={() => setOpened(o => !o)}
                                     icon={<ChevronDown />}
                                 />
@@ -187,11 +186,11 @@ function CalendarSimple({ dates, shrinkable = false }) {
                     )}
                 </div>
             )}
-            <div className={`w-80 pl-2 pr-2 flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden${opened ? '' : ' hidden'}`}>
+            <div className={`w-full pl-2 pr-2 flex flex-col bg-white rounded-xl overflow-hidden${opened ? '' : ' hidden'} ${justToday ? '' : 'border border-gray-200'}`}>
                 {/* Affichage du J- / J+ */}
                 {jValue && (
                     <div className="mt-2 pb-5 text-center font-bold text-primary-text">
-                        {!shrinkable &&
+                        {!shrinkable && !justToday &&
                             <>
                                 <p className='text-3xl ' >{jValue}</p>
                                 <p className='text-s ' >{jValue.startsWith("J - ") ? "avant le début de stage" : "depuis le début de stage"}</p>
@@ -199,18 +198,18 @@ function CalendarSimple({ dates, shrinkable = false }) {
                         }
                         {shrinkable && (
                             <>
+                                {jValue} {jValue.startsWith("J - ") ? "avant le début de stage" : "depuis le début de stage"}
                                 <Button
-                                    width={7}
-                                    height={7}
+                                    className={'ml-2'}
+                                    shape='circle'
                                     onClick={() => setOpened(o => !o)}
                                     icon={<ChevronUp />}
                                 />
-                                {jValue} {jValue.startsWith("J - ") ? "avant le début de stage" : "depuis le début de stage"}
                             </>
                         )}
                     </div>
                 )}
-                <div className=" flex flex-col bg-white border border-gray-200 shadow-lg rounded-xl overflow-hidden">
+                <div className={` flex flex-col bg-white rounded-xl overflow-hidden ${justToday ? '' : 'shadow-lg border border-gray-200'}`}>
                     <div className="p-3 space-y-0.5">
 
                         {/* ---------- */}
@@ -265,9 +264,9 @@ function CalendarSimple({ dates, shrinkable = false }) {
                         {/* ------------------- */}
                         {/* Jours de la semaine */}
                         {/* ------------------- */}
-                        <div className="flex pb-1.5">
+                        <div className="flex w-full pb-1.5">
                             {DAYS_FR.map((d) => (
-                                <span key={d} className="m-px w-10 block text-center text-xs text-gray-500">
+                                <span key={d} className="m-px w-[14.2857%] block text-center text-xs text-gray-500">
                                     {d}
                                 </span>
                             ))}
@@ -277,7 +276,7 @@ function CalendarSimple({ dates, shrinkable = false }) {
                         {/* Jours du calendrier */}
                         {/* ------------------- */}
                         {weeks.map((week, i) => (
-                            <div className="flex" key={i}>
+                            <div className="flex w-full" key={i}>
                                 {week.map(({ day, currentMonth, key, date }, dayIdx) => {
                                     // Détection du premier et dernier jour de la période
                                     const isStart = startDate && date.getFullYear() === startDate.getFullYear() && date.getMonth() === startDate.getMonth() && date.getDate() === startDate.getDate();
@@ -292,21 +291,21 @@ function CalendarSimple({ dates, shrinkable = false }) {
                                     const isToday = date.getFullYear() === todayY && date.getMonth() === todayM && date.getDate() === todayD;
 
                                     // Classes pour arrondir le fond logo
-                                    let logoBgClass = "absolute z-0 w-10 h-10 bg-logo";
+                                    let logoBgClass = "absolute z-0 w-full h-10 bg-logo ";
                                     // N'afficher le bg-logo que si le jour est dans la période ET dans le mois courant
                                     if (inPeriod && currentMonth && !isStart && !isEnd) {
                                         if (isFirstOfWeek) {
-                                            logoBgClass += " rounded-l-full";
+                                            logoBgClass += "translate-x-1/4 rounded-l-full";
                                         }
                                         if (isLastOfWeek) {
-                                            logoBgClass += " rounded-r-full";
+                                            logoBgClass += "-translate-x-1/4 rounded-r-full";
                                         }
                                     }
                                     if (isStart && currentMonth) {
-                                        logoBgClass += " rounded-l-full";
+                                        logoBgClass += "translate-x-1/4 rounded-l-full";
                                     }
                                     if (isEnd && currentMonth) {
-                                        logoBgClass += " rounded-r-full";
+                                        logoBgClass += "-translate-x-1/4 rounded-r-full";
                                     }
 
                                     // Classes pour le bouton principal
@@ -325,7 +324,7 @@ function CalendarSimple({ dates, shrinkable = false }) {
                                     }
 
                                     return (
-                                        <div key={key} className="relative flex justify-center items-center">
+                                        <div key={key} className="w-[14.2857%] relative flex justify-center items-center">
                                             {inPeriod && currentMonth && (
                                                 <div className={logoBgClass} />
                                             )}

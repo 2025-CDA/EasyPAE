@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Stepper from "./components/ui/stepper/Stepper";
-import FicheStagiaire from "./pages/support_service/FicheStagiaire";
-import AppTable from "./components/ui/Table/AppTable";
-import CardFormation from './components/ui/CardFormation'
-import Select from "./components/ui/Select";
 import AssistantPage from "./pages/assistant/AssistantPage";
+import AssistantFicheRenseignement from "./pages/assistant/AssistantFicheRenseignement";
+import DemandePae from "./pages/assistant/DemandePae";
+import CalendarSimpleGet from "./components/calendar/CalendarSimpleGET";
 
 export default function App() {
     // const [showAlert, setShowAlert] = useState(true);
@@ -27,9 +25,10 @@ export default function App() {
 
     // console.log(data[0])
 
-    return <div className="">
-        <AssistantPage />
-        
-
+    return <div className="w-full">
+        {/* <AssistantPage /> */}
+        {/* <AssistantFicheRenseignement /> */}
+        <DemandePae /> 
+        {/* <CalendarSimpleGet justToday={true} /> */}
     </div>;
 }

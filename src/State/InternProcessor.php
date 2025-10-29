@@ -4,20 +4,22 @@ namespace App\State;
 
 use App\Dto\InternDTO;
 use App\Entity\InfoForm;
-use App\Entity\InfoFormCompany;
+use App\Enum\InfoFormStatus;
 use App\Entity\InfoFormIntern;
-use App\Entity\InfoFormInternCompany;
+use App\Entity\InfoFormCompany;
+use ApiPlatform\Metadata\Operation;
 use App\Entity\InfoFormOrganization;
+use App\Entity\InfoFormInternCompany;
 use App\Repository\InfoFormRepository;
-use App\Repository\InfoFormInternRepository;
+use App\Enum\InfoFormOrganizationStatus;
+use Doctrine\ORM\EntityManagerInterface;
+use ApiPlatform\State\ProcessorInterface;
 use App\Repository\InternMemberRepository;
 use App\Repository\OrganizationRepository;
+use App\Repository\InfoFormInternRepository;
 use App\Repository\TrainingSessionRepository;
-use ApiPlatform\Metadata\Operation;
-use ApiPlatform\State\ProcessorInterface;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 readonly class InternProcessor implements ProcessorInterface
 {
@@ -42,7 +44,7 @@ readonly class InternProcessor implements ProcessorInterface
 
         return match ($operationName) {
             'intern_infoForm_add' => $this->internInfoFormAdd($data),
-            'intern_infoForm_InfoFormIntern_infoFormInternId_edit' => $this->internInfoFormInfoFormInternEdit($data, $uriVariables),
+            'intern_infoForm_infoFormId_infoFormIntern_edit' => $this->internInfoFormInfoFormInternEdit($data, $uriVariables),
             'intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit' => $this->internInfoFormInfoFormInternInfoFormInternCompanyEdit($data, $uriVariables),
             'intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation' => $this->internInfoFormInfoFormInternInfoFormInternCompanyValidation($data, $uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
@@ -51,19 +53,19 @@ readonly class InternProcessor implements ProcessorInterface
 
     private function internInfoFormAdd(InternDTO $data): InternDTO
     {
-        if (!$data->trainingSessionId || !$data->organizationId || !$data->internId) {
-            throw new BadRequestHttpException('Missing required fields: trainingSessionId, organizationId, or internId');
-        }
+        // if (!$data->trainingSessionId || !$data->organizationId || !$data->internId) {
+        //     throw new BadRequestHttpException('Missing required fields: trainingSessionId, organizationId, or internId');
+        // }
 
-        $trainingSession = $this->trainingSessionRepository->find($data->trainingSessionId);
-        if (!$trainingSession) {
-            throw new NotFoundHttpException('Training session not found');
-        }
+        // $trainingSession = $this->trainingSessionRepository->find($data->trainingSessionId);
+        // if (!$trainingSession) {
+        //     throw new NotFoundHttpException('Training session not found');
+        // }
 
-        $organization = $this->organizationRepository->find($data->organizationId);
-        if (!$organization) {
-            throw new NotFoundHttpException('Organization not found');
-        }
+        // $organization = $this->organizationRepository->find($data->organizationId);
+        // if (!$organization) {
+        //     throw new NotFoundHttpException('Organization not found');
+        // }
 
         $internMember = $this->internMemberRepository->find($data->internId);
         if (!$internMember) {
@@ -72,14 +74,11 @@ readonly class InternProcessor implements ProcessorInterface
 
         $infoForm = new InfoForm();
         $infoForm->setInternMember($internMember);
-        $infoForm->setOrganization($organization);
-        $infoForm->setTrainingSession($trainingSession);
+        // $infoForm->setOrganization($organization);
+        // $infoForm->setTrainingSession($trainingSession);
+        $infoForm->setStatus(InfoFormStatus::INITIALIZED);
+        
 
-//dd($data->infoFormStatus);
-
-        if ($data->infoFormStatus !== null) {
-            $infoForm->setStatus($data->infoFormStatus);
-        }
         $this->entityManager->persist($infoForm);
 
         $infoFormIntern = new InfoFormIntern();
@@ -89,20 +88,23 @@ readonly class InternProcessor implements ProcessorInterface
         if ($data->infoFormInternDateEnd !== null) {
             $infoFormIntern->setDateEnd($data->infoFormInternDateEnd);
         }
-        if ($data->infoFormInternStatus !== null) {
-            $infoFormIntern->setStatus($data->infoFormInternStatus);
-        }
+            if ($data->infoFormInternStatus !== null) {
+                $infoFormIntern->setStatus($data->infoFormInternStatus);
+            }
 
         $this->entityManager->persist($infoFormIntern);
         $infoForm->setInfoFormIntern($infoFormIntern);
 
         $infoFormOrganization = new InfoFormOrganization();
-        if ($data->infoFormOrganizationStatus !== null) {
-            $infoFormOrganization->setStatus($data->infoFormOrganizationStatus);
-        }
-
+        // if ($data->infoFormOrganizationStatus !== null) {
+        //     $infoFormOrganization->setStatus($data->infoFormOrganizationStatus);
+        // }
+            $infoFormOrganization->setStatus(InfoFormOrganizationStatus::INITIALIZED);
+                    
         $this->entityManager->persist($infoFormOrganization);
         $infoForm->setInfoFormOrganization($infoFormOrganization);
+
+
 
         if ($data->infoFormInternCompanyName !== null) {
             $infoFormInternCompany = new InfoFormInternCompany();
@@ -128,15 +130,17 @@ readonly class InternProcessor implements ProcessorInterface
             $infoFormIntern->setInfoFormInternCompany($infoFormInternCompany);
         }
 
-        if ($data->infoFormCompanyStatus !== null) {
+        // if ($data->infoFormCompanyStatus !== null) {
             $infoFormCompany = new InfoFormCompany();
             $infoFormCompany->setStatus($data->infoFormCompanyStatus);
-            $this->entityManager->persist($infoFormCompany);
             $infoForm->setInfoFormCompany($infoFormCompany);
-        }
+            $this->entityManager->persist($infoFormCompany);
+        // }
 
-        $this->entityManager->flush();
+         $this->entityManager->flush();
 
+        // remplir les identifiants attendus par ApiPlatform
+        $data->infoFormId = $infoForm->getId();
         $data->infoFormInternId = $infoFormIntern->getId();
 
         return $data;

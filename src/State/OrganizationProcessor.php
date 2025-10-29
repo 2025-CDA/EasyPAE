@@ -3,7 +3,6 @@
 namespace App\State;
 
 use App\Dto\OrganizationDTO;
-use App\Entity\InfoForm;
 use App\Entity\InternMember;
 use App\Entity\Training;
 use App\Entity\TrainingSession;
@@ -17,8 +16,13 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
 use App\Repository\TrainingSessionRepository;
+use Random\RandomException;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 readonly class OrganizationProcessor implements ProcessorInterface
@@ -31,6 +35,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
         private UserRepository               $userRepository,
         private InternMemberRepository       $internMemberRepository,
         private UserPasswordHasherInterface  $passwordHasher,
+        private MailerInterface $mailer,
     )
     {
     }
@@ -52,39 +57,44 @@ readonly class OrganizationProcessor implements ProcessorInterface
         };
     }
 
-    private function organizationSessionAdd(OrganizationDTO $dto): TrainingSession
+    private function organizationSessionAdd(OrganizationDTO $data): OrganizationDTO|null
     {
-        if ($dto->trainerId === null || empty(trim($dto->trainingName ?? ''))) {
+        if ($data->trainerId === null || empty(trim($data->trainingName ?? ''))) {
             throw new BadRequestHttpException('Trainer ID and a non-empty Training Name are required.');
         }
 
-        $trainer = $this->organizationMemberRepository->find($dto->trainerId);
+        $trainer = $this->organizationMemberRepository->find($data->trainerId);
         if (!$trainer) {
             throw new NotFoundHttpException('Trainer not found.');
         }
 
-        $training = $this->trainingRepository->findOneBy(['name' => $dto->trainingName]);
+        $training = $this->trainingRepository->findOneBy(['name' => $data->trainingName]);
         if (!$training) {
-            $training = new Training();
-            $training->setName($dto->trainingName);
-            $this->entityManager->persist($training);
+            throw new NotFoundHttpException('Training not found.');
+        }
+
+        $offerNumber = $this->trainingSessionRepository->findOneBy(['offerNumber'=> $data->offerNumber]);
+        if ($offerNumber) {
+            throw new BadRequestHttpException('A training session with this offerNumber already exists.');
         }
 
         $session = new TrainingSession();
         $session->setTraining($training);
-        $session->setOfferNumber($dto->offerNumber);
-        $session->setInternShipPeriodStart($dto->internshipStart);
-        $session->setInternshipPeriodEnd($dto->internshipEnd);
-
+        $session->setOfferNumber($data->offerNumber);
+        $session->setInternShipPeriodStart($data->internshipStart);
+        $session->setInternshipPeriodEnd($data->internshipEnd);
         $session->addOrganizationMember($trainer);
 
         $this->entityManager->persist($session);
         $this->entityManager->flush();
 
-        return $session;
+        return $data;
     }
 
-    private function organizationSessionSessionIdInternAdd(OrganizationDTO $dto, array $uriVariables): OrganizationDTO
+    /**
+     * @throws RandomException|TransportExceptionInterface
+     */
+    private function organizationSessionSessionIdInternAdd(OrganizationDTO $data, array $uriVariables): OrganizationDTO|null
     {
         $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
@@ -92,59 +102,66 @@ readonly class OrganizationProcessor implements ProcessorInterface
             throw new NotFoundHttpException('Training session not found.');
         }
 
-        if (empty($dto->internEmail)) {
+        if (empty($data->internEmail)) {
             throw new BadRequestHttpException('Intern email is required to add an intern.');
         }
 
-        $user = $this->userRepository->findOneBy(['email' => $dto->internEmail]);
-        if (!$user) {
-            $user = new User();
-            $user->setEmail($dto->internEmail);
-            $user->setFirstName($dto->internFirstName);
-            $user->setLastName($dto->internLastName);
-            $user->setLogin($dto->internLogin);
-            $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
-            $user->setPassword($hashedPassword);
-            $user->setRole(UserRole::INTERN);
-
-
-            $this->entityManager->persist($user);
+        $user = $this->userRepository->findOneBy(['email' => $data->internEmail]);
+        if ($user) {
+            throw new BadRequestHttpException('A user with this email already exists.');
         }
+
+        $user = new User();
+        $user->setEmail($data->internEmail);
+        $user->setFirstName($data->internFirstName);
+        $user->setLastName($data->internLastName);
+        $user->setLogin($data->internLogin);
+        $plainPassword = substr(base64_encode(random_bytes(12)), 0, 16); // 16 random chars with mixed case
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
+        $user->setPassword($hashedPassword);
+        $user->setRole(UserRole::INTERN);
+
+        $this->entityManager->persist($user);
 
         $internMember = $this->internMemberRepository->findOneBy(['user' => $user]);
-        if (!$internMember) {
-            $internMember = new InternMember();
-            $internMember->setUser($user);
-            $this->entityManager->persist($internMember);
+        if ($internMember) {
+            throw new BadRequestHttpException('An intern member with this user already exists.');
         }
 
-        foreach ($session->getInfoForms() as $existingInfoForm) {
-            if ($existingInfoForm->getInternMember() === $internMember) {
-                throw new BadRequestHttpException('This intern is already part of the session.');
-            }
+        $internMember = new InternMember();
+        $internMember->setUser($user);
+        $this->entityManager->persist($internMember);
+
+        if ($session->getInternMembers()->contains($internMember)) {
+            throw new BadRequestHttpException('This intern is already part of the session.');
         }
-
-        $infoForm = new InfoForm();
-        $infoForm->setTrainingSession($session);
-        $infoForm->setInternMember($internMember);
-//        $infoForm->setStatus(InfoFormStatus::PENDING);
-
-        $this->entityManager->persist($infoForm);
 
         $this->entityManager->flush();
 
+//      This is functional but we can change it if needed.
+        $email = (new TemplatedEmail())
+            ->from(new Address('inscription-stagiaire@easypae.com', 'EasyPAE'))
+            ->to(new Address($user->getEmail(), $user->getFirstName() . ' ' . $user->getLastName()))
+            ->subject('Bienvenue sur EasyPAE - Vos identifiants de connexion')
+            ->htmlTemplate('emails/intern_welcome.html.twig')
+            ->context([
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
+                'internEmail' => $user->getEmail(),
+                'login' => $user->getLogin(),
+                'password' => $plainPassword,
+                'trainingSession' => $session->getTraining()?->getName(),
+            ]);
 
-        $responseDto = new OrganizationDTO();
-        $responseDto->sessionId = $session->getId();
-        $responseDto->internEmail = $dto->internEmail;
-        $responseDto->internFirstName = $dto->internFirstName;
-        $responseDto->internLastName = $dto->internLastName;
-        $responseDto->internLogin = $dto->internLogin;
-        
-        return $responseDto;
+        $this->mailer->send($email);
+
+        $data->plainPassword = $plainPassword;
+//        TODO: change this later, this is just for testing.
+
+        return $data;
     }
 
-    private function organizationSessionSessionIdEdit(OrganizationDTO $dto, array $uriVariables): OrganizationDTO
+    private function organizationSessionSessionIdEdit(OrganizationDTO $data, array $uriVariables): OrganizationDTO|null
     {
         $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
@@ -152,39 +169,41 @@ readonly class OrganizationProcessor implements ProcessorInterface
             throw new NotFoundHttpException('Training session not found.');
         }
 
-        if ($dto->trainingName !== null) {
-            $training = $session->getTraining();
+        if ($data->trainingName !== null) {
+            $training = $this->trainingRepository->findOneBy(['name' => $data->trainingName]);
             if ($training) {
-                $training->setName($dto->trainingName);
+                $session->setTraining($training);
+            } else {
+                throw new NotFoundHttpException('Training name not found.');
             }
         }
 
-        if ($dto->trainerId !== null) {
-            $trainer = $this->organizationMemberRepository->find($dto->trainerId);
+        if ($data->trainerId !== null) {
+            $trainer = $this->organizationMemberRepository->find($data->trainerId);
             if (!$trainer) {
-                throw new NotFoundHttpException('The specified trainer with ID ' . $dto->trainerId . ' was not found.');
+                throw new NotFoundHttpException('The specified trainer with ID ' . $data->trainerId . ' was not found.');
             }
             $session->addOrganizationMember($trainer);
         }
 
-        if ($dto->offerNumber !== null) {
-            $session->setOfferNumber($dto->offerNumber);
+        if ($data->offerNumber !== null) {
+            $session->setOfferNumber($data->offerNumber);
         }
-        if ($dto->internshipStart !== null) {
-            $session->setInternShipPeriodStart($dto->internshipStart);
+        if ($data->internshipStart !== null) {
+            $session->setInternShipPeriodStart($data->internshipStart);
         }
-        if ($dto->internshipEnd !== null) {
-            $session->setInternshipPeriodEnd($dto->internshipEnd);
+        if ($data->internshipEnd !== null) {
+            $session->setInternshipPeriodEnd($data->internshipEnd);
         }
 
         $this->entityManager->flush();
 
-        $dto->sessionId = $sessionId;
+        $data->sessionId = $sessionId;
 
-        return $dto;
+        return $data;
     }
 
-    private function organizationSessionSessionIdArchive(array $uriVariables): OrganizationDTO
+    private function organizationSessionSessionIdArchive(array $uriVariables): OrganizationDTO|null
     {
         $sessionId = $uriVariables['sessionId'] ?? null;
         $session = $this->trainingSessionRepository->find($sessionId);
@@ -206,5 +225,4 @@ readonly class OrganizationProcessor implements ProcessorInterface
 
         return $dto;
     }
-
 }

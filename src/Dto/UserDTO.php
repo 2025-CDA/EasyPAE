@@ -6,12 +6,23 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\State\UserProvider;
 use App\State\UserProcessor;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     operations: [
+        new Post(
+            uriTemplate: '/account/{userId}/avatar',
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            inputFormats: ['multipart' => ['multipart/form-data']],
+            uriVariables: ['userId'],
+            deserialize: false,
+            name: 'upload_user_avatar',
+            processor: UserProcessor::class,
+        ),
+
         new Get(
             uriTemplate: '/user/{userId}',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
