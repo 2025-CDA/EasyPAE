@@ -1,39 +1,48 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>Connexion</title>
-</head>
-<body>
-    <h1>Se connecter</h1>
-     
-    <form method="POST" action="/login">
-        <div>
-            <label for="email">Email :</label><br>
-            <input type="email" id="email" name="email" required>
-        </div>
-        <br>
-        
-        <div>
-            <label for="password">Mot de passe :</label><br>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <br>
-        
-        <div>
-            <button type="submit">Se connecter</button>
-        </div>
-    </form>
-    <br>
+	<head>
+		<meta charset="UTF-8">
+		<title>Connexion</title>
+		<style>
+			.error-message {
+				color: red;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Se connecter</h1>
 
-    <div>
-        <a href="/forgot-password">
-            <button type="button">Mot de passe oublié</button>
-        </a>
-        <br><br>
-        <a href="/home">
-            <button type="button">Retour à l'accueil</button>
-        </a>
-    </div>
-</body>
+		{% if error is defined and error %}
+			<p class="error-message">{{ error }}</p>
+		{% endif %}
+
+		<form method="POST" action="/login">
+			<div>
+				<label for="email">Email :</label><br>
+				<input type="email" id="email" name="email" required>
+			</div>
+			<br>
+
+			<div>
+				<label for="password">Mot de passe :</label><br>
+				<input type="password" id="password" name="password" required>
+			</div>
+			<br>
+
+			<div>
+				<button type="submit">Se connecter</button>
+			</div>
+		</form>
+		<br>
+
+		<div>
+			<a href="/forgot-password">
+				<button type="button">Mot de passe oublié</button>
+			</a>
+			<br><br>
+			<a href="/home">
+				<button type="button">Retour à l'accueil</button>
+			</a>
+		</div>
+	</body>
 </html>
