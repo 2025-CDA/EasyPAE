@@ -8,16 +8,22 @@ use App\Dto\UserDTO;
 use App\Repository\UserRepository;
 use App\Repository\UserNotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Exception\ORMException;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class UserProcessor implements ProcessorInterface
+readonly class UserProcessor implements ProcessorInterface
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly UserNotificationRepository $userNotificationRepository,
-        private readonly EntityManagerInterface $entityManager
-    ) {
+        private UserRepository             $userRepository,
+        private UserNotificationRepository $userNotificationRepository,
+        private EntityManagerInterface     $entityManager,
+        private readonly RequestStack      $requestStack,
+        private readonly string $projectDir,
+    )
+    {
     }
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): UserDTO
@@ -28,6 +34,7 @@ class UserProcessor implements ProcessorInterface
             'update_user_info' => $this->updateUserInfo($data, $uriVariables),
             'update_user_preferences' => $this->updateUserPreferences($data, $uriVariables),
             'mark_notification_as_read' => $this->markNotificationAsRead($data ?? new UserDTO(), $uriVariables),
+            'upload_user_avatar' => $this->uploadUserAvatar($uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
     }
@@ -134,4 +141,47 @@ class UserProcessor implements ProcessorInterface
 
         return $dto;
     }
+
+    private function uploadUserAvatar(array $uriVariables): UserDTO
+    {
+        $userId = $uriVariables['userId'] ?? null;
+        if (!$userId) {
+            throw new BadRequestHttpException('User ID is required');
+        }
+
+        $user = $this->userRepository->find($userId);
+        if (!$user) {
+            throw new NotFoundHttpException('User not found');
+        }
+
+        $request = $this->requestStack->getCurrentRequest();
+        $uploadedFile = $request?->files->get('avatar');
+
+        if (!$uploadedFile) {
+            throw new BadRequestHttpException('No avatar file uploaded');
+        }
+
+        // Generate unique filename
+        $filename = uniqid('', true) . '.' . $uploadedFile->guessExtension();
+
+        // Move file
+        $uploadedFile->move(
+            $this->projectDir . '/public/uploads/avatars',
+            $filename
+        );
+
+        // Update user
+        $user->setAvatar($filename);
+
+        $this->entityManager->flush();
+
+        $dto = new UserDTO();
+        $dto->id = (string) $userId;
+        $dto->avatar = '/uploads/avatars/' . $filename;
+        $dto->firstName = $user->getFirstName();
+        $dto->lastName = $user->getLastName();
+
+        return $dto;
+    }
+
 }
