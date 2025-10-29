@@ -179,6 +179,12 @@ class UserDTO
     ])]
     public ?string $phone  = null;
 
+        #[Groups([
+        'read:user_info',
+        'write:user_info'
+    ])]
+    public ?string $address  = null;
+
     #[Groups([
         'read:user_info',
         'write:user_info'
