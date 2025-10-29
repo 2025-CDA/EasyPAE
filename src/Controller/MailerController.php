@@ -180,7 +180,7 @@ class MailerController extends AbstractController
             return new JsonResponse([
                 'message' => 'Email de réinitialisation envoyé',
                 'recipient' => $user->getEmail(),
-                'resetToken' => $resetToken // DEBUG UNIQUEMENT - À retirer en prod
+                'resetToken' => $resetToken // DEBUG 
             ]);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], 500);

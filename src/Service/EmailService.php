@@ -5,26 +5,48 @@ namespace App\Service;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 
-/**
- * Service centralisé pour l'envoi de tous les emails de l'application
- * 
- * Utilise Symfony Mailer avec des templates Twig pour générer les emails HTML.
- * Tous les emails sont envoyés depuis noreply@easypae.com
- * 
- * Types d'emails disponibles :
- * - Welcome : Email de bienvenue générique
- * - Notification : Email de notification avec message personnalisé
- * - Form Submitted : Confirmation de soumission de formulaire
- * - Registration : Email d'activation de compte (nouveau stagiaire)
- * - Reset Password : Email de réinitialisation de mot de passe
- * - Generic : Envoi d'email personnalisé avec template et contexte au choix
- */
 class EmailService
 {
 
     public function __construct(
         private MailerInterface $mailer
     ) {}
+
+    #region Registration Email - utilisé par RegistrationController
+    public function sendRegistrationEmail($user, string $updatePasswordLink): void
+    {
+        $email = (new TemplatedEmail())
+            ->from('noreply@easypae.com')
+            ->to(is_string($user) ? $user : $user->getEmail())
+            ->subject('Bienvenue sur EasyPAE - Définissez votre mot de passe')
+            ->htmlTemplate('emails/registration.html.twig')
+            ->context([
+                'subject' => 'Bienvenue sur EasyPAE - Définissez votre mot de passe',
+                'userName' => is_string($user) ? 'Utilisateur' : $user->getFirstName() . ' ' . $user->getLastName(),
+                'updatePasswordLink' => $updatePasswordLink,
+            ]);
+
+        $this->mailer->send($email);
+    }
+    #endregion
+    
+    #region Reset Password Email - utilisé par SecurityController
+    public function sendResetPasswordEmail($user, string $resetPasswordLink): void
+    {
+        $email = (new TemplatedEmail())
+            ->from('noreply@easypae.com')
+            ->to(is_string($user) ? $user : $user->getEmail())
+            ->subject('Réinitialisation de votre mot de passe EasyPAE')
+            ->htmlTemplate('emails/reset_password.html.twig')
+            ->context([
+                'subject' => 'Réinitialisation de votre mot de passe EasyPAE',
+                'userName' => is_string($user) ? 'Utilisateur' : $user->getFirstName() . ' ' . $user->getLastName(),
+                'resetPasswordLink' => $resetPasswordLink,
+            ]);
+
+        $this->mailer->send($email);
+    }
+    #endregion
 
     #region Welcome Email
     public function sendWelcomeEmail(string $to, string $subject, string $name): void
@@ -73,42 +95,6 @@ class EmailService
                 'subject' => $subject,
                 'userName' => $name,
                 'formData' => $formData,
-            ]);
-
-        $this->mailer->send($email);
-    }
-    #endregion
-
-    #region Registration Email - utilisé par RegistrationController
-    public function sendRegistrationEmail($user, string $updatePasswordLink): void
-    {
-        $email = (new TemplatedEmail())
-            ->from('noreply@easypae.com')
-            ->to(is_string($user) ? $user : $user->getEmail())
-            ->subject('Bienvenue sur EasyPAE - Définissez votre mot de passe')
-            ->htmlTemplate('emails/registration.html.twig')
-            ->context([
-                'subject' => 'Bienvenue sur EasyPAE - Définissez votre mot de passe',
-                'userName' => is_string($user) ? 'Utilisateur' : $user->getFirstName() . ' ' . $user->getLastName(),
-                'updatePasswordLink' => $updatePasswordLink,
-            ]);
-
-        $this->mailer->send($email);
-    }
-    #endregion
-
-    #region Reset Password Email - utilisé par SecurityController
-    public function sendResetPasswordEmail($user, string $resetPasswordLink): void
-    {
-        $email = (new TemplatedEmail())
-            ->from('noreply@easypae.com')
-            ->to(is_string($user) ? $user : $user->getEmail())
-            ->subject('Réinitialisation de votre mot de passe EasyPAE')
-            ->htmlTemplate('emails/reset_password.html.twig')
-            ->context([
-                'subject' => 'Réinitialisation de votre mot de passe EasyPAE',
-                'userName' => is_string($user) ? 'Utilisateur' : $user->getFirstName() . ' ' . $user->getLastName(),
-                'resetPasswordLink' => $resetPasswordLink,
             ]);
 
         $this->mailer->send($email);
