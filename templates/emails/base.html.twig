@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ subject|default('Email') }}</title>
+</head>
+<body>
+    <h1>{{ subject|default('Email') }}</h1>
+    
+    <p>Bonjour {{ userName|default('Utilisateur') }},</p>
+    
+    {% block content %}
+        <p>{{ message|default('Contenu du message') }}</p>
+    {% endblock %}
+    
+    <p>Cordialement,<br>L'équipe EasyPAE</p>
+</body>
+</html>

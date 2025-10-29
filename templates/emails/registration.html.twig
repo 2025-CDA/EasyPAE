@@ -1,0 +1,22 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block content %}
+	<p>Bienvenue sur la plateforme EasyPAE !</p>
+
+	<p>Votre compte stagiaire a été créé avec succès.</p>
+
+	<p>Pour accéder à votre compte, vous devez d'abord définir votre mot de passe.</p>
+
+	<p>
+		<strong>
+			<a href="{{ updatePasswordLink }}">Cliquez ici pour définir votre mot de passe</a>
+		</strong>
+	</p>
+
+	<p>Une fois votre mot de passe défini, vous serez automatiquement connecté.</p>
+
+	<hr>
+	<p>
+		<small>Ce lien est valable 24 heures.</small>
+	</p>
+{% endblock %}
