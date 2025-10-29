@@ -12,24 +12,29 @@ use App\Entity\InfoFormOrganization;
 use App\Entity\InfoFormInternCompany;
 use App\Repository\InfoFormRepository;
 use App\Enum\InfoFormOrganizationStatus;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
 use App\Repository\InternMemberRepository;
-use App\Repository\OrganizationRepository;
 use App\Repository\InfoFormInternRepository;
-use App\Repository\TrainingSessionRepository;
+use JsonException;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 
 readonly class InternProcessor implements ProcessorInterface
 {
     public function __construct(
-        private InfoFormRepository $infoFormRepository,
+        private InfoFormRepository       $infoFormRepository,
         private InfoFormInternRepository $infoFormInternRepository,
-        private InternMemberRepository $internMemberRepository,
-        private OrganizationRepository $organizationRepository,
-        private TrainingSessionRepository $trainingSessionRepository,
-        private EntityManagerInterface $entityManager
+        private InternMemberRepository   $internMemberRepository,
+        private UserRepository           $userRepository,
+        private EntityManagerInterface   $entityManager,
+        private string                   $frontendUrl,
+        private MailerInterface          $mailer,
     )
     {
     }
@@ -53,20 +58,6 @@ readonly class InternProcessor implements ProcessorInterface
 
     private function internInfoFormAdd(InternDTO $data): InternDTO
     {
-        // if (!$data->trainingSessionId || !$data->organizationId || !$data->internId) {
-        //     throw new BadRequestHttpException('Missing required fields: trainingSessionId, organizationId, or internId');
-        // }
-
-        // $trainingSession = $this->trainingSessionRepository->find($data->trainingSessionId);
-        // if (!$trainingSession) {
-        //     throw new NotFoundHttpException('Training session not found');
-        // }
-
-        // $organization = $this->organizationRepository->find($data->organizationId);
-        // if (!$organization) {
-        //     throw new NotFoundHttpException('Organization not found');
-        // }
-
         $internMember = $this->internMemberRepository->find($data->internId);
         if (!$internMember) {
             throw new NotFoundHttpException('Intern member not found');
@@ -77,7 +68,7 @@ readonly class InternProcessor implements ProcessorInterface
         // $infoForm->setOrganization($organization);
         // $infoForm->setTrainingSession($trainingSession);
         $infoForm->setStatus(InfoFormStatus::INITIALIZED);
-        
+
 
         $this->entityManager->persist($infoForm);
 
@@ -88,9 +79,9 @@ readonly class InternProcessor implements ProcessorInterface
         if ($data->infoFormInternDateEnd !== null) {
             $infoFormIntern->setDateEnd($data->infoFormInternDateEnd);
         }
-            if ($data->infoFormInternStatus !== null) {
-                $infoFormIntern->setStatus($data->infoFormInternStatus);
-            }
+        if ($data->infoFormInternStatus !== null) {
+            $infoFormIntern->setStatus($data->infoFormInternStatus);
+        }
 
         $this->entityManager->persist($infoFormIntern);
         $infoForm->setInfoFormIntern($infoFormIntern);
@@ -99,11 +90,10 @@ readonly class InternProcessor implements ProcessorInterface
         // if ($data->infoFormOrganizationStatus !== null) {
         //     $infoFormOrganization->setStatus($data->infoFormOrganizationStatus);
         // }
-            $infoFormOrganization->setStatus(InfoFormOrganizationStatus::INITIALIZED);
-                    
+        $infoFormOrganization->setStatus(InfoFormOrganizationStatus::INITIALIZED);
+
         $this->entityManager->persist($infoFormOrganization);
         $infoForm->setInfoFormOrganization($infoFormOrganization);
-
 
 
         if ($data->infoFormInternCompanyName !== null) {
@@ -131,13 +121,13 @@ readonly class InternProcessor implements ProcessorInterface
         }
 
         // if ($data->infoFormCompanyStatus !== null) {
-            $infoFormCompany = new InfoFormCompany();
-            $infoFormCompany->setStatus($data->infoFormCompanyStatus);
-            $infoForm->setInfoFormCompany($infoFormCompany);
-            $this->entityManager->persist($infoFormCompany);
+        $infoFormCompany = new InfoFormCompany();
+        $infoFormCompany->setStatus($data->infoFormCompanyStatus);
+        $infoForm->setInfoFormCompany($infoFormCompany);
+        $this->entityManager->persist($infoFormCompany);
         // }
 
-         $this->entityManager->flush();
+        $this->entityManager->flush();
 
         // remplir les identifiants attendus par ApiPlatform
         $data->infoFormId = $infoForm->getId();
@@ -221,6 +211,10 @@ readonly class InternProcessor implements ProcessorInterface
         return $data;
     }
 
+    /**
+     * @throws JsonException
+     * @throws TransportExceptionInterface
+     */
     private function internInfoFormInfoFormInternInfoFormInternCompanyValidation(InternDTO $data, array $uriVariables): InternDTO
     {
         $infoFormId = $uriVariables['infoFormId'] ?? null;
@@ -250,6 +244,71 @@ readonly class InternProcessor implements ProcessorInterface
 
         $this->entityManager->flush();
 
+        $infoFormInternCompany = $infoFormIntern?->getInfoFormInternCompany();
+        $email = $infoFormInternCompany?->getEmail();
+
+        if ($email) {
+            $existingUser = $this->userRepository->findOneBy(['email' => $email]);
+
+            if ($existingUser) {
+
+                $companyMember = $existingUser->getCompanyMember();
+
+                if ($companyMember) {
+                    $companyMember->addInfoForm($infoForm);
+                    $this->entityManager->flush();
+                }
+
+                // TODO: move this part in the mailer service
+                $email = (new TemplatedEmail())
+                    ->from(new Address('connexion-entreprise@easypae.com', 'EasyPAE'))
+                    ->to(new Address($existingUser->getEmail(), $existingUser->getFirstName() . ' ' . $existingUser->getLastName()))
+                    ->subject('Nouvelle demande de stage sur EasyPAE')
+                    ->htmlTemplate('emails/company_existing_user.html.twig')
+                    ->context([
+                        'firstName' => $existingUser->getFirstName(),
+                        'lastName' => $existingUser->getLastName(),
+                        'companyName' => $infoFormInternCompany?->getCompanyName(),
+                        'loginUrl' => $this->frontendUrl . '/login',
+                    ]);
+
+            } else {
+
+                $registrationData = [
+                    'firstName' => $infoFormInternCompany?->getLegalRepresentativeFirstName(),
+                    'lastName' => $infoFormInternCompany?->getLegalRepresentativeLastName(),
+                    'email' => $infoFormInternCompany?->getEmail(),
+                    'companyName' => $infoFormInternCompany?->getCompanyName(),
+                    'companyAddress' => $infoFormInternCompany?->getAddress(),
+                    'infoFormId' => $infoFormId,
+                    'expires' => time() + 86400  // 24h
+                ];
+
+                $token = base64_encode(json_encode($registrationData, JSON_THROW_ON_ERROR));
+
+                $registrationLink = $this->frontendUrl . '/register/' . $token;
+
+                // TODO: move this part in the mailer service
+                $email = (new TemplatedEmail())
+                    ->from(new Address('[email protected]', 'EasyPAE'))
+                    ->to(new Address(
+                        $infoFormInternCompany?->getEmail(),
+                        $infoFormInternCompany?->getLegalRepresentativeFirstName() . ' ' .
+                        $infoFormInternCompany?->getLegalRepresentativeLastName()
+                    ))
+                    ->subject('Créez votre compte EasyPAE')
+                    ->htmlTemplate('emails/company_new_user.html.twig')
+                    ->context([
+                        'firstName' => $infoFormInternCompany?->getLegalRepresentativeFirstName(),
+                        'lastName' => $infoFormInternCompany?->getLegalRepresentativeLastName(),
+                        'companyName' => $infoFormInternCompany?->getCompanyName(),
+                        'companyAddress' => $infoFormInternCompany?->getAddress(),
+                        'registrationLink' => $registrationLink,
+                    ]);
+
+            }
+            $this->mailer->send($email);
+        }
         return $data;
     }
 }

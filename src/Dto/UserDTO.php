@@ -26,6 +26,18 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
             processor: UserProcessor::class,
         ),
 
+        new Post(
+            uriTemplate: '/user/companyMember',
+            formats: ['json' => ['application/json']],
+            normalizationContext: ['groups' => ['create:user_companyMember_add'],
+                'iri' => false
+            ],
+            denormalizationContext: ['groups' => ['denorm-create:user_companyMember_add']],
+            name: 'user_companyMember',
+            processor: UserProcessor::class,
+        ),
+
+
         new Get(
             uriTemplate: '/user/{userId}',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
@@ -108,69 +120,147 @@ class UserDTO
     public ?string $id = null;
 
     #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?int $infoFormId = null;
+
+    #[Groups([
         'read:user_basic',
         'read:user_info',
-        'write:user_info'
+        'write:user_info',
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
     ])]
     public ?string $firstName = null;
 
     #[Groups([
         'read:user_basic',
         'read:user_info',
-        'write:user_info'
+        'write:user_info',
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
     ])]
     public ?string $lastName = null;
 
     #[Groups([
         'read:user_basic',
         'read:user_info',
-        'write:user_info'
+        'write:user_info',
     ])]
     public ?string $avatar = null;
 
     #[Groups([
         'read:user_info',
-        'write:user_info'
+        'write:user_info',
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
     ])]
     public ?string $email = null;
 
     #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $login = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $plainPassword = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $phoneNumber = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $address = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $birthday = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?bool $isLegalRepresentative = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+    ])]
+    public ?string $role = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $siret = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $companyName = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $companyPhoneNumber = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $companyAddress = null;
+
+
+    #[Groups([
         'read:user_preferences',
-        'write:user_preferences'
+        'write:user_preferences',
     ])]
     public ?bool $notification = null;
 
     #[Groups([
         'read:user_preferences',
-        'write:user_preferences'
+        'write:user_preferences',
     ])]
     public ?bool $darkMode = null;
 
     #[Groups([
         'read:user_notifications',
         'read:user_notification_detail',
-        'read:notification_status'
+        'read:notification_status',
     ])]
     public ?string $title = null;
 
     #[Groups([
-        'read:user_notification_detail'
+        'read:user_notification_detail',
     ])]
     public ?string $content = null;
 
     #[Groups([
         'read:user_notifications',
         'read:user_notification_detail',
-        'read:notification_status'
+        'read:notification_status',
     ])]
     public ?bool $isRead = null;
 
     #[Groups([
-        'read:user_notifications'
+        'read:user_notifications',
     ])]
     public ?array $notifications = null;
 
-    #[Groups(['read:notification_status'])]
+    #[Groups(['read:notification_status',])]
     public ?string $message = null;
 
     #[Groups([

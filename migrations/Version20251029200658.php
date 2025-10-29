@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20251024093312 extends AbstractMigration
+final class Version20251029200658 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -22,7 +22,8 @@ final class Version20251024093312 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE company (id INT AUTO_INCREMENT NOT NULL, siret VARCHAR(255) DEFAULT NULL, name VARCHAR(255) DEFAULT NULL, phone_number VARCHAR(255) DEFAULT NULL, updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', created_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', address VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE company_member (id INT AUTO_INCREMENT NOT NULL, user_id INT NOT NULL, company_id INT DEFAULT NULL, role VARCHAR(255) DEFAULT NULL, updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', created_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', UNIQUE INDEX UNIQ_4D7B9E0DA76ED395 (user_id), INDEX IDX_4D7B9E0D979B1AD6 (company_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE info_form (id INT AUTO_INCREMENT NOT NULL, intern_member_id INT DEFAULT NULL, info_form_intern_id INT DEFAULT NULL, info_form_organization_id INT DEFAULT NULL, info_form_company_id INT DEFAULT NULL, company_id INT DEFAULT NULL, organization_id INT DEFAULT NULL, training_session_id INT DEFAULT NULL, status VARCHAR(255) DEFAULT NULL, updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', created_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_BE32FC156817849 (intern_member_id), UNIQUE INDEX UNIQ_BE32FC1DAAC2B3C (info_form_intern_id), UNIQUE INDEX UNIQ_BE32FC1DBB3C91D (info_form_organization_id), UNIQUE INDEX UNIQ_BE32FC17470E03B (info_form_company_id), INDEX IDX_BE32FC1979B1AD6 (company_id), INDEX IDX_BE32FC132C8A3DE (organization_id), INDEX IDX_BE32FC1DB8156B9 (training_session_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE company_member_info_form (company_member_id INT NOT NULL, info_form_id INT NOT NULL, INDEX IDX_653005BF468C590E (company_member_id), INDEX IDX_653005BFDD33B2E3 (info_form_id), PRIMARY KEY(company_member_id, info_form_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE info_form (id INT AUTO_INCREMENT NOT NULL, intern_member_id INT DEFAULT NULL, info_form_intern_id INT DEFAULT NULL, info_form_organization_id INT DEFAULT NULL, info_form_company_id INT DEFAULT NULL, organization_id INT DEFAULT NULL, training_session_id INT DEFAULT NULL, status VARCHAR(255) DEFAULT NULL, updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', created_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_BE32FC156817849 (intern_member_id), UNIQUE INDEX UNIQ_BE32FC1DAAC2B3C (info_form_intern_id), UNIQUE INDEX UNIQ_BE32FC1DBB3C91D (info_form_organization_id), UNIQUE INDEX UNIQ_BE32FC17470E03B (info_form_company_id), INDEX IDX_BE32FC132C8A3DE (organization_id), INDEX IDX_BE32FC1DB8156B9 (training_session_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE info_form_company (id INT AUTO_INCREMENT NOT NULL, fax VARCHAR(255) DEFAULT NULL, activity VARCHAR(255) DEFAULT NULL, activity_description LONGTEXT DEFAULT NULL, stamp VARCHAR(255) DEFAULT NULL, legal_representative_gender VARCHAR(255) DEFAULT NULL, legal_representative_last_name VARCHAR(255) DEFAULT NULL, legal_representative_first_name VARCHAR(255) DEFAULT NULL, legal_representative_signature VARCHAR(255) DEFAULT NULL, legal_representative_email VARCHAR(255) DEFAULT NULL, interview_start_date_time DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', interview_end_date_time DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', agree_terms TINYINT(1) DEFAULT NULL, work_location VARCHAR(255) DEFAULT NULL, tutor_gender VARCHAR(255) DEFAULT NULL, tutor_first_name VARCHAR(255) DEFAULT NULL, tutor_last_name VARCHAR(255) DEFAULT NULL, tutor_email VARCHAR(255) DEFAULT NULL, tutor_phone_number VARCHAR(255) DEFAULT NULL, updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', created_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', status VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE info_form_company_calendar_row (id INT AUTO_INCREMENT NOT NULL, info_form_company_id INT DEFAULT NULL, day VARCHAR(255) DEFAULT NULL, start_morning TIME DEFAULT NULL COMMENT \'(DC2Type:time_immutable)\', end_morning TIME DEFAULT NULL COMMENT \'(DC2Type:time_immutable)\', start_afternoon TIME DEFAULT NULL COMMENT \'(DC2Type:time_immutable)\', end_afternoon TIME DEFAULT NULL COMMENT \'(DC2Type:time_immutable)\', work_location VARCHAR(255) DEFAULT NULL, updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', created_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_A9AA14DE7470E03B (info_form_company_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE info_form_intern (id INT AUTO_INCREMENT NOT NULL, info_form_intern_company_id INT DEFAULT NULL, date_start DATE DEFAULT NULL COMMENT \'(DC2Type:date_immutable)\', date_end DATE DEFAULT NULL COMMENT \'(DC2Type:date_immutable)\', gender VARCHAR(255) DEFAULT NULL, updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', created_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', status VARCHAR(255) DEFAULT NULL, UNIQUE INDEX UNIQ_78AFA1678F0DCFE2 (info_form_intern_company_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
@@ -41,11 +42,12 @@ final class Version20251024093312 extends AbstractMigration
         $this->addSql('CREATE TABLE messenger_messages (id BIGINT AUTO_INCREMENT NOT NULL, body LONGTEXT NOT NULL, headers LONGTEXT NOT NULL, queue_name VARCHAR(190) NOT NULL, created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', available_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', delivered_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_75EA56E0FB7336F0 (queue_name), INDEX IDX_75EA56E0E3BD61CE (available_at), INDEX IDX_75EA56E016BA31DB (delivered_at), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE company_member ADD CONSTRAINT FK_4D7B9E0DA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE company_member ADD CONSTRAINT FK_4D7B9E0D979B1AD6 FOREIGN KEY (company_id) REFERENCES company (id)');
+        $this->addSql('ALTER TABLE company_member_info_form ADD CONSTRAINT FK_653005BF468C590E FOREIGN KEY (company_member_id) REFERENCES company_member (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE company_member_info_form ADD CONSTRAINT FK_653005BFDD33B2E3 FOREIGN KEY (info_form_id) REFERENCES info_form (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE info_form ADD CONSTRAINT FK_BE32FC156817849 FOREIGN KEY (intern_member_id) REFERENCES intern_member (id)');
         $this->addSql('ALTER TABLE info_form ADD CONSTRAINT FK_BE32FC1DAAC2B3C FOREIGN KEY (info_form_intern_id) REFERENCES info_form_intern (id)');
         $this->addSql('ALTER TABLE info_form ADD CONSTRAINT FK_BE32FC1DBB3C91D FOREIGN KEY (info_form_organization_id) REFERENCES info_form_organization (id)');
         $this->addSql('ALTER TABLE info_form ADD CONSTRAINT FK_BE32FC17470E03B FOREIGN KEY (info_form_company_id) REFERENCES info_form_company (id)');
-        $this->addSql('ALTER TABLE info_form ADD CONSTRAINT FK_BE32FC1979B1AD6 FOREIGN KEY (company_id) REFERENCES company (id)');
         $this->addSql('ALTER TABLE info_form ADD CONSTRAINT FK_BE32FC132C8A3DE FOREIGN KEY (organization_id) REFERENCES organization (id)');
         $this->addSql('ALTER TABLE info_form ADD CONSTRAINT FK_BE32FC1DB8156B9 FOREIGN KEY (training_session_id) REFERENCES training_session (id)');
         $this->addSql('ALTER TABLE info_form_company_calendar_row ADD CONSTRAINT FK_A9AA14DE7470E03B FOREIGN KEY (info_form_company_id) REFERENCES info_form_company (id)');
@@ -67,11 +69,12 @@ final class Version20251024093312 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE company_member DROP FOREIGN KEY FK_4D7B9E0DA76ED395');
         $this->addSql('ALTER TABLE company_member DROP FOREIGN KEY FK_4D7B9E0D979B1AD6');
+        $this->addSql('ALTER TABLE company_member_info_form DROP FOREIGN KEY FK_653005BF468C590E');
+        $this->addSql('ALTER TABLE company_member_info_form DROP FOREIGN KEY FK_653005BFDD33B2E3');
         $this->addSql('ALTER TABLE info_form DROP FOREIGN KEY FK_BE32FC156817849');
         $this->addSql('ALTER TABLE info_form DROP FOREIGN KEY FK_BE32FC1DAAC2B3C');
         $this->addSql('ALTER TABLE info_form DROP FOREIGN KEY FK_BE32FC1DBB3C91D');
         $this->addSql('ALTER TABLE info_form DROP FOREIGN KEY FK_BE32FC17470E03B');
-        $this->addSql('ALTER TABLE info_form DROP FOREIGN KEY FK_BE32FC1979B1AD6');
         $this->addSql('ALTER TABLE info_form DROP FOREIGN KEY FK_BE32FC132C8A3DE');
         $this->addSql('ALTER TABLE info_form DROP FOREIGN KEY FK_BE32FC1DB8156B9');
         $this->addSql('ALTER TABLE info_form_company_calendar_row DROP FOREIGN KEY FK_A9AA14DE7470E03B');
@@ -88,6 +91,7 @@ final class Version20251024093312 extends AbstractMigration
         $this->addSql('ALTER TABLE user_notification DROP FOREIGN KEY FK_3F980AC8EF1A9D84');
         $this->addSql('DROP TABLE company');
         $this->addSql('DROP TABLE company_member');
+        $this->addSql('DROP TABLE company_member_info_form');
         $this->addSql('DROP TABLE info_form');
         $this->addSql('DROP TABLE info_form_company');
         $this->addSql('DROP TABLE info_form_company_calendar_row');
