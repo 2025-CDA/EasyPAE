@@ -86,3 +86,4 @@ function FicheStagiaire({name, internNumber, email, courseName, courseNumber, tr
 }
 
 export default FicheStagiaire;
+

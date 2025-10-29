@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-<<<<<<< HEAD
-=======
 import AssistantPage from "./pages/assistant/AssistantPage";
 import AssistantFicheRenseignement from "./pages/assistant/AssistantFicheRenseignement";
 import DemandePae from "./pages/assistant/DemandePae";
 import CalendarSimpleGet from "./components/calendar/CalendarSimpleGET";
->>>>>>> 9e07849b403416f6818bbacf8da95fb839c39785
+
 
 export default function App() {
     // const [showAlert, setShowAlert] = useState(true);
@@ -29,12 +27,11 @@ export default function App() {
     // console.log(data[0])
 
     return <div className="w-full">
-<<<<<<< HEAD
-=======
+
         {/* <AssistantPage /> */}
         {/* <AssistantFicheRenseignement /> */}
-        <DemandePae /> 
+        {/* <DemandePae />  */}
         {/* <CalendarSimpleGet justToday={true} /> */}
->>>>>>> 9e07849b403416f6818bbacf8da95fb839c39785
+    
     </div>;
 }
