@@ -192,16 +192,16 @@ function CalendarDouble({ multi, onSaveMulti }) {
         const todayD = today.getDate();
 
         return (
-            <div className="p-3 bg-white">
-                <div className="flex pb-1.5">
+            <div className="p-3 bg-white w-full">
+                <div className="flex w-full pb-1.5">
                     {DAYS_FR.map((d) => (
-                        <span key={d} className="m-px w-10 block text-center text-xs text-gray-500">
+                        <span key={d} className="m-px w-[14.2857%] block text-center text-xs text-gray-500">
                             {d}
                         </span>
                     ))}
                 </div>
                 {weeks.map((week, wi) => (
-                    <div key={wi} className="flex">
+                    <div key={wi} className="flex w-full">
                         {week.map(({ day, currentMonth, date }, di) => {
                             // Détection du premier et dernier jour de la période
                             const isStart = localStartDate && date.getFullYear() === new Date(localStartDate).getFullYear() && date.getMonth() === new Date(localStartDate).getMonth() && date.getDate() === new Date(localStartDate).getDate();
@@ -216,7 +216,7 @@ function CalendarDouble({ multi, onSaveMulti }) {
                             const isToday = date.getFullYear() === todayY && date.getMonth() === todayM && date.getDate() === todayD;
 
                             // Classes pour arrondir le fond logo
-                            let logoBgClass = "absolute z-0 w-10 h-10 bg-logo";
+                            let logoBgClass = "absolute z-0 w-full h-10 bg-logo";
                             // N'afficher le bg-logo que si le jour est dans la période ET dans le mois courant
                             if (inPeriod && currentMonth && !isStart && !isEnd) {
                                 if (isFirstOfWeek) {
@@ -249,7 +249,7 @@ function CalendarDouble({ multi, onSaveMulti }) {
                             }
 
                             return (
-                                <div key={`${wi}-${di}`} className="relative flex justify-center items-center">
+                                <div key={`${wi}-${di}`} className="w-[14.2857%] relative flex justify-center items-center">
                                     {inPeriod && currentMonth && (
                                         <div className={logoBgClass} />
                                     )}
@@ -274,7 +274,7 @@ function CalendarDouble({ multi, onSaveMulti }) {
     // Rendu principal du composant
     // --------------------------
     return (
-        <div>
+        <div className='w-full'>
             <h1 className='font-semibold m-5'>
                 Calendrier PAE
                 {selectedFormation && (
@@ -282,10 +282,10 @@ function CalendarDouble({ multi, onSaveMulti }) {
                 )}
             </h1>
             <h6 className='m-5 text-secondary-text'>Dashboard {'>'} ... {'>'} <span className='text-primary-text font-semibold'>Calendrier</span></h6>
-            <div className="flex flex-col w-230 bg-color-background shadow rounded border border-gray-200 ml-5">
+            <div className="flex w-[95%] m-auto flex-col bg-color-background shadow rounded border border-gray-200 ">
                 <div className="flex w-full">
                     {/* Liste des formations à gauche */}
-                    <div className="flex flex-col min-w-[220px] border-r border-b border-gray-200 bg-gray-50 py-4 px-2">
+                    <div className="flex flex-col min-w-[220px] w-[30%] border-r border-b border-gray-200 bg-gray-50 py-4 px-2">
                         {multi && multi.length > 0 ? (
                             multi.map((formation, idx) => (
                                 <button
@@ -333,7 +333,7 @@ function CalendarDouble({ multi, onSaveMulti }) {
                         </div>
 
                         {/* Double calendrier côte à côte */}
-                        <div className="flex gap-4">
+                        <div className="flex w-full gap-4">
                             {renderCalendar(month, year)}
                             {renderCalendar((month + 1) % 12, month === 11 ? year + 1 : year)}
                         </div>
@@ -367,12 +367,12 @@ function CalendarDouble({ multi, onSaveMulti }) {
                     </div>
                 )}
             </div>
-            <div className='flex '>
-                <Container className={'mt-5 ml-5 w-112 h-30 justify-center gap-5 items-center border-gray-200'}>
+            <div className='flex w-[95%] m-auto justify-evenly'>
+                <Container className={'mt-5 w-115 h-30 justify-center gap-5 items-center border-gray-200'}>
                     <p className='text-4xl font-bold' >{jValue}</p>
                     <p className='text-s font-semibold' >{jValue.startsWith("J - ") ? "avant le début de stage" : "depuis le début de stage"}</p>
                 </Container>
-                <Container className={'mt-5 ml-5 w-113 h-30 justify-center gap-5 items-center border-gray-200'}>
+                <Container className={'mt-5 ml-5 w-115 h-30 justify-center gap-5 items-center border-gray-200'}>
                     <p className='text-secondary-text font-semibold'> PAE validées </p>
                     <CircleProgress statusPae='25%'/>
                     {/* TODO: envoyer dynamiquement la moyenne en % des validations de PAE sur SelectedFormation */}

@@ -73,6 +73,11 @@ readonly class OrganizationProcessor implements ProcessorInterface
             throw new NotFoundHttpException('Training not found.');
         }
 
+        $offerNumber = $this->trainingSessionRepository->findOneBy(['offerNumber'=> $data->offerNumber]);
+        if ($offerNumber) {
+            throw new BadRequestHttpException('A training session with this offerNumber already exists.');
+        }
+
         $session = new TrainingSession();
         $session->setTraining($training);
         $session->setOfferNumber($data->offerNumber);

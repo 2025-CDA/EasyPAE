@@ -6,34 +6,31 @@ import logoNameFullWhite from "../../assets/LogoNameFullWhite.png";
 import ManWorkingComputer from "../../assets/Man-working-computer.png";
 import useWindowSize from "../../hooks/useWindowSize";
 import Container from "../../components/ui/Container"
+import axios from "axios"
+import useAxios from "../../hooks/useAxios"
+import { redirect } from "react-router-dom";
 
 function LoginPage({ initialStep = "login", className }) {
-    console.log(initialStep);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [provisionalPassword, setProvisionalPassword] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
     const [remember, setRemember] = useState(false);
     const [step, setStep] = useState(initialStep); // 'login' | 'error' | 'firstConnect' | 'forgetPassword' | 'mailSent'
     const { width } = useWindowSize();
     const isMobile = width < 768;
 
-    // useEffect(() => { setStep(initialStep); }, [initialStep]);
-    // Handler de soumission classique
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Appel API ici, gestion du résultat
-        // Si erreur → setStep('error')
-        // Si première connexion → setStep('firstConnect')
-    };
+    const {data, loading, error, fetchData} = useAxios();
 
-    // Handler pour recup mdp oublié
-    const handleForgot = (e) => {
+    async function handleLogin(e) {
         e.preventDefault();
-        // Traitement ici
-    };
-
-    // Handlers pour chaque étape
+        const result = await fetchData('POST', 'login', { username: email, password: password });        
+        if (result.success) {
+            console.log('Succès ! Réponse :', result.data);
+            step == 'error' ? setStep('login') : ''
+        } else {
+            setStep('error');
+        }
+    }
 
     return (
         <div className="flex w-screen min-h-screen h-screen flex-col md:flex-row bg-primary min-w-screen overflow-hidden">
@@ -96,7 +93,7 @@ function LoginPage({ initialStep = "login", className }) {
                             setRemember={setRemember}
                             step={step}
                             setStep={setStep}
-                            handleSubmit={handleSubmit}
+                            handleSubmit={handleLogin}
                             iconMail={!isMobile}
                             iconPassword={!isMobile}
                             withShowPassword={!isMobile}

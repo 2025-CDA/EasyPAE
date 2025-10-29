@@ -10,21 +10,20 @@ use App\Repository\InfoFormCompanyRepository;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+
 readonly class CompanyProvider implements ProviderInterface
 {
     public function __construct(
         private InfoFormRepository        $infoFormRepository,
         private InfoFormCompanyRepository $infoFormCompanyRepository,
-    )
-    {
-    }
+    ) {}
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): CompanyDTO
     {
         $operationName = $operation->getName();
 
         return match ($operationName) {
-            'company_infoForm_infoFormId_infoFormCompany_infoFormCompanyId' => $this->getCompanyInfoFormInfoFormCompany($uriVariables),
+            'company_infoForm_infoFormId_infoFormCompany' => $this->getCompanyInfoFormInfoFormCompany($uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
     }
@@ -32,21 +31,21 @@ readonly class CompanyProvider implements ProviderInterface
     private function getCompanyInfoFormInfoFormCompany(array $uriVariables): CompanyDTO
     {
         $infoFormId = $uriVariables['infoFormId'] ?? null;
-        $infoFormCompanyId = $uriVariables['infoFormCompanyId'] ?? null;
 
         if (!$infoFormId) {
             throw new BadRequestHttpException('Info form ID and info form company ID are required');
         }
 
-        $infoForm = $this->infoFormRepository->find((int)$infoFormId);
+        $infoForm = $this->infoFormRepository->find($infoFormId);
+        $infoFormCompanyId = $infoForm->getInfoFormCompany()->getId() ?? null;
 
         if (!$infoForm) {
             throw new NotFoundHttpException('Info form not found');
         }
 
-        $infoFormCompany = $this->infoFormCompanyRepository->find((int)$infoFormCompanyId);
+        $infoFormCompany = $this->infoFormCompanyRepository->find($infoFormCompanyId);
 
-        if (!$infoFormCompany) {
+        if (!$infoFormCompany ) {
             throw new NotFoundHttpException('Info form company not found');
         }
 
@@ -57,7 +56,7 @@ readonly class CompanyProvider implements ProviderInterface
         $dto = new CompanyDTO();
 
         $dto->infoFormId = $infoForm->getId();
-        $dto->infoFormCompanyId = $infoFormCompany->getId();
+        // $dto->infoFormCompanyId = $infoFormCompany->getId();
         $dto->name = $infoFormCompany->getName();
         $dto->address = $infoFormCompany->getAddress();
         $dto->activity = $infoFormCompany->getActivity();

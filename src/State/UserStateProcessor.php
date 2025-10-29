@@ -10,7 +10,7 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
-final readonly class UserStateProcessor implements ProcessorInterface
+readonly class UserStateProcessor implements ProcessorInterface
 {
     public function __construct(
         private ProcessorInterface $persistProcessor,

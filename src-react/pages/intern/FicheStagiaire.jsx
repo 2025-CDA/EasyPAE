@@ -7,7 +7,6 @@ import Container from "../../components/ui/Container";
 import CardIntern from "../../components/ui/CardIntern";
 import Stepper from "../../components/ui/stepper/Stepper";
 import CalendarSimpleGET from "../../components/calendar/CalendarSimpleGET";
-// import BusinessMan from '';
 import BusinessMan from '../../assets/Business-man.png';
 
 

@@ -133,7 +133,7 @@ class Organization
         $sessions = new ArrayCollection();
 
         foreach ($this->organizationMembers as $member) {
-            foreach ($member->getTrainingSession() as $session) {
+            foreach ($member->getTrainingSessions() as $session) {
                 $sessions->add($session);
             }
         }

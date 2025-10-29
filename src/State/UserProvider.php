@@ -11,12 +11,12 @@ use App\Repository\NotificationRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class UserProvider implements ProviderInterface
+readonly class UserProvider implements ProviderInterface
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly UserNotificationRepository $userNotificationRepository,
-        private readonly NotificationRepository $notificationRepository
+        private UserRepository             $userRepository,
+        private UserNotificationRepository $userNotificationRepository,
+//        private NotificationRepository     $notificationRepository
     ) {
     }
 
@@ -126,7 +126,7 @@ class UserProvider implements ProviderInterface
         $dto = new UserDTO();
         $dto->id = 'user_' . $userId . '_notifications';
         $dto->notifications = $notifications;
-        
+
         return $dto;
     }
 
@@ -157,8 +157,8 @@ class UserProvider implements ProviderInterface
 
         $dto = new UserDTO();
         $dto->id = 'user_' . $userId . '_notification_' . $notificationId . '_detail';
-        $dto->title = $notification->getTitle();
-        $dto->content = $notification->getContent();
+        $dto->title = $notification?->getTitle();
+        $dto->content = $notification?->getContent();
         $dto->isRead = $userNotification->isRead();
 
         return $dto;
