@@ -26,9 +26,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Post(
             uriTemplate: '/user/companyMember',
             formats: ['json' => ['application/json']],
-            normalizationContext: ['groups' => ['create:user_companyMember_add'], 'iri' => false],
+            normalizationContext: ['groups' => ['create:user_companyMember_add'],
+                'iri' => false
+            ],
             denormalizationContext: ['groups' => ['denorm-create:user_companyMember_add']],
-            read: false,
             name: 'user_companyMember',
             processor: UserProcessor::class,
         ),
@@ -112,11 +113,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 class UserDTO
 {
-    #[ApiProperty(identifier: true, genId: false)]
-//    #[Groups([
-//        'create:user_companyMember_add',
-//        'denorm-create:user_companyMember_add',
-//    ])]
+    #[ApiProperty(identifier: true)]
     public ?string $id = null;
 
     #[Groups([
