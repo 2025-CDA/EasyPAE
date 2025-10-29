@@ -2,57 +2,86 @@
 
 namespace App\EventListener;
 
-use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use App\Entity\User;
+use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RequestStack;
 
+/**
+ * Listener qui personnalise le payload du token JWT lors de sa création
+ * 
+ * Ce listener s'exécute automatiquement quand un utilisateur se connecte via l'API
+ * (POST /api/login_check) et permet d'ajouter des données personnalisées au token.
+ * 
+ * Utilité pour React :
+ * - React peut récupérer l'ID utilisateur sans appel API supplémentaire
+ * - React peut afficher le nom complet directement depuis le token
+ * - Permet de tracer l'IP de connexion pour la sécurité
+ */
 final class JWTCreatedListener
 {
-    public function __construct(private readonly RequestStack $requestStack)
-    {
-    }
+    public function __construct(
+        private readonly RequestStack $requestStack
+    ) {}
 
+    /**
+     * Personnalise le payload du JWT avant qu'il ne soit signé et envoyé au client
+     * 
+     * S'exécute automatiquement lors de la création du token (après authentification réussie)
+     */
     #[AsEventListener(event: 'lexik_jwt_authentication.on_jwt_created')]
     public function onJWTCreated(JWTCreatedEvent $event): void
     {
+        // ========================================
+        // ÉTAPE 1 : Récupération de la requête HTTP
+        // ========================================
         $request = $this->requestStack->getCurrentRequest();
 
-        // Safety check: if the listener is somehow called outside of a request, do nothing.
+        // Sécurité : Si le listener est appelé hors contexte HTTP, on ne fait rien
         if (null === $request) {
             return;
         }
 
-        // 1. Get the current payload and the user object
+        // ========================================
+        // ÉTAPE 2 : Récupération du payload et de l'utilisateur
+        // ========================================
+        // Récupère le payload JWT actuel (contenu par défaut)
         $payload = $event->getData();
+        
+        // Récupère l'utilisateur authentifié
         $user = $event->getUser();
 
-        // 2. Make sure the user is an instance of your User class
+        // Vérification que l'utilisateur est bien une instance de notre entité User
         if (!$user instanceof User) {
             return;
         }
 
+        // ========================================
+        // ÉTAPE 3 : Personnalisation du payload
+        // ========================================
+        
+        // SUPPRESSION de la clé "username" (on va utiliser "email" à la place)
         unset($payload['username']);
 
-        // 3. ADD data to the payload
-        // For example, add the user's ID and full name.
-        $payload['id'] = $user->getId();
-        $payload['fullName'] = $user->getFullName(); // Assuming you have a getFullName() method
-
-        // 4. REMOVE data from the payload
-        // For example, you might decide not to expose the roles directly in the token.
-        $payload['roles'];
-
-        // 5. CHANGE existing data in the payload
-        // The default "username" key is the user identifier. Let's make it more explicit.
-        // Note: Many front-end clients expect the "username" claim, so changing it
-        // might be a breaking change. Adding a new key is often safer.
-        $payload['email'] = $user->getUserIdentifier(); // Add an explicit "email" key
-
+        // AJOUT de données personnalisées
+        $payload['id'] = $user->getId();                    // ID utilisateur (utile pour React)
+        $payload['email'] = $user->getUserIdentifier();     // Email explicite
+        $payload['firstName'] = $user->getFirstName();      // Prénom
+        $payload['lastName'] = $user->getLastName();        // Nom
+        $payload['fullName'] = $user->getFirstName() . ' ' . $user->getLastName(); // Nom complet
+        $payload['isFirstConnection'] = $user->isFirstConnection(); // Première connexion ?
+        
+        // RÔLES : Ajout explicite des rôles de l'utilisateur pour la gestion des permissions
+        // Important pour que React sache si l'utilisateur est admin, organisme, stagiaire, etc.
+        $payload['roles'] = $user->getRoles();
+        
+        // TRAÇABILITÉ : Ajout de l'IP de connexion (utile pour l'audit de sécurité)
         $payload['ip'] = $request->getClientIp();
 
-
-        // 6. Set the modified payload back on the event
+        // ========================================
+        // ÉTAPE 4 : Application des modifications
+        // ========================================
+        // Met à jour le payload du JWT avec nos modifications
         $event->setData($payload);
     }
 }

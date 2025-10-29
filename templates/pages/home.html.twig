@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Easy PAE</title>
+</head>
+<body>
+    <h1>EasyPAE</h1>
+    
+    {% if isLoggedIn %}
+        <p>Vous êtes connecté avec : <strong>{{ userEmail }}</strong></p>
+        <div>
+            <a href="/registration">
+                <button type="button">Ajouter un stagiaire</button>
+            </a>
+            
+            <form method="POST" action="/logout">
+                <button type="submit">Se déconnecter</button>
+            </form>
+        </div>
+
+    {% else %}
+        <div>
+            <a href="/login">
+                <button type="button">Se connecter</button>
+            </a>
+            <br><br>
+            <a href="/registration">
+                <button type="button">Ajouter un stagiaire</button>
+            </a>
+        </div>
+    {% endif %}
+    </body>
+</html>
