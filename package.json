@@ -26,6 +26,7 @@
         "preline": "^3.2.3",
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
+        "react-router": "^7.9.4",
         "react-router-dom": "^7.9.2",
         "styled-components": "^6.1.19",
         "tailwind-styled-components": "^2.2.0",

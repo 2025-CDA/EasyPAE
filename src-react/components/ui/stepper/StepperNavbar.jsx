@@ -2,7 +2,7 @@ import React from "react";
 
 function StepperNavbar({ validated, currentStep, finishedStep = [], content , isHorizontal}) {
     return (
-        <ul className={`w-full flex justify-center md:items-center ${!isHorizontal && 'flex-col'} md:flex-row gap-2`}>
+        <ul className={`w-full flex  justify-center md:items-center ${!isHorizontal && 'flex-col'} md:flex-row gap-2`}>
             {content.map((step, i) => (
                 <StepItem
                     key={i}
@@ -12,7 +12,7 @@ function StepperNavbar({ validated, currentStep, finishedStep = [], content , is
                     isActive={i === currentStep}
                     isDone={finishedStep.includes(i)}
                     isValidated={validated}
-                    isHorizontal
+                    isHorizontal={isHorizontal}
                 />
             ))}
         </ul>
