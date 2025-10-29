@@ -8,6 +8,8 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Enum\InfoFormInternStatus;
 use App\Enum\InfoFormCompanyStatus;
@@ -97,7 +99,6 @@ class InfoForm
     private ?InfoFormStatus $status = null;
 
 
-
     #[ORM\ManyToOne(inversedBy: 'infoForm')]
     #[Groups([
         'read:info_form',
@@ -139,7 +140,7 @@ class InfoForm
     ])]
     public function getStatusCompany(): ?string
     {
-        return $this->getInfoFormCompany()->getStatus()->toString();
+        return $this->getInfoFormCompany()?->getStatus()?->toString();
     }
 
 
@@ -148,7 +149,7 @@ class InfoForm
     ])]
     public function getStatusIntern(): ?string
     {
-        return $this->getInfoFormIntern()->getStatus()->toString();
+        return $this->getInfoFormIntern()?->getStatus()?->toString();
     }
 
 
@@ -157,19 +158,8 @@ class InfoForm
     ])]
     public function getStatusOrganization(): ?string
     {
-        return $this->getInfoFormOrganization()->getStatus()->toString();
+        return $this->getInfoFormOrganization()?->getStatus()?->toString();
     }
-
-
-
-    #[ORM\ManyToOne(inversedBy: 'infoForms')]
-    #[Groups([
-        'read:info_form',
-        'read:info_form_collection',
-        'create:info_form',
-        'update:info_form'
-    ])]
-    private ?Company $company = null;
 
     #[ORM\ManyToOne(inversedBy: 'infoForms')]
     #[Groups([
@@ -197,8 +187,16 @@ class InfoForm
     #[ORM\ManyToOne(inversedBy: 'infoForms')]
     private ?TrainingSession $trainingSession = null;
 
+    /**
+     * @var Collection<int, CompanyMember>
+     */
+    #[ORM\ManyToMany(targetEntity: CompanyMember::class, mappedBy: 'infoForms')]
+    private Collection $companyMembers;
 
-
+    public function __construct()
+    {
+        $this->companyMembers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -265,18 +263,6 @@ class InfoForm
         return $this;
     }
 
-    public function getCompany(): ?Company
-    {
-        return $this->company;
-    }
-
-    public function setCompany(?Company $company): static
-    {
-        $this->company = $company;
-
-        return $this;
-    }
-
     public function getOrganization(): ?Organization
     {
         return $this->organization;
@@ -321,6 +307,33 @@ class InfoForm
     public function setTrainingSession(?TrainingSession $trainingSession): static
     {
         $this->trainingSession = $trainingSession;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CompanyMember>
+     */
+    public function getCompanyMembers(): Collection
+    {
+        return $this->companyMembers;
+    }
+
+    public function addCompanyMember(CompanyMember $companyMember): static
+    {
+        if (!$this->companyMembers->contains($companyMember)) {
+            $this->companyMembers->add($companyMember);
+            $companyMember->addInfoForm($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompanyMember(CompanyMember $companyMember): static
+    {
+        if ($this->companyMembers->removeElement($companyMember)) {
+            $companyMember->removeInfoForm($this);
+        }
 
         return $this;
     }

@@ -58,16 +58,16 @@ readonly class CompanyProcessor implements ProcessorInterface
         }
 
         if ($data->name !== null) {
-            $infoFormCompany->getInfoForm()?->getCompany()?->setName($data->name);
+            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setName($data->name);
         }
         if ($data->address !== null) {
-            $infoFormCompany->getInfoForm()?->getCompany()?->setAddress($data->address);
+            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setAddress($data->address);
         }
         if ($data->activity !== null) {
             $infoFormCompany->setActivity($data->activity);
         }
         if ($data->phoneNumber !== null) {
-            $infoFormCompany->getInfoForm()?->getCompany()?->setPhoneNumber($data->phoneNumber);
+            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setPhoneNumber($data->phoneNumber);
         }
         if ($data->email !== null) {
             $infoFormCompany->setLegalRepresentativeEmail($data->email);
@@ -76,7 +76,7 @@ readonly class CompanyProcessor implements ProcessorInterface
             $infoFormCompany->setFax($data->fax);
         }
         if ($data->siret !== null) {
-            $infoFormCompany->getInfoForm()?->getCompany()?->setSiret($data->siret);
+            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setSiret($data->siret);
         }
         if ($data->legalRepresentativeFirstName !== null) {
             $infoFormCompany->setLegalRepresentativeFirstName($data->legalRepresentativeFirstName);
@@ -130,16 +130,16 @@ readonly class CompanyProcessor implements ProcessorInterface
         }
 
         if ($data->name !== null) {
-            $infoFormCompany->getInfoForm()?->getCompany()?->setName($data->name);
+            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setName($data->name);
         }
         if ($data->address !== null) {
-            $infoFormCompany->getInfoForm()?->getCompany()?->setAddress($data->address);
+            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setAddress($data->address);
         }
         if ($data->activity !== null) {
             $infoFormCompany->setActivity($data->activity);
         }
         if ($data->phoneNumber !== null) {
-            $infoFormCompany->getInfoForm()?->getCompany()?->setPhoneNumber($data->phoneNumber);
+            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setPhoneNumber($data->phoneNumber);
         }
         if ($data->email !== null) {
             $infoFormCompany->setLegalRepresentativeEmail($data->email);
@@ -148,7 +148,7 @@ readonly class CompanyProcessor implements ProcessorInterface
             $infoFormCompany->setFax($data->fax);
         }
         if ($data->siret !== null) {
-            $infoFormCompany->getInfoForm()?->getCompany()?->setSiret($data->siret);
+            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setSiret($data->siret);
         }
         if ($data->legalRepresentativeFirstName !== null) {
             $infoFormCompany->setLegalRepresentativeFirstName($data->legalRepresentativeFirstName);

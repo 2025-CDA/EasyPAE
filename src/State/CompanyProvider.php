@@ -16,7 +16,9 @@ readonly class CompanyProvider implements ProviderInterface
     public function __construct(
         private InfoFormRepository        $infoFormRepository,
         private InfoFormCompanyRepository $infoFormCompanyRepository,
-    ) {}
+    )
+    {
+    }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): CompanyDTO
     {
@@ -45,7 +47,7 @@ readonly class CompanyProvider implements ProviderInterface
 
         $infoFormCompany = $this->infoFormCompanyRepository->find($infoFormCompanyId);
 
-        if (!$infoFormCompany ) {
+        if (!$infoFormCompany) {
             throw new NotFoundHttpException('Info form company not found');
         }
 
@@ -63,7 +65,7 @@ readonly class CompanyProvider implements ProviderInterface
         $dto->phoneNumber = $infoFormCompany->getTutorPhoneNumber();
         $dto->email = $infoFormCompany->getEmail();
         $dto->fax = $infoFormCompany->getFax();
-        $dto->siret = $infoFormCompany->getInfoForm()?->getCompany()?->getSiret();
+        $dto->siret = $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->getSiret();
         $dto->legalRepresentativeFirstName = $infoFormCompany->getLegalRepresentativeFirstName();
         $dto->legalRepresentativeLastName = $infoFormCompany->getLegalRepresentativeLastName();
         $dto->legalRepresentativeEmail = $infoFormCompany->getLegalRepresentativeEmail();
