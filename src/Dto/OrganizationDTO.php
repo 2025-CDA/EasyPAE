@@ -66,8 +66,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
             denormalizationContext: ['groups' => ['denorm-create:organization_session_sessionId_intern_add']],
             name: 'organization_session_sessionId_intern_add',
             processor: OrganizationProcessor::class,
-            read: false,
-            output: false,
+            // read: false,
+            // output: false,
         ),
 
 
