@@ -8,7 +8,7 @@ import Button from './Button'
 function CardIntern({name, role, internNumber, email, courseName, courseNumber, trainerName, startDateInternship, endDateInternship, className }) {
   return (
 
-    <Container className={`flex flex-col font-medium w-full h-full ${className}`}>
+    <Container className={`flex flex-col font-medium w-full ${className}`}>
         <div className='flex items-center'>
 
              <Avatar size="sm" url={test} className="outline-hidden mr-2"/>

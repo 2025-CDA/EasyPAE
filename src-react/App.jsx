@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import FicheStagiaire from "./pages/intern/FicheStagiaire";
 
 export default function App() {
     // const [showAlert, setShowAlert] = useState(true);
@@ -21,5 +22,7 @@ export default function App() {
 
     // console.log(data[0])
 
-    return <div className="w-full"></div>;
+    return <div className="w-full">
+        <FicheStagiaire />
+    </div>;
 }
