@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Créez votre compte EasyPAE</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #28a745; color: white; padding: 20px; text-align: center; }
+        .content { padding: 30px; background-color: #f9f9f9; }
+        .button {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .info-box {
+            background-color: #fff;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+        .warning { color: #856404; background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Bienvenue sur EasyPAE</h1>
+    </div>
+
+    <div class="content">
+        <h2>Bonjour {{ firstName }} {{ lastName }},</h2>
+
+        <p>Un stagiaire a indiqué votre entreprise <strong>{{ companyName }}</strong> comme lieu de stage.</p>
+
+        <p>Pour consulter les détails et valider cette demande, vous devez créer votre compte EasyPAE.</p>
+
+        <div class="info-box">
+            <p><strong>Vos informations pré-remplies :</strong></p>
+            <ul>
+                <li>Prénom : {{ firstName }}</li>
+                <li>Nom : {{ lastName }}</li>
+                <li>Email : {{ email }}</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="{{ registrationLink }}" class="button">Créer mon compte</a>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Important :</strong> Ce lien est valable pendant 24 heures.
+        </div>
+
+        <p>Lors de la création de votre compte, vous devrez :</p>
+        <ul>
+            <li>Choisir un identifiant de connexion</li>
+            <li>Définir un mot de passe sécurisé</li>
+            <li>Renseigner le SIRET de votre entreprise (obligatoire)</li>
+        </ul>
+
+        <p>Si vous avez des questions, n'hésitez pas à nous contacter.</p>
+
+        <p>Cordialement,<br>L'équipe EasyPAE</p>
+    </div>
+
+    <div class="footer">
+        <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+        <p>Si vous n'êtes pas concerné par ce message, vous pouvez l'ignorer.</p>
+    </div>
+</div>
+</body>
+</html>

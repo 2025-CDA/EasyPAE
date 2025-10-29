@@ -17,8 +17,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
 use App\Repository\InternMemberRepository;
 use App\Repository\InfoFormInternRepository;
+use JsonException as JsonExceptionAlias;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 
 readonly class InternProcessor implements ProcessorInterface
 {
@@ -27,7 +32,9 @@ readonly class InternProcessor implements ProcessorInterface
         private InfoFormInternRepository $infoFormInternRepository,
         private InternMemberRepository $internMemberRepository,
         private UserRepository $userRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private string $frontendUrl,
+        private MailerInterface $mailer,
     )
     {
     }
@@ -205,6 +212,10 @@ readonly class InternProcessor implements ProcessorInterface
         return $data;
     }
 
+    /**
+     * @throws JsonExceptionAlias
+     * @throws TransportExceptionInterface
+     */
     private function internInfoFormInfoFormInternInfoFormInternCompanyValidation(InternDTO $data, array $uriVariables): InternDTO
     {
         $infoFormId = $uriVariables['infoFormId'] ?? null;
@@ -240,12 +251,54 @@ readonly class InternProcessor implements ProcessorInterface
         if ($email) {
             $existingUser = $this->userRepository->findOneBy(['email' => $email]);
 
-//            TODO: add email sending the email here.
             if ($existingUser) {
-                // send connection mail
+
+                // TODO: move this part in the mailer service
+                $email = (new TemplatedEmail())
+                    ->from(new Address('connexion-entreprise@easypae.com', 'EasyPAE'))
+                    ->to(new Address($existingUser->getEmail(), $existingUser->getFirstName() . ' ' . $existingUser->getLastName()))
+                    ->subject('Nouvelle demande de stage sur EasyPAE')
+                    ->htmlTemplate('emails/company_existing_user.html.twig')
+                    ->context([
+                        'firstName' => $existingUser->getFirstName(),
+                        'lastName' => $existingUser->getLastName(),
+                        'companyName' => $infoFormInternCompany?->getCompanyName(),
+                        'loginUrl' => $this->frontendUrl . '/login',
+                    ]);
+
             } else {
-                //  send account creation mail
+
+                $registrationData = [
+                    'firstName' => $infoFormInternCompany?->getLegalRepresentativeFirstName(),
+                    'lastName' => $infoFormInternCompany?->getLegalRepresentativeLastName(),
+                    'email' => $infoFormInternCompany?->getEmail(),
+                    'expires' => time() + 86400  // 24h
+                ];
+                $token = base64_encode(json_encode($registrationData, JSON_THROW_ON_ERROR));
+
+                $registrationLink = $this->frontendUrl . '/register/' . $token;
+
+
+                // TODO: move this part in the mailer service
+                $email = (new TemplatedEmail())
+                    ->from(new Address('inscription-entreprise@easypae.com', 'EasyPAE'))
+                    ->to(new Address(
+                        $infoFormInternCompany?->getEmail(),
+                        $infoFormInternCompany?->getLegalRepresentativeFirstName() . ' ' .
+                        $infoFormInternCompany?->getLegalRepresentativeLastName()
+                    ))
+                    ->subject('Créez votre compte EasyPAE')
+                    ->htmlTemplate('emails/company_new_user.html.twig')
+                    ->context([
+                        'firstName' => $infoFormInternCompany?->getLegalRepresentativeFirstName(),
+                        'lastName' => $infoFormInternCompany?->getLegalRepresentativeLastName(),
+                        'companyName' => $infoFormInternCompany?->getCompanyName(),
+                        'registrationLink' => $registrationLink,
+                    ]);
+
+
             }
+            $this->mailer->send($email);
         }
 
         return $data;
