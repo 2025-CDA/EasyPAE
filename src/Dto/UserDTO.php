@@ -24,10 +24,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
 
         new Post(
-            uriTemplate: '/user/companyMember/',
-            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-            normalizationContext: ['groups' => ['create:user_companyMember_add']],
+            uriTemplate: '/user/companyMember',
+            formats: ['json' => ['application/json']],
+            normalizationContext: ['groups' => ['create:user_companyMember_add'], 'iri' => false],
             denormalizationContext: ['groups' => ['denorm-create:user_companyMember_add']],
+            read: false,
             name: 'user_companyMember',
             processor: UserProcessor::class,
         ),
@@ -111,7 +112,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 class UserDTO
 {
-    #[ApiProperty(identifier: true)]
+    #[ApiProperty(identifier: true, genId: false)]
+//    #[Groups([
+//        'create:user_companyMember_add',
+//        'denorm-create:user_companyMember_add',
+//    ])]
     public ?string $id = null;
 
     #[Groups([
@@ -151,7 +156,67 @@ class UserDTO
         'create:user_companyMember_add',
         'denorm-create:user_companyMember_add',
     ])]
+    public ?string $login = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $plainPassword = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $phoneNumber = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $address = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $birthday = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?bool $isLegalRepresentative = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+    ])]
+    public ?string $role = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
     public ?string $siret = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $companyName = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $companyPhoneNumber = null;
+
+    #[Groups([
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
+    ])]
+    public ?string $companyAddress = null;
+
 
     #[Groups([
         'read:user_preferences',

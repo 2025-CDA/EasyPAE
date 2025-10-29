@@ -5,26 +5,37 @@ namespace App\State;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Dto\UserDTO;
+use App\Entity\Company;
+use App\Entity\CompanyMember;
+use App\Entity\User;
+use App\Enum\CompanyRole;
+use App\Enum\UserRole;
+use App\Repository\CompanyMemberRepository;
+use App\Repository\CompanyRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserNotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 readonly class UserProcessor implements ProcessorInterface
 {
     public function __construct(
         private UserRepository             $userRepository,
         private UserNotificationRepository $userNotificationRepository,
+        private CompanyRepository          $companyRepository,
+        private CompanyMemberRepository    $companyMemberRepository,
         private EntityManagerInterface     $entityManager,
         private RequestStack               $requestStack,
         private string                     $projectDir,
+        private UserPasswordHasherInterface $passwordHasher,
     )
     {
     }
 
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): UserDTO
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): UserDTO|null
     {
         $operationName = $operation->getName();
 
@@ -38,7 +49,7 @@ readonly class UserProcessor implements ProcessorInterface
         };
     }
 
-    private function updateUserInfo(UserDTO $data, array $uriVariables): UserDTO
+    private function updateUserInfo(UserDTO $data, array $uriVariables): UserDTO|null
     {
         $userId = $uriVariables['userId'] ?? null;
         if (!$userId) {
@@ -76,7 +87,7 @@ readonly class UserProcessor implements ProcessorInterface
         return $dto;
     }
 
-    private function updateUserPreferences(UserDTO $data, array $uriVariables): UserDTO
+    private function updateUserPreferences(UserDTO $data, array $uriVariables): UserDTO|null
     {
         $userId = $uriVariables['userId'] ?? null;
         if (!$userId) {
@@ -106,7 +117,7 @@ readonly class UserProcessor implements ProcessorInterface
         return $dto;
     }
 
-    private function markNotificationAsRead(UserDTO $data, array $uriVariables): UserDTO
+    private function markNotificationAsRead(UserDTO $data, array $uriVariables): UserDTO|null
     {
         $userId = $uriVariables['userId'] ?? null;
         $notificationId = $uriVariables['notificationId'] ?? null;
@@ -141,7 +152,7 @@ readonly class UserProcessor implements ProcessorInterface
         return $dto;
     }
 
-    private function uploadUserAvatar(array $uriVariables): UserDTO
+    private function uploadUserAvatar(array $uriVariables): UserDTO|null
     {
         $userId = $uriVariables['userId'] ?? null;
         if (!$userId) {
@@ -186,9 +197,118 @@ readonly class UserProcessor implements ProcessorInterface
         return $dto;
     }
 
-    private function createCompanyMemberAndCompany(array $uriVariables)
+    private function createCompanyMemberAndCompany(UserDTO $data): UserDTO|null
     {
+        if (!$data->firstName || !$data->lastName || !$data->email || !$data->plainPassword) {
+            throw new BadRequestHttpException('First name, last name, email and password are required');
+        }
 
+        $existingUser = $this->userRepository->findOneBy(['email' => $data->email]);
+        if ($existingUser) {
+            throw new BadRequestHttpException('A user with this email already exists');
+        }
+
+        $user = new User();
+        $user->setFirstName($data->firstName);
+        $user->setLastName($data->lastName);
+        $user->setEmail($data->email);
+        $user->setLogin($data->login);
+
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $data->plainPassword);
+        $user->setPassword($hashedPassword);
+
+        if ($data->phoneNumber) {
+            $user->setPhone($data->phoneNumber);
+        }
+        if ($data->address) {
+            $user->setAddress($data->address);
+        }
+        if ($data->birthday) {
+            $user->setBirthday(new \DateTimeImmutable($data->birthday));
+        }
+
+        $user->setRole(UserRole::COMPANY);
+
+        $this->entityManager->persist($user);
+
+
+        $company = null;
+
+        if ($data->siret) {
+
+            $company = $this->companyRepository->findOneBy(['siret' => $data->siret]);
+
+            if (!$company) {
+
+                if (!$data->companyName) {
+                    throw new BadRequestHttpException('Company name is required when creating a new company');
+                }
+
+                $company = new Company();
+                $company->setSiret($data->siret);
+                $company->setName($data->companyName);
+
+                if ($data->companyPhoneNumber) {
+                    $company->setPhoneNumber($data->companyPhoneNumber);
+                }
+                if ($data->companyAddress) {
+                    $company->setAddress($data->companyAddress);
+                }
+
+                $this->entityManager->persist($company);
+            }
+        } elseif ($data->companyName) {
+
+            $company = new Company();
+            $company->setName($data->companyName);
+
+            if ($data->companyPhoneNumber) {
+                $company->setPhoneNumber($data->companyPhoneNumber);
+            }
+            if ($data->companyAddress) {
+                $company->setAddress($data->companyAddress);
+            }
+
+            $this->entityManager->persist($company);
+        }
+
+        if ($company) {
+
+            $existingMembership = $this->companyMemberRepository->findOneBy([
+                'user' => $user,
+                'company' => $company
+            ]);
+
+            if (!$existingMembership) {
+                $companyMember = new CompanyMember();
+                $companyMember->setUser($user);
+                $companyMember->setCompany($company);
+
+                if ($data->isLegalRepresentative === true) {
+                    $companyMember->setRole(CompanyRole::LEGAL_REPRESENTATIVE);
+                } else {
+                    $companyMember->setRole(CompanyRole::TUTOR);
+                }
+
+                $this->entityManager->persist($companyMember);
+            }
+        }
+
+        $this->entityManager->flush();
+
+        $dto = new UserDTO();
+        $dto->id = $user->getId();
+        $dto->firstName = $user->getFirstName();
+        $dto->lastName = $user->getLastName();
+        $dto->email = $user->getEmail();
+
+        if ($company) {
+            $dto->companyName = $company->getName();
+            $dto->siret = $company->getSiret();
+        }
+
+        return $dto;
     }
+
 
 }

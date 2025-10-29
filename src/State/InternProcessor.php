@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
 use App\Repository\InternMemberRepository;
 use App\Repository\InfoFormInternRepository;
-use JsonException as JsonExceptionAlias;
+use JsonException;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -28,13 +28,13 @@ use Symfony\Component\Mime\Address;
 readonly class InternProcessor implements ProcessorInterface
 {
     public function __construct(
-        private InfoFormRepository $infoFormRepository,
+        private InfoFormRepository       $infoFormRepository,
         private InfoFormInternRepository $infoFormInternRepository,
-        private InternMemberRepository $internMemberRepository,
-        private UserRepository $userRepository,
-        private EntityManagerInterface $entityManager,
-        private string $frontendUrl,
-        private MailerInterface $mailer,
+        private InternMemberRepository   $internMemberRepository,
+        private UserRepository           $userRepository,
+        private EntityManagerInterface   $entityManager,
+        private string                   $frontendUrl,
+        private MailerInterface          $mailer,
     )
     {
     }
@@ -79,9 +79,9 @@ readonly class InternProcessor implements ProcessorInterface
         if ($data->infoFormInternDateEnd !== null) {
             $infoFormIntern->setDateEnd($data->infoFormInternDateEnd);
         }
-            if ($data->infoFormInternStatus !== null) {
-                $infoFormIntern->setStatus($data->infoFormInternStatus);
-            }
+        if ($data->infoFormInternStatus !== null) {
+            $infoFormIntern->setStatus($data->infoFormInternStatus);
+        }
 
         $this->entityManager->persist($infoFormIntern);
         $infoForm->setInfoFormIntern($infoFormIntern);
@@ -90,11 +90,10 @@ readonly class InternProcessor implements ProcessorInterface
         // if ($data->infoFormOrganizationStatus !== null) {
         //     $infoFormOrganization->setStatus($data->infoFormOrganizationStatus);
         // }
-            $infoFormOrganization->setStatus(InfoFormOrganizationStatus::INITIALIZED);
+        $infoFormOrganization->setStatus(InfoFormOrganizationStatus::INITIALIZED);
 
         $this->entityManager->persist($infoFormOrganization);
         $infoForm->setInfoFormOrganization($infoFormOrganization);
-
 
 
         if ($data->infoFormInternCompanyName !== null) {
@@ -122,13 +121,13 @@ readonly class InternProcessor implements ProcessorInterface
         }
 
         // if ($data->infoFormCompanyStatus !== null) {
-            $infoFormCompany = new InfoFormCompany();
-            $infoFormCompany->setStatus($data->infoFormCompanyStatus);
-            $infoForm->setInfoFormCompany($infoFormCompany);
-            $this->entityManager->persist($infoFormCompany);
+        $infoFormCompany = new InfoFormCompany();
+        $infoFormCompany->setStatus($data->infoFormCompanyStatus);
+        $infoForm->setInfoFormCompany($infoFormCompany);
+        $this->entityManager->persist($infoFormCompany);
         // }
 
-         $this->entityManager->flush();
+        $this->entityManager->flush();
 
         // remplir les identifiants attendus par ApiPlatform
         $data->infoFormId = $infoForm->getId();
@@ -213,7 +212,7 @@ readonly class InternProcessor implements ProcessorInterface
     }
 
     /**
-     * @throws JsonExceptionAlias
+     * @throws JsonException
      * @throws TransportExceptionInterface
      */
     private function internInfoFormInfoFormInternInfoFormInternCompanyValidation(InternDTO $data, array $uriVariables): InternDTO
@@ -272,16 +271,18 @@ readonly class InternProcessor implements ProcessorInterface
                     'firstName' => $infoFormInternCompany?->getLegalRepresentativeFirstName(),
                     'lastName' => $infoFormInternCompany?->getLegalRepresentativeLastName(),
                     'email' => $infoFormInternCompany?->getEmail(),
+                    'companyName' => $infoFormInternCompany?->getCompanyName(),
+                    'companyAddress' => $infoFormInternCompany?->getAddress(),
                     'expires' => time() + 86400  // 24h
                 ];
+
                 $token = base64_encode(json_encode($registrationData, JSON_THROW_ON_ERROR));
 
                 $registrationLink = $this->frontendUrl . '/register/' . $token;
 
-
                 // TODO: move this part in the mailer service
                 $email = (new TemplatedEmail())
-                    ->from(new Address('inscription-entreprise@easypae.com', 'EasyPAE'))
+                    ->from(new Address('[email protected]', 'EasyPAE'))
                     ->to(new Address(
                         $infoFormInternCompany?->getEmail(),
                         $infoFormInternCompany?->getLegalRepresentativeFirstName() . ' ' .
@@ -293,15 +294,13 @@ readonly class InternProcessor implements ProcessorInterface
                         'firstName' => $infoFormInternCompany?->getLegalRepresentativeFirstName(),
                         'lastName' => $infoFormInternCompany?->getLegalRepresentativeLastName(),
                         'companyName' => $infoFormInternCompany?->getCompanyName(),
+                        'companyAddress' => $infoFormInternCompany?->getAddress(),
                         'registrationLink' => $registrationLink,
                     ]);
 
-
+                $this->mailer->send($email);
             }
-            $this->mailer->send($email);
         }
-
         return $data;
     }
-
 }

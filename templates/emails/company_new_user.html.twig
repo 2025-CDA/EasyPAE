@@ -43,9 +43,13 @@
         <div class="info-box">
             <p><strong>Vos informations pré-remplies :</strong></p>
             <ul>
-                <li>Prénom : {{ firstName }}</li>
-                <li>Nom : {{ lastName }}</li>
-                <li>Email : {{ email }}</li>
+                <li><strong>Prénom :</strong> {{ firstName }}</li>
+                <li><strong>Nom :</strong> {{ lastName }}</li>
+                <li><strong>Email :</strong> {{ email }}</li>
+                <li><strong>Entreprise :</strong> {{ companyName }}</li>
+                {% if companyAddress %}
+                    <li><strong>Adresse :</strong> {{ companyAddress }}</li>
+                {% endif %}
             </ul>
         </div>
 
@@ -61,7 +65,7 @@
         <ul>
             <li>Choisir un identifiant de connexion</li>
             <li>Définir un mot de passe sécurisé</li>
-            <li>Renseigner le SIRET de votre entreprise (obligatoire)</li>
+            <li>Renseigner le SIRET de votre entreprise (optionnel)</li>
         </ul>
 
         <p>Si vous avez des questions, n'hésitez pas à nous contacter.</p>
