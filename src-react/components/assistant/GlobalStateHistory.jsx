@@ -4,9 +4,11 @@ import Container from "../ui/Container";
 import Badge from "../ui/Badge";
 import { CircleAlert, CircleCheck } from "lucide-react";
 
-function GlobalStateHistory() {
+function GlobalStateHistory({className}) {
+
     return (
-        <Container className={"flex flex-col gap-5 p-5"}>
+        <Container className={`flex flex-col gap-5 p-5 ${className}`}>
+
             <div className={"flex items-center gap-4"}>
                 <h3 className={"font-semibold"}>Status Global:</h3>
                 <Badge label={"Incomplet"} color="red"></Badge>
