@@ -20,7 +20,7 @@
     . nouveau "user" via "Ajouter un stagiaire" OK
     . mot de passe oublié OK
     . nouveau "user" via "Suivant" (ajout d'un company_member)
-    . modification du statuts
+    . modification des statuts
 - user/change-password
 
 **Max**
@@ -35,4 +35,5 @@
 
 ### TO FINISH :
 - contrôle de toutes les routes
+- sécurisation des routes
 - suppression des components inutiles (MailerController, templates/pages)
