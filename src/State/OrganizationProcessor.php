@@ -88,6 +88,10 @@ readonly class OrganizationProcessor implements ProcessorInterface
         $this->entityManager->persist($session);
         $this->entityManager->flush();
 
+        // expose l'ID de session créé afin que la plate-forme API puisse générer un IRI pour le DTO renvoyé
+        // 
+        $data->sessionId = $session->getId();
+
         return $data;
     }
 
