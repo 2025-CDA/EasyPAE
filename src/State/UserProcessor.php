@@ -22,9 +22,7 @@ readonly class UserProcessor implements ProcessorInterface
         private EntityManagerInterface     $entityManager,
         private readonly RequestStack      $requestStack,
         private readonly string $projectDir,
-    )
-    {
-    }
+    ) {}
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): UserDTO
     {
@@ -63,6 +61,16 @@ readonly class UserProcessor implements ProcessorInterface
         if ($data->avatar !== null) {
             $user->setAvatar($data->avatar);
         }
+        if ($data->address !== null) {
+            $user->setAddress($data->address);
+        }
+        if ($data->phone !== null) {
+            $user->setPhone($data->phone);
+        }
+        if ($data->birthday !== null) {
+            $user->setBirthday($data->birthday);
+        }
+
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -73,6 +81,9 @@ readonly class UserProcessor implements ProcessorInterface
         $dto->lastName = $user->getLastName();
         $dto->email = $user->getEmail();
         $dto->avatar = $user->getAvatar();
+        $dto->address = $user->getAddress();
+        $dto->phone = $user->getPhone();
+        $dto->birthday = $user->getBirthday();
 
         return $dto;
     }
@@ -190,5 +201,4 @@ readonly class UserProcessor implements ProcessorInterface
 
         return $dto;
     }
-
 }
