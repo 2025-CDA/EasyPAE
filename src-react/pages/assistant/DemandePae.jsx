@@ -1,5 +1,8 @@
 import React from 'react'
 import MainLayout from '../../components/layout/MainLayout'
+import CardIntern from '../../components/ui/CardIntern'
+import GlobalStateHistory from '../../components/assistant/GlobalStateHistory'
+import Container from '../../components/ui/Container'
 
 
 function DemandePae() {
@@ -15,15 +18,25 @@ function DemandePae() {
        {/* ---------------composant -Barre de positionement  ------------- */}
 
 
-
-
-
-
-
-
        {/* ---------------composant -Fiche d'un stagaire avec boutton (changer)  ------------- */}
-
-
+        <Container className={"border-0"}>
+            <CardIntern
+                name="Marie Dubois"
+                // role="Développeuse front"
+                internNumber={true}
+                email="marie.dubois@email.fr"
+                courseName="React avancé"
+                courseNumber="2025"
+                trainerName="Jean Martin"
+                startDateInternship="2025-09-01"
+                endDateInternship="2025-12-01"
+                avatarUrl="/assets/marie.png"
+                onEdit={() => console.log('Changer')}
+                buttonLabel="Changer"
+                showButton={true}
+            />
+        </Container>
+        
 
 
 
@@ -31,6 +44,10 @@ function DemandePae() {
 
 
        {/* ---------------composant - Statut global ------------- */}
+       <Container className={"border-0 "}>
+            <GlobalStateHistory className={'w-full'}/>
+        </Container>
+
 
 
 
