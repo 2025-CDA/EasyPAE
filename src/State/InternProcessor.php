@@ -138,7 +138,7 @@ readonly class InternProcessor implements ProcessorInterface
 
     private function internInfoFormInfoFormInternEdit(InternDTO $data, array $uriVariables): InternDTO
     {
-        $infoFormInternId = $uriVariables['infoFormInternId'] ?? null;
+        $infoFormInternId = $uriVariables['infoFormId'] ?? null;
 
         if (!$infoFormInternId) {
             throw new BadRequestHttpException('Missing required URI variable: infoFormInternId');

@@ -272,5 +272,5 @@ class UserDTO
         'denorm-create:user_companyMember_add',
     ])]
     #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
-    public ?DateTimeImmutable $birthday = null;
+    public ?string $birthday = null;
 }
