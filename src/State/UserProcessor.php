@@ -83,7 +83,7 @@ readonly class UserProcessor implements ProcessorInterface
             $user->setPhone($data->phone);
         }
         if ($data->birthday !== null) {
-            $user->setBirthday($data->birthday);
+            $user->setBirthday(new \DateTimeImmutable($data->birthday));
         }
 
 
@@ -98,7 +98,7 @@ readonly class UserProcessor implements ProcessorInterface
         $dto->avatar = $user->getAvatar();
         $dto->address = $user->getAddress();
         $dto->phone = $user->getPhone();
-        $dto->birthday = $user->getBirthday();
+        $dto->birthday = $user->getBirthday() ? $user->getBirthday()->format('Y-m-d') : null;
 
         return $dto;
     }
