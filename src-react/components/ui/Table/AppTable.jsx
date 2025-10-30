@@ -30,6 +30,8 @@ function AppTable({
   divAction, // Pour changer le contenu des cellules de la colonne Action
   editProps, // Pour modifier la logique du boutton "modifier" de la cellule action
   numberItemsPerPage = 3, // Pour changer le nombre d'élément par page à afficher dans le tableau
+  onClickButtonHeaderOne, //Pour y mettre la logique du premier boutton du header
+  classNameAppTable, // Pour changer le style de la div du composant en entier
   textTableTitle, //Pour changer le titre du tableau
   classNameThead, // Pour changer le style de l'élément Thead ex {"bg-blue-100"}
   classNameTbody, // {"divide-y divide-red-500 dark:divide-neutral-700"}
@@ -77,7 +79,7 @@ function AppTable({
   const handleEdit =  editProps !== undefined ? editProps : editDisplay
   
   return (
-    <div className="flex flex-col mt-5">
+    <div className={classNameAppTable || "flex flex-col mt-5"}>
       <h3 className={classNameTableTitle || "text-lg font-semibold mb-4 mt-3"}>{textTableTitle ||"Liste des stagiaires"}</h3>
       <div className="p-m-1.5 overflow-x-auto">
         <div className="p-1.5 min-w-full inline-block align-middle">
@@ -97,13 +99,21 @@ function AppTable({
               <div className={divButtonHeaderClassName || "flex flex-row justify-between items-center gap-4 mr-3"}>
 
                 <div className= {visibilityButtonOneHeader}>
-                <button type="button" className={buttonHeaderOneClassName || "py-1 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 focus:outline-hidden focus:border-blue-500 focus:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:border-blue-500 dark:text-blue-500 dark:hover:text-blue-400 dark:hover:border-blue-400"}>
+                <button 
+                  type="button" 
+                  className={buttonHeaderOneClassName || "py-1 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 focus:outline-hidden focus:border-blue-500 focus:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:border-blue-500 dark:text-blue-500 dark:hover:text-blue-400 dark:hover:border-blue-400"}
+                  onClick={onClickButtonHeaderOne}
+                >
                   {textButtonOneHeader || " +  Ajouter un stagiaire"}
                 </button>
                 </div>
 
                 <div className= {visibilityButtonTwoHeader}>
-                <button type="button"  className={buttonHeaderTwoClassName || "py-1 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"}>
+                <button 
+                  type="button"  
+                  className={buttonHeaderTwoClassName || "py-1 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"}
+
+                >
                   {textButtonTwoHeader || " Archiver la formation"}
                 </button>
                 </div>
