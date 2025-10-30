@@ -5,6 +5,7 @@ import LoginPage from "./pages/security/LoginPage";
 import LoadingModal from "./pages/security/LoadingModal";
 import ErrorPage from "./pages/security/ErrorPage";
 
+
 export default function App() {
     const { token, userData, getUser, loadingUser } = useAuthContext();
 
@@ -14,7 +15,6 @@ export default function App() {
     }, []);
 
     // console.log(data[0])
-
     return (
         <>
             {loadingUser ? (

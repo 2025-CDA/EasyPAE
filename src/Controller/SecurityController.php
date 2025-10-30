@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -20,6 +21,15 @@ class SecurityController extends AbstractController
         private EmailService $emailService
     ) {}
 
+    /* DO NOT REMOVE PLEASE IT IS NEEDED FOR LOGIN */
+    #[Route(path: '/api/login', name: 'app_login', methods: ['POST'])]
+    public function login(): JsonResponse
+    {
+        // This controller will not be executed,
+        // as the security system will intercept the request before it reaches this point.
+        // If it is executed, it means there is a misconfiguration in your security.yaml.
+        throw new \LogicException('This code should not be reached!');
+    }
 
     #region Login GET - A SUPP APRED TEST
     #[Route('/login', name: 'login', methods: ['GET'])]
@@ -151,7 +161,7 @@ class SecurityController extends AbstractController
         // bin2hex() convertit en hexadécimal (32 caractères)
         // Préfixe 'RESET_' permet de distinguer les tokens de reset des tokens d'activation
         $resetToken = 'RESET_' . bin2hex(random_bytes(16));
-        
+
         // ========================================
         // ÉTAPE 5 : Stockage du token en session
         // ========================================
@@ -170,7 +180,7 @@ class SecurityController extends AbstractController
         // On concatène avec '/reset-password/' et le token
         // Résultat : http://localhost:8000/reset-password/RESET_abc123def456...
         $resetPasswordLink = $request->getSchemeAndHttpHost() . '/reset-password/' . $resetToken;
-        
+
         // ========================================
         // ÉTAPE 7 : Envoi de l'email de réinitialisation
         // ========================================
@@ -198,7 +208,7 @@ class SecurityController extends AbstractController
         // ========================================
         // Cherche dans la session les données associées à ce token
         $tokenData = $request->getSession()->get('reset_token_' . $token);
-        
+
         // ========================================
         // ÉTAPE 2 : Validation du token
         // ========================================
@@ -260,7 +270,7 @@ class SecurityController extends AbstractController
         // ========================================
         // Récupère les données du token depuis la session
         $tokenData = $request->getSession()->get('reset_token_' . $token);
-        
+
         // Vérifie que le token existe ET n'est pas expiré
         if (!$tokenData || $tokenData['expires'] < time()) {
             return $this->render('pages/reset_password.html.twig', [
@@ -274,7 +284,7 @@ class SecurityController extends AbstractController
         // ========================================
         // Récupère l'utilisateur depuis la BDD en utilisant l'ID stocké dans le token
         $user = $this->entityManager->getRepository(User::class)->find($tokenData['user_id']);
-        
+
         // Vérifie que l'utilisateur existe toujours en base
         if (!$user) {
             return $this->render('pages/reset_password.html.twig', [
@@ -290,7 +300,7 @@ class SecurityController extends AbstractController
         // Le hash généré est une chaîne d'environ 60 caractères, sécurisée et non réversible
         $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);
-        
+
         // ========================================
         // ÉTAPE 7 : Activation complète du compte
         // ========================================
@@ -298,7 +308,7 @@ class SecurityController extends AbstractController
         // Cela indique que l'utilisateur a défini son mot de passe et activé son compte
         // Dans RegistrationController, il était à false (compte créé mais non activé)
         $user->setIsFirstConnection(true);
-        
+
         // flush() : Exécute les requêtes SQL UPDATE pour sauvegarder les changements
         $this->entityManager->flush();
 

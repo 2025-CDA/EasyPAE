@@ -6,8 +6,8 @@ function AssistantPage() {
 
  return (
         <Dashboard 
-            // calendarDiv={"hidden"}
-            // selectDiv={"hidden"}
+            calendarDiv={false}
+            selectDiv={false}
         />
  );
 }

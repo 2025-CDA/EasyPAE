@@ -40,6 +40,10 @@ readonly class OrganizationProcessor implements ProcessorInterface
     {
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     * @throws RandomException
+     */
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): TrainingSession|OrganizationDTO|null
     {
         if (!$data instanceof OrganizationDTO) {

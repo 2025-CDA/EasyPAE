@@ -16,8 +16,8 @@ function AssistantFicheRenseignement() {
         <div className="flex flex-col gap-4 w-full">
 
            {/* ---------------composant Fiche renseignement stagiaire (Mounir) ------------- */}
-           <Container className={"m-4 p-1 border"}>
-                <div className={"p-4 border border-gray-200 rounded-2xl w-full"}>
+           <Container className={"m-5 p-1 border"}>
+                <div className={"p-5 border border-gray-200 rounded-2xl w-full"}>
                     <FicheRenseignStagaire />
                 </div>
             </Container>
@@ -33,7 +33,7 @@ function AssistantFicheRenseignement() {
             </Container> 
 
            {/* ---------- Button ---------- */}
-           <div className='flex p-2 flex-row gap-2 w-full mb-50'>
+           <div className='flex p-5 flex-row gap-2 w-full mb-50'>
                <Button variant='outline' className=' w-full' > Télécharger </Button>
                <Button className=' w-full'> Valider definitivement </Button>
            </div>
