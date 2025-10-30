@@ -180,12 +180,6 @@ class UserDTO
         'create:user_companyMember_add',
         'denorm-create:user_companyMember_add',
     ])]
-    public ?string $birthday = null;
-
-    #[Groups([
-        'create:user_companyMember_add',
-        'denorm-create:user_companyMember_add',
-    ])]
     public ?bool $isLegalRepresentative = null;
 
     #[Groups([
@@ -273,7 +267,9 @@ class UserDTO
 
     #[Groups([
         'read:user_info',
-        'write:user_info'
+        'write:user_info',
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
     ])]
     #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     public ?DateTimeImmutable $birthday = null;
