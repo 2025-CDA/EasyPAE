@@ -4,7 +4,7 @@ export class TokenManager {
     }
     setToken(token) {
         if (typeof token != "string") {
-            throw new Error("Token must be a string");
+            throw new Error("Token must be a string!");
         }
         localStorage.setItem("easyPAEToken", token);
         this.token = token;
@@ -22,8 +22,11 @@ export class TokenManager {
         this.token = null;
     }
 
-    hasToken() {
-        const token = this.getToken();
-        return token ? true : false;
+    decodeToken(token) {
+        const [, payloadB64] = token.split(".");
+        const payloadJson = atob(
+            payloadB64.replace(/-/g, "+").replace(/_/g, "/")
+        );
+        return JSON.parse(decodeURIComponent(escape(payloadJson)));
     }
 }
