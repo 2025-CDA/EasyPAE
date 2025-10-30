@@ -180,12 +180,6 @@ class UserDTO
         'create:user_companyMember_add',
         'denorm-create:user_companyMember_add',
     ])]
-    public ?string $address = null;
-
-    #[Groups([
-        'create:user_companyMember_add',
-        'denorm-create:user_companyMember_add',
-    ])]
     public ?string $birthday = null;
 
     #[Groups([
@@ -267,13 +261,15 @@ class UserDTO
         'read:user_info',
         'write:user_info'
     ])]
-    public ?string $phone  = null;
+    public ?string $phone = null;
 
-        #[Groups([
+    #[Groups([
         'read:user_info',
-        'write:user_info'
+        'write:user_info',
+        'create:user_companyMember_add',
+        'denorm-create:user_companyMember_add',
     ])]
-    public ?string $address  = null;
+    public ?string $address = null;
 
     #[Groups([
         'read:user_info',
