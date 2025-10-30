@@ -16,7 +16,7 @@
     --secondary-text: #919397;
     --background-color: #ffff;
     --primary-text: #1f2937;
-    --validate-text: #14B8A6;
+    --validate-text: #14b8a6;
 }
 
 @theme inline {
@@ -26,7 +26,7 @@
     --color-secondary-text: var(--secondary-text);
     --color-background: var(--background-color);
     --color-primary-text: var(--primary-text);
-    --color-validate-text:var(--validate-text);
+    --color-validate-text: var(--validate-text);
 }
 /* 4. Classe CSS manuelle (utilisable partout) */
 
@@ -71,7 +71,7 @@ span {
     /* background-color: #aafaf5; */
     display: flex;
     width: 30rem;
-     padding:0 10px
+    padding: 0 10px;
 }
 
 .CheckboxSuperAdmin {
@@ -80,8 +80,8 @@ span {
     flex-direction: column;
     /* color:red */
     width: 30rem;
-    gap:15px;
-    padding:10px
+    gap: 15px;
+    padding: 10px;
 }
 
 .AvatarSuperAdminPage {
@@ -92,7 +92,7 @@ span {
 .TextCardSuperAdmin {
     display: flex;
     flex-direction: column;
-    padding:1.2rem;
+    padding: 1.2rem;
 }
 .titlePage {
     /* background-color: #878cf7; */
