@@ -150,8 +150,8 @@ readonly class CompanyProcessor implements ProcessorInterface
                 $newUser->setFirstName($data->legalRepresentativeFirstName);
                 $newUser->setLastName($data->legalRepresentativeLastName);
                 $newUser->setRole(\App\Enum\UserRole::COMPANY);
-                // Générer un mot de passe temporaire aléatoire (l'utilisateur devra le réinitialiser)
-                $newUser->setPassword(bin2hex(random_bytes(16)));
+                // Mot de passe vide au départ - l'utilisateur le définira via le lien d'activation
+                $newUser->setPassword('');
                 $this->entityManager->persist($newUser);
                 
                 // Créer le CompanyMember et le rattacher à la Company existante
@@ -198,8 +198,8 @@ readonly class CompanyProcessor implements ProcessorInterface
                 $newUser->setFirstName($data->legalRepresentativeFirstName);
                 $newUser->setLastName($data->legalRepresentativeLastName);
                 $newUser->setRole(\App\Enum\UserRole::COMPANY);
-                // Générer un mot de passe temporaire aléatoire (l'utilisateur devra le réinitialiser)
-                $newUser->setPassword(bin2hex(random_bytes(16)));
+                // Mot de passe vide au départ - l'utilisateur le définira via le lien d'activation
+                $newUser->setPassword('');
                 $this->entityManager->persist($newUser);
                 
                 // Créer le CompanyMember et le rattacher à la nouvelle Company

@@ -6,7 +6,6 @@ use DateTimeImmutable;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use App\State\InfoFormProvider;
-use App\State\InfoFormProcessor;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -49,16 +48,6 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
             normalizationContext: ['groups' => ['read:company_resume']],
             name: 'company_resume_card',
             provider: InfoFormProvider::class,
-        ),
-
-        new Patch(
-            uriTemplate: '/resum-form/{infoFormId}/validation-status',
-            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-            uriVariables: ['infoFormId'],
-            normalizationContext: ['groups' => ['read:validation_status']],
-            read: false,
-            name: 'validate_resume_form',
-            processor: InfoFormProcessor::class,
         ),
 
         new Get(
