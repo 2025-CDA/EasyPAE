@@ -45,9 +45,9 @@ export default function AuthContextProvider({ children }) {
         const token = tokenManager.getToken();
         if (token) {
             const decodedToken = tokenManager.decodeToken(token);
-
             setToken(token);
             setUserData(decodedToken);
+            console.log("🚀 ~ getUser ~ decodedToken:", decodedToken);
             setLoadingUser(false);
         } else {
             setLoadingUser(false);

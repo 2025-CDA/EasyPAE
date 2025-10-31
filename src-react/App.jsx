@@ -5,6 +5,9 @@ import LoginPage from "./pages/security/LoginPage";
 import LoadingModal from "./pages/security/LoadingModal";
 import ErrorPage from "./pages/security/ErrorPage";
 import Dashboard from "./pages/Dashboard";
+import ProfilePage from "./pages/profile/ProfilePage";
+import HelpPage from "./pages/help/HelpPage";
+import NotificationsPage from "./pages/NotificationsPage";
 
 export default function App() {
     const { signOut, token, userData, getUser, loadingUser } = useAuthContext();
@@ -84,9 +87,15 @@ export default function App() {
                                     )}
                                 </>
                             )}
-                            <Route path="/notifications" element={App}></Route>
-                            <Route path="/help" element={App}></Route>
-                            <Route path="/myAccount" element={App}></Route>
+                            <Route
+                                path="/notifications"
+                                element={<NotificationsPage />}
+                            ></Route>
+                            <Route path="/help" element={<HelpPage />}></Route>
+                            <Route
+                                path="/profile"
+                                element={<ProfilePage />}
+                            ></Route>
                             <Route path="*" element={<ErrorPage />}></Route>
                         </Routes>
                     )}
