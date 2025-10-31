@@ -4,15 +4,15 @@ import { useAuthContext } from "./store/auth_context/authContext";
 import LoginPage from "./pages/security/LoginPage";
 import LoadingModal from "./pages/security/LoadingModal";
 import ErrorPage from "./pages/security/ErrorPage";
-
+import Dashboard from "./pages/Dashboard";
 
 export default function App() {
-    const { token, userData, getUser, loadingUser } = useAuthContext();
+    const { signOut, token, userData, getUser, loadingUser } = useAuthContext();
 
     useEffect(() => {
-        // getUser();
-        // console.log(token);
-    }, []);
+        getUser();
+        // signOut();
+    }, [token]);
 
     // console.log(data[0])
     return (
@@ -34,7 +34,7 @@ export default function App() {
                     {token && (
                         <Routes>
                             {["company", "intern"].some((role) =>
-                                userData.role.includes(role)
+                                userData?.roles.includes(role)
                             ) && (
                                 <>
                                     <Route
@@ -49,16 +49,10 @@ export default function App() {
                                         path="/informationSheet"
                                         element={App}
                                     ></Route>
-                                    {userData.role.includes("SuperAdmin") && (
-                                        <Route
-                                            path="/superAdmin"
-                                            element={App}
-                                        ></Route>
-                                    )}
                                 </>
                             )}
                             {["company", "intern"].some(
-                                (role) => !userData.role.includes(role)
+                                (role) => !userData?.roles.includes(role)
                             ) && (
                                 <>
                                     <Route
@@ -82,7 +76,7 @@ export default function App() {
                                         path="/interForm"
                                         element={App}
                                     ></Route>
-                                    {userData.role.includes("SuperAdmin") && (
+                                    {userData?.roles.includes("SuperAdmin") && (
                                         <Route
                                             path="/superAdmin"
                                             element={App}

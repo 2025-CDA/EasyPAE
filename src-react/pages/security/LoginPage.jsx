@@ -5,10 +5,11 @@ import { useState } from "react";
 import logoNameFullWhite from "../../assets/LogoNameFullWhite.png";
 import ManWorkingComputer from "../../assets/Man-working-computer.png";
 import useWindowSize from "../../hooks/useWindowSize";
-import Container from "../../components/ui/Container"
-import axios from "axios"
-import useAxios from "../../hooks/useAxios"
+import Container from "../../components/ui/Container";
+import axios from "axios";
+import useAxios from "../../hooks/useAxios";
 import { redirect } from "react-router-dom";
+import { useAuthContext } from "../../store/auth_context/authContext";
 
 function LoginPage({ initialStep = "login", className }) {
     const [email, setEmail] = useState("");
@@ -19,17 +20,10 @@ function LoginPage({ initialStep = "login", className }) {
     const { width } = useWindowSize();
     const isMobile = width < 768;
 
-    const {data, loading, error, fetchData} = useAxios();
-
+    const { signIn } = useAuthContext();
     async function handleLogin(e) {
         e.preventDefault();
-        const result = await fetchData('POST', 'login', { username: email, password: password });        
-        if (result.success) {
-            console.log('Succès ! Réponse :', result.data);
-            step == 'error' ? setStep('login') : ''
-        } else {
-            setStep('error');
-        }
+        signIn(email, password);
     }
 
     return (
@@ -118,13 +112,18 @@ function LoginPage({ initialStep = "login", className }) {
                     {step === "mailSent" && (
                         <Container className=" mx-10 border-t-4 border-t-blue-600 bg-background">
                             <div>
-                                <h4 className="pb-2 font-semibold">Email envoyé</h4>         
-                                <p>Si une adresse email correspond à un compte existant, un lien de réinitialisation du mot de passe vient d’être envoyé. Pensez à vérifier vos spams ou courriers indésirables.</p>                   
-
+                                <h4 className="pb-2 font-semibold">
+                                    Email envoyé
+                                </h4>
+                                <p>
+                                    Si une adresse email correspond à un compte
+                                    existant, un lien de réinitialisation du mot
+                                    de passe vient d’être envoyé. Pensez à
+                                    vérifier vos spams ou courriers
+                                    indésirables.
+                                </p>
                             </div>
-
                         </Container>
-
                     )}
                 </div>
 

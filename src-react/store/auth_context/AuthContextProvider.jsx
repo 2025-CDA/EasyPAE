@@ -7,18 +7,18 @@ export default function AuthContextProvider({ children }) {
     const [token, setToken] = useState(null);
     const [userData, setUserData] = useState(null);
     const [loadingUser, setLoadingUser] = useState(false);
-    const { data, error, fetchData } = useAxios();
+    const { error, fetchData } = useAxios();
     const tokenManager = new TokenManager();
 
     const signIn = async (userName, password) => {
         setLoadingUser(true);
-        await fetchData("POST", "login", {
+        const res = await fetchData("POST", "login", {
             username: userName,
             password: password,
         });
         if (!error) {
-            setToken(data.token);
-            tokenManager.setToken(data.token);
+            setToken(res.data.token);
+            tokenManager.setToken(res.data.token);
             await getUser();
             setLoadingUser(false);
         } else {
@@ -45,11 +45,10 @@ export default function AuthContextProvider({ children }) {
         const token = tokenManager.getToken();
         if (token) {
             const decodedToken = tokenManager.decodeToken(token);
-            await fetchData("GET", `users/${decodedToken.id}`);
-            if (!error) {
-                setUserData(data);
-                setLoadingUser(false);
-            }
+
+            setToken(token);
+            setUserData(decodedToken);
+            setLoadingUser(false);
         } else {
             setLoadingUser(false);
             return new Error("There is no signed in users!");
