@@ -35,6 +35,8 @@ readonly class InternProcessor implements ProcessorInterface
         private EntityManagerInterface   $entityManager,
         private string                   $frontendUrl,
         private MailerInterface          $mailer,
+        private \App\Repository\CompanyRepository $companyRepository,
+        private \App\Service\EmailService $emailService,
     )
     {
     }
@@ -114,6 +116,10 @@ readonly class InternProcessor implements ProcessorInterface
 
             if ($data->infoFormInternCompanyLegalRepresentativeEmail !== null) {
                 $infoFormInternCompany->setEmail($data->infoFormInternCompanyLegalRepresentativeEmail);
+            }
+
+            if ($data->infoFormInternCompanySiret !== null) {
+                $infoFormInternCompany->setSiret($data->infoFormInternCompanySiret);
             }
 
             $this->entityManager->persist($infoFormInternCompany);
@@ -206,6 +212,10 @@ readonly class InternProcessor implements ProcessorInterface
             $infoFormInternCompany->setEmail($data->infoFormInternCompanyLegalRepresentativeEmail);
         }
 
+        if ($data->infoFormInternCompanySiret !== null) {
+            $infoFormInternCompany->setSiret($data->infoFormInternCompanySiret);
+        }
+
         $this->entityManager->flush();
 
         return $data;
@@ -228,87 +238,98 @@ readonly class InternProcessor implements ProcessorInterface
             throw new NotFoundHttpException('InfoForm not found');
         }
 
-        if ($data->infoFormStatus !== null) {
-            $infoForm->setStatus($data->infoFormStatus);
-        }
+        // 1. Mettre à jour les statuts selon le workflow
+        // Changement automatique du statut InfoForm à COMPLETED_INTERN
+        $infoForm->setStatus(\App\Enum\InfoFormStatus::COMPLETED_INTERN_VALIDATION);
 
+        // Changement automatique du statut InfoFormIntern à VALIDATED
         $infoFormIntern = $infoForm->getInfoFormIntern();
-        if ($infoFormIntern && $data->infoFormInternStatus !== null) {
-            $infoFormIntern->setStatus($data->infoFormInternStatus);
+        if ($infoFormIntern) {
+            $infoFormIntern->setStatus(\App\Enum\InfoFormInternStatus::VALIDATED);
         }
 
+        // 2. Changement automatique : passer le statut company à PENDING
         $infoFormCompany = $infoForm->getInfoFormCompany();
-        if ($infoFormCompany && $data->infoFormCompanyStatus !== null) {
-            $infoFormCompany->setStatus($data->infoFormCompanyStatus);
+        if ($infoFormCompany) {
+            $infoFormCompany->setStatus(\App\Enum\InfoFormCompanyStatus::PENDING);
+        }
+
+        $infoFormInternCompany = $infoFormIntern?->getInfoFormInternCompany();
+        $companyEmail = $infoFormInternCompany?->getEmail();
+        $companyName = $infoFormInternCompany?->getCompanyName();
+
+        if (!$companyEmail) {
+            throw new BadRequestHttpException('Company email is required');
+        }
+
+        // 3. Vérification de l'email du contact entreprise selon la logique du workflow
+        $existingUser = $this->userRepository->findOneBy(['email' => $companyEmail]);
+
+        if ($existingUser) {
+            // CAS A - Email existe déjà : l'entreprise a déjà un compte
+            $companyMember = $existingUser->getCompanyMember();
+
+            if ($companyMember) {
+                // Lier le CompanyMember existant à ce dossier
+                $companyMember->addInfoForm($infoForm);
+                $this->entityManager->flush();
+
+                // Email de NOTIFICATION simple à l'entreprise existante
+                // Utiliser des valeurs par défaut si firstName/lastName sont null
+                $this->emailService->sendCompanyNotificationExistingUserEmail(
+                    $existingUser->getEmail(),
+                    $existingUser->getFirstName() ?? 'Utilisateur',
+                    $existingUser->getLastName() ?? '',
+                    $companyMember->getCompany()?->getName() ?? $companyName,
+                    $infoForm->getInternMember()?->getUser()?->getFirstName() ?? '',
+                    $infoForm->getInternMember()?->getUser()?->getLastName() ?? '',
+                    $this->frontendUrl . '/login'
+                );
+            }
+
+        } else {
+            // CAS B - Email n'existe pas : envoyer un email au contact pour qu'il remplisse le formulaire entreprise
+            // Le contact devra renseigner le SIRET dans le formulaire InfoFormCompany
+            // La vérification du SIRET et la création de Company/User/CompanyMember se fera dans CompanyProcessor
+            
+            // Génération d'un lien d'activation/inscription pour le formulaire entreprise
+            $registrationData = [
+                'email' => $companyEmail,
+                'infoFormId' => $infoFormId,
+                'expires' => time() + 86400  // 24h
+            ];
+            $token = base64_encode(json_encode($registrationData, JSON_THROW_ON_ERROR));
+            $activationLink = $this->frontendUrl . '/company/register/' . $token;
+
+            // Email invitant le contact à compléter le formulaire entreprise (avec SIRET)
+            $this->emailService->sendCompanyActivationNewCompanyEmail(
+                $companyEmail,
+                $infoFormInternCompany->getLegalRepresentativeFirstName() ?? '',
+                $infoFormInternCompany->getLegalRepresentativeLastName() ?? '',
+                $companyName ?? 'Votre entreprise',
+                $infoForm->getInternMember()?->getUser()?->getFirstName() ?? '',
+                $infoForm->getInternMember()?->getUser()?->getLastName() ?? '',
+                $activationLink
+            );
+        }
+
+        // 4. Email à l'organisme : le stagiaire a validé son volet
+        // Récupérer les OrganizationMembers via la TrainingSession (table tampon organization_member_training_session)
+        $trainingSession = $infoForm->getTrainingSession();
+        if ($trainingSession) {
+            $organizationMembers = $trainingSession->getOrganizationMembers();
+            foreach ($organizationMembers as $orgMember) {
+                $this->emailService->sendOrganizationInternValidatedEmail(
+                    $orgMember->getUser()->getEmail(),
+                    $infoForm->getInternMember()?->getUser()?->getFirstName() ?? '',
+                    $infoForm->getInternMember()?->getUser()?->getLastName() ?? '',
+                    $infoFormInternCompany->getCompanyName()
+                );
+            }
         }
 
         $this->entityManager->flush();
 
-        $infoFormInternCompany = $infoFormIntern?->getInfoFormInternCompany();
-        $email = $infoFormInternCompany?->getEmail();
-
-        if ($email) {
-            $existingUser = $this->userRepository->findOneBy(['email' => $email]);
-
-            if ($existingUser) {
-
-                $companyMember = $existingUser->getCompanyMember();
-
-                if ($companyMember) {
-                    $companyMember->addInfoForm($infoForm);
-                    $this->entityManager->flush();
-                }
-
-                // TODO: move this part in the mailer service
-                $email = (new TemplatedEmail())
-                    ->from(new Address('connexion-entreprise@easypae.com', 'EasyPAE'))
-                    ->to(new Address($existingUser->getEmail(), $existingUser->getFirstName() . ' ' . $existingUser->getLastName()))
-                    ->subject('Nouvelle demande de stage sur EasyPAE')
-                    ->htmlTemplate('emails/company_existing_user.html.twig')
-                    ->context([
-                        'firstName' => $existingUser->getFirstName(),
-                        'lastName' => $existingUser->getLastName(),
-                        'companyName' => $infoFormInternCompany?->getCompanyName(),
-                        'loginUrl' => $this->frontendUrl . '/login',
-                    ]);
-
-            } else {
-
-                $registrationData = [
-                    'firstName' => $infoFormInternCompany?->getLegalRepresentativeFirstName(),
-                    'lastName' => $infoFormInternCompany?->getLegalRepresentativeLastName(),
-                    'email' => $infoFormInternCompany?->getEmail(),
-                    'companyName' => $infoFormInternCompany?->getCompanyName(),
-                    'companyAddress' => $infoFormInternCompany?->getAddress(),
-                    'infoFormId' => $infoFormId,
-                    'expires' => time() + 86400  // 24h
-                ];
-
-                $token = base64_encode(json_encode($registrationData, JSON_THROW_ON_ERROR));
-
-                $registrationLink = $this->frontendUrl . '/register/' . $token;
-
-                // TODO: move this part in the mailer service
-                $email = (new TemplatedEmail())
-                    ->from(new Address('[email protected]', 'EasyPAE'))
-                    ->to(new Address(
-                        $infoFormInternCompany?->getEmail(),
-                        $infoFormInternCompany?->getLegalRepresentativeFirstName() . ' ' .
-                        $infoFormInternCompany?->getLegalRepresentativeLastName()
-                    ))
-                    ->subject('Créez votre compte EasyPAE')
-                    ->htmlTemplate('emails/company_new_user.html.twig')
-                    ->context([
-                        'firstName' => $infoFormInternCompany?->getLegalRepresentativeFirstName(),
-                        'lastName' => $infoFormInternCompany?->getLegalRepresentativeLastName(),
-                        'companyName' => $infoFormInternCompany?->getCompanyName(),
-                        'companyAddress' => $infoFormInternCompany?->getAddress(),
-                        'registrationLink' => $registrationLink,
-                    ]);
-
-            }
-            $this->mailer->send($email);
-        }
         return $data;
     }
 }

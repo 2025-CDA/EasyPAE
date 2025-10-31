@@ -91,6 +91,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
             name: 'organization_session_sessionId_archive',
             processor: OrganizationProcessor::class,
         ),
+        new Patch(
+            uriTemplate: '/organization/infoForm/{infoFormId}/sign',
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            uriVariables: ['infoFormId'],
+            normalizationContext: ['groups' => ['update:organization_infoForm_infoFormId_sign']],
+            denormalizationContext: ['groups' => ['denorm-update:organization_infoForm_infoFormId_sign']],
+            read: false,
+            name: 'organization_infoForm_infoFormId_sign',
+            processor: OrganizationProcessor::class,
+        ),
     ],
 )]
 class OrganizationDTO
@@ -224,4 +234,19 @@ class OrganizationDTO
         'update:organization_session_sessionId_archive',
     ])]
     public ?bool $hasEnded = null;
+
+    #[Groups([
+        'update:organization_infoForm_infoFormId_sign',
+    ])]
+    public ?int $infoFormId = null;
+
+    #[Groups([
+        'denorm-update:organization_infoForm_infoFormId_sign',
+    ])]
+    public ?string $signature = null;
+
+    #[Groups([
+        'denorm-update:organization_infoForm_infoFormId_sign',
+    ])]
+    public ?\DateTimeInterface $validationDate = null;
 }

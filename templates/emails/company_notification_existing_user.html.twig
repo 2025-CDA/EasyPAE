@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Nouvelle demande de stage</title>
+	</head>
+	<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+		<div style="background-color: #4F46E5; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+			<h1 style="color: white; margin: 0;">EasyPAE</h1>
+		</div>
+
+		<div style="background-color: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px;">
+			<h2 style="color: #4F46E5; margin-top: 0;">Un nouveau stagiaire souhaite effectuer son stage chez vous</h2>
+
+			<p>Bonjour
+				{{ firstName }}
+				{{ lastName }},</p>
+
+			<p>Vous avez reçu une nouvelle demande de stage pour l'entreprise
+				<strong>{{ companyName }}</strong>.</p>
+
+			<div style="background-color: white; padding: 20px; border-left: 4px solid #4F46E5; margin: 20px 0;">
+				<p style="margin: 5px 0;">
+					<strong>Stagiaire :</strong>
+					{{ internFirstName }}
+					{{ internLastName }}</p>
+			</div>
+
+			<p>Pour consulter le dossier complet et valider cette demande,
+				<strong>connectez-vous avec votre compte existant</strong>.</p>
+
+			<div style="text-align: center; margin: 30px 0;">
+				<a href="{{ loginUrl }}" style="background-color: #4F46E5; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+					Se connecter
+				</a>
+			</div>
+
+			<p style="font-size: 14px; color: #666; margin-top: 30px;">
+				Si vous avez des questions, merci de contacter l'organisme de formation.
+			</p>
+		</div>
+
+		<div style="text-align: center; padding: 20px; font-size: 12px; color: #999;">
+			<p>© 2025 EasyPAE - Plateforme de gestion des PAE</p>
+			<p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+		</div>
+	</body>
+</html>

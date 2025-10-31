@@ -17,7 +17,8 @@ readonly class CompanyProcessor implements ProcessorInterface
     public function __construct(
         private InfoFormRepository $infoFormRepository,
         private InfoFormCompanyRepository $infoFormCompanyRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private \App\Service\EmailService $emailService,
     )
     {
     }
@@ -57,26 +58,14 @@ readonly class CompanyProcessor implements ProcessorInterface
             throw new BadRequestHttpException('InfoFormCompany does not belong to this InfoForm');
         }
 
-        if ($data->name !== null) {
-            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setName($data->name);
-        }
-        if ($data->address !== null) {
-            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setAddress($data->address);
-        }
+        // EDIT route: save only InfoFormCompany data (no Company/User creation)
+        // Company data (name, address, siret, phoneNumber) will be handled in VALIDATION route
+        
         if ($data->activity !== null) {
             $infoFormCompany->setActivity($data->activity);
         }
-        if ($data->phoneNumber !== null) {
-            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setPhoneNumber($data->phoneNumber);
-        }
-        if ($data->email !== null) {
-            $infoFormCompany->setLegalRepresentativeEmail($data->email);
-        }
         if ($data->fax !== null) {
             $infoFormCompany->setFax($data->fax);
-        }
-        if ($data->siret !== null) {
-            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setSiret($data->siret);
         }
         if ($data->legalRepresentativeFirstName !== null) {
             $infoFormCompany->setLegalRepresentativeFirstName($data->legalRepresentativeFirstName);
@@ -108,47 +97,127 @@ readonly class CompanyProcessor implements ProcessorInterface
     private function companyInfoFormInfoFormCompanyValidation(CompanyDTO $data, array $uriVariables): CompanyDTO
     {
         $infoFormId = $uriVariables['infoFormId'] ?? null;
-        $infoFormCompanyId = $uriVariables['infoFormCompanyId'] ?? null;
 
         if (!$infoFormId) {
             throw new BadRequestHttpException('Missing required URI variables');
         }
 
         $infoForm = $this->infoFormRepository->find($infoFormId);
-           $infoFormCompanyId = $infoForm->getInfoFormCompany()->getId() ?? null;
         if (!$infoForm) {
             throw new NotFoundHttpException('InfoForm not found');
         }
 
-        $infoFormCompany = $this->infoFormCompanyRepository->find($infoFormCompanyId);
+        $infoFormCompany = $infoForm->getInfoFormCompany();
         if (!$infoFormCompany) {
             throw new NotFoundHttpException('InfoFormCompany not found');
         }
 
-        if ($infoForm->getInfoFormCompany()?->getId() !== $infoFormCompany->getId()) {
-            throw new BadRequestHttpException('InfoFormCompany does not belong to this InfoForm');
+        // Récupérer les données de l'email et du SIRET
+        $companyEmail = $data->legalRepresentativeEmail ?? $infoForm->getInfoFormIntern()?->getInfoFormInternCompany()?->getEmail();
+        $companySiret = $data->siret;
+        
+        if (!$companySiret) {
+            throw new BadRequestHttpException('Company SIRET is required for validation');
         }
 
-        if ($data->name !== null) {
-            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setName($data->name);
+        // Vérifier si une Company avec ce SIRET existe déjà
+        $existingCompany = $this->entityManager->getRepository(\App\Entity\Company::class)->findOneBy(['siret' => $companySiret]);
+
+        if ($existingCompany) {
+            // CAS B1 - SIRET existe : rattacher le User à la Company existante
+            $existingUser = $this->entityManager->getRepository(\App\Entity\User::class)->findOneBy(['email' => $companyEmail]);
+            
+            if ($existingUser) {
+                // CAS A : User existe déjà - vérifier s'il a déjà un CompanyMember
+                $existingCompanyMember = $existingUser->getCompanyMember();
+                
+                if ($existingCompanyMember) {
+                    // CAS A : CompanyMember existe - simplement lier à ce dossier
+                    $existingCompanyMember->addInfoForm($infoForm);
+                } else {
+                    // User existe mais pas de CompanyMember - créer le CompanyMember
+                    $newCompanyMember = new \App\Entity\CompanyMember();
+                    $newCompanyMember->setUser($existingUser);
+                    $newCompanyMember->setCompany($existingCompany);
+                    $newCompanyMember->setRole(\App\Enum\CompanyRole::LEGAL_REPRESENTATIVE);
+                    $newCompanyMember->addInfoForm($infoForm);
+                    $this->entityManager->persist($newCompanyMember);
+                }
+            } else {
+                // CAS B1 : User n'existe pas - créer User + CompanyMember
+                $newUser = new \App\Entity\User();
+                $newUser->setEmail($companyEmail);
+                $newUser->setFirstName($data->legalRepresentativeFirstName);
+                $newUser->setLastName($data->legalRepresentativeLastName);
+                $newUser->setRole(\App\Enum\UserRole::COMPANY);
+                // Générer un mot de passe temporaire aléatoire (l'utilisateur devra le réinitialiser)
+                $newUser->setPassword(bin2hex(random_bytes(16)));
+                $this->entityManager->persist($newUser);
+                
+                // Créer le CompanyMember et le rattacher à la Company existante
+                $newCompanyMember = new \App\Entity\CompanyMember();
+                $newCompanyMember->setUser($newUser);
+                $newCompanyMember->setCompany($existingCompany);
+                $newCompanyMember->setRole(\App\Enum\CompanyRole::LEGAL_REPRESENTATIVE);
+                $newCompanyMember->addInfoForm($infoForm);
+                $this->entityManager->persist($newCompanyMember);
+            }
+            
+        } else {
+            // CAS B2 - SIRET n'existe pas : créer une nouvelle Company
+            $newCompany = new \App\Entity\Company();
+            $newCompany->setName($data->name);
+            $newCompany->setAddress($data->address);
+            $newCompany->setSiret($companySiret);
+            $newCompany->setPhoneNumber($data->phoneNumber);
+            $this->entityManager->persist($newCompany);
+            
+            $existingUser = $this->entityManager->getRepository(\App\Entity\User::class)->findOneBy(['email' => $companyEmail]);
+            
+            if ($existingUser) {
+                // User existe déjà - vérifier s'il a un CompanyMember
+                $existingCompanyMember = $existingUser->getCompanyMember();
+                
+                if ($existingCompanyMember) {
+                    // CompanyMember existe - le rattacher à la nouvelle Company et à ce dossier
+                    $existingCompanyMember->setCompany($newCompany);
+                    $existingCompanyMember->addInfoForm($infoForm);
+                } else {
+                    // User existe mais pas de CompanyMember - créer le CompanyMember
+                    $newCompanyMember = new \App\Entity\CompanyMember();
+                    $newCompanyMember->setUser($existingUser);
+                    $newCompanyMember->setCompany($newCompany);
+                    $newCompanyMember->setRole(\App\Enum\CompanyRole::LEGAL_REPRESENTATIVE);
+                    $newCompanyMember->addInfoForm($infoForm);
+                    $this->entityManager->persist($newCompanyMember);
+                }
+            } else {
+                // CAS B2 : User n'existe pas - créer User + CompanyMember + nouvelle Company
+                $newUser = new \App\Entity\User();
+                $newUser->setEmail($companyEmail);
+                $newUser->setFirstName($data->legalRepresentativeFirstName);
+                $newUser->setLastName($data->legalRepresentativeLastName);
+                $newUser->setRole(\App\Enum\UserRole::COMPANY);
+                // Générer un mot de passe temporaire aléatoire (l'utilisateur devra le réinitialiser)
+                $newUser->setPassword(bin2hex(random_bytes(16)));
+                $this->entityManager->persist($newUser);
+                
+                // Créer le CompanyMember et le rattacher à la nouvelle Company
+                $newCompanyMember = new \App\Entity\CompanyMember();
+                $newCompanyMember->setUser($newUser);
+                $newCompanyMember->setCompany($newCompany);
+                $newCompanyMember->setRole(\App\Enum\CompanyRole::LEGAL_REPRESENTATIVE);
+                $newCompanyMember->addInfoForm($infoForm);
+                $this->entityManager->persist($newCompanyMember);
+            }
         }
-        if ($data->address !== null) {
-            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setAddress($data->address);
-        }
+
+        // Mettre à jour InfoFormCompany avec toutes les données du formulaire
         if ($data->activity !== null) {
             $infoFormCompany->setActivity($data->activity);
         }
-        if ($data->phoneNumber !== null) {
-            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setPhoneNumber($data->phoneNumber);
-        }
-        if ($data->email !== null) {
-            $infoFormCompany->setLegalRepresentativeEmail($data->email);
-        }
         if ($data->fax !== null) {
             $infoFormCompany->setFax($data->fax);
-        }
-        if ($data->siret !== null) {
-            $infoFormCompany->getInfoForm()?->getCompanyMembers()?->first()?->getCompany()?->setSiret($data->siret);
         }
         if ($data->legalRepresentativeFirstName !== null) {
             $infoFormCompany->setLegalRepresentativeFirstName($data->legalRepresentativeFirstName);
@@ -172,19 +241,49 @@ readonly class CompanyProcessor implements ProcessorInterface
             $infoFormCompany->setTutorPhoneNumber($data->tutorPhoneNumber);
         }
 
-        if ($data->infoFormStatus !== null) {
-            $infoForm->setStatus($data->infoFormStatus);
-        }
+        // Changement automatique du statut InfoForm à COMPLETED_COMPANY
+        $infoForm->setStatus(\App\Enum\InfoFormStatus::COMPLETED_COMPANY_VALIDATION);
 
         if ($data->infoFormCompanyStatus !== null) {
             $infoFormCompany->setStatus($data->infoFormCompanyStatus);
         }
 
-        if ($data->infoFormOrganizationStatus !== null) {
-            $infoForm->getInfoFormOrganization()?->setStatus($data->infoFormOrganizationStatus);
-        }
+        // Changement automatique : passer le statut organization à PENDING
+        $infoForm->getInfoFormOrganization()?->setStatus(\App\Enum\InfoFormOrganizationStatus::PENDING);
 
         $this->entityManager->flush();
+
+        // Envoyer emails au stagiaire et à l'organisme
+        $intern = $infoForm->getInternMember()?->getUser();
+        $infoFormIntern = $infoForm->getInfoFormIntern();
+        $companyName = $data->name ?? $infoForm->getInfoFormIntern()?->getInfoFormInternCompany()?->getCompanyName();
+
+        // Email au stagiaire
+        if ($intern && $infoFormIntern) {
+            $this->emailService->sendInternCompanyValidatedEmail(
+                $intern->getEmail(),
+                $intern->getFirstName(),
+                $intern->getLastName(),
+                $companyName,
+                $infoFormIntern->getDateStart(),
+                $infoFormIntern->getDateEnd()
+            );
+        }
+
+        // Email à l'organisme
+        // Récupérer les OrganizationMembers via la TrainingSession (table tampon organization_member_training_session)
+        $trainingSession = $infoForm->getTrainingSession();
+        if ($trainingSession) {
+            $organizationMembers = $trainingSession->getOrganizationMembers();
+            foreach ($organizationMembers as $orgMember) {
+                $this->emailService->sendOrganizationCompanyValidatedEmail(
+                    $orgMember->getUser()->getEmail(),
+                    $intern?->getFirstName() ?? '',
+                    $intern?->getLastName() ?? '',
+                    $companyName
+                );
+            }
+        }
 
         return $data;
     }
