@@ -184,6 +184,8 @@ class UserDTO
 
     #[Groups([
         'create:user_companyMember_add',
+        'read:user_info',
+        'read:user_basic',
     ])]
     public ?string $role = null;
 
