@@ -5,6 +5,7 @@ import AssistantFicheRenseignement from "./pages/assistant/AssistantFicheRenseig
 import DemandePae from "./pages/assistant/DemandePae";
 import CalendarSimpleGet from "./components/calendar/CalendarSimpleGET";
 import Dashboard from "./pages/assistant/Dashboard";
+import InternDashboardPage from "./pages/intern/InternDashboardPage";
 
 export default function App() {
     // const [showAlert, setShowAlert] = useState(true);
@@ -27,10 +28,7 @@ export default function App() {
     // console.log(data[0])
 
     return <div className="w-full">
-        <AssistantPage /> 
-        <AssistantFicheRenseignement /> 
-        <DemandePae /> 
-        {/* <CalendarSimpleGet justToday={true} /> */}
+
         
     </div>;
 }
