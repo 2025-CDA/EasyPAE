@@ -6,6 +6,7 @@ import Container from '../ui/Container'
 function FormAddIntern({visibilityAddForm}) {
   return (
     <div className= {visibilityAddForm ||"w-full"}>
+        {console.log(visibilityAddForm)}
         <Container>
             <div className=" flex flex-col w-full items-start gap-4">
 

@@ -99,13 +99,13 @@ function AppTable({
               <div className={divButtonHeaderClassName || "flex flex-row justify-between items-center gap-4 mr-3"}>
 
                 <div className= {visibilityButtonOneHeader}>
-                <button 
-                  type="button" 
-                  className={buttonHeaderOneClassName || "py-1 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 focus:outline-hidden focus:border-blue-500 focus:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:border-blue-500 dark:text-blue-500 dark:hover:text-blue-400 dark:hover:border-blue-400"}
-                  onClick={onClickButtonHeaderOne}
-                >
-                  {textButtonOneHeader || " +  Ajouter un stagiaire"}
-                </button>
+                  <button 
+                    type="button" 
+                    className={buttonHeaderOneClassName || "py-1 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 focus:outline-hidden focus:border-blue-500 focus:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:border-blue-500 dark:text-blue-500 dark:hover:text-blue-400 dark:hover:border-blue-400"}
+                    onClick={onClickButtonHeaderOne}
+                  >
+                    {textButtonOneHeader || " +  Ajouter un stagiaire"}
+                  </button>
                 </div>
 
                 <div className= {visibilityButtonTwoHeader}>
