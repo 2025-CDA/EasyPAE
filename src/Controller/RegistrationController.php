@@ -13,8 +13,8 @@ use Symfony\Component\Routing\Attribute\Route;
 class RegistrationController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private EmailService $emailService
+        private readonly EntityManagerInterface $entityManager,
+        private readonly EmailService           $emailService
     ) {}
 
     #region Registration GET (pour affichage du formulaire Twig) - A SUPPRIMER APRESS LES TESTS
@@ -53,7 +53,7 @@ class RegistrationController extends AbstractController
         // ========================================
         // Cherche dans la base si un utilisateur existe déjà avec cet email
         $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-        
+
         // Si l'email existe déjà, on refuse l'inscription
         if ($existingUser) {
             return $this->render('pages/registration.html.twig', [
@@ -69,15 +69,15 @@ class RegistrationController extends AbstractController
         $user->setEmail($email);
         $user->setFirstName($firstName);
         $user->setLastName($lastName);
-        
+
         // IMPORTANT : isFirstConnection reste à false jusqu'à ce que l'utilisateur
         // définisse son mot de passe. Il passera à true dans SecurityController
         // lors de la validation du mot de passe via le lien d'activation
         $user->setIsFirstConnection(false);
-        
+
         // SÉCURITÉ : Le mot de passe est vide au départ. Cela empêche toute connexion
         // tant que l'utilisateur n'a pas cliqué sur le lien d'activation et défini
-        // son mot de passe. La vérification empty($user->getPassword()) dans le 
+        // son mot de passe. La vérification empty($user->getPassword()) dans le
         // SecurityController bloque explicitement ces tentatives de connexion
         $user->setPassword('');
 
@@ -97,7 +97,7 @@ class RegistrationController extends AbstractController
         // bin2hex() convertit en hexadécimal (32 caractères)
         // Préfixe 'NEW_' permet de distinguer les tokens de création des tokens de reset
         $token = 'NEW_' . bin2hex(random_bytes(16));
-        
+
         // ========================================
         // ÉTAPE 7 : Stockage du token en session
         // ========================================
@@ -116,7 +116,7 @@ class RegistrationController extends AbstractController
         // On concatène avec '/reset-password/' et le token
         // Résultat : http://localhost:8000/reset-password/NEW_abc123def456...
         $updatePasswordLink = $request->getSchemeAndHttpHost() . '/reset-password/' . $token;
-        
+
         // ========================================
         // ÉTAPE 9 : Envoi de l'email d'activation
         // ========================================

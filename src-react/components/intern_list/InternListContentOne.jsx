@@ -1,6 +1,10 @@
 import React from 'react'
 import HeaderInternList from './HeaderInternList'
 import AppTable from '../ui/Table/AppTable'
+import CalendarSimpleGET from '../calendar/CalendarSimpleGET'
+import { useState } from 'react'
+import FormAddIntern from './FormAddIntern'
+import { Edit } from "lucide-react";
 
 function InternListContentOne() {
 
@@ -29,15 +33,59 @@ function InternListContentOne() {
     // { id: 7, first_name: "Camille", last_name: "Durand", intern_member_id: 125244, status: "Terminé" },
     // { id: 8, first_name: "Paul", last_name: "Martin", intern_member_id: 125245, status: "Transmis à l'administration" },
   ]
+  const [currentFormation, ] = useState({
+      periodStart: new Date(2026, 0, 5),  // 5 janvier 2026
+      periodEnd: new Date(2026, 2, 27),   // 27 mars 2026
+  });
+
+  const addIntern = (keyAction) => {
+    console.log(`Ajout du stagiaire l'élément ID : ${keyAction}`)
+  }
+  // console.log(keyAction)
+  const divAction = 
+  (
+    <div className="flex gap-3 justify-start">
+    <button 
+      className="p-2 bg-secondary text-white rounded-lg hover:bg-secondary/90"
+      onClick={addIntern}
+    >
+      <Edit className="w-4 h-4" />
+    </button>
+    </div>
+  )
+
+  // const visibilityAddForm = "hidden"
+  const  addNewIntern = () => {
+    console.log("hello")
+  }
+  
   return (
-    <div className="ml-4 w-5xl">
-        <HeaderInternList/>
+    
+    <div className="ml-4">
+      <HeaderInternList/>
+
+      <div className="flex flex-row items-start gap-4">
         <AppTable
           classNameTableTitle={"hidden"}  
           columns = {columns}
           data =  {data}
-          numberItemsPerPage ={7}
+          numberItemsPerPage ={7} 
+          classNameAppTable={"w-full"}
+          divAction={divAction}
+          onClickButtonHeaderOne ={addNewIntern}
         />
+
+        <div className="flex flex-col items-start gap-4 mr-8">  
+          <FormAddIntern
+            // visibilityAddForm= {visibilityAddForm}
+          />
+          <CalendarSimpleGET
+            dates={currentFormation}
+            shrinkable={true}         
+          />
+        </div>
+      </div>
+        
     </div>
   )
 }

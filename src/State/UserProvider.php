@@ -75,7 +75,9 @@ readonly class UserProvider implements ProviderInterface
         $dto->email = $user->getEmail();
         $dto->avatar = $user->getAvatar();        
         $dto->phone = $user->getPhone();
-        $dto->birthday = $user->getBirthday();
+        $dto->birthday = $user->getBirthday() ? $user->getBirthday()->format('Y-m-d') : null;
+        $dto->address = $user->getAddress();
+
 
         return $dto;
     }

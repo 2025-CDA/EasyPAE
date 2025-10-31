@@ -3,6 +3,7 @@
 namespace App\Dto;
 
 use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Enum\InfoFormCompanyStatus;
 use App\Enum\InfoFormOrganizationStatus;
 use App\Enum\InfoFormStatus;
@@ -23,6 +24,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
             name: 'company_infoForm_infoFormId_infoFormCompany',
             provider: CompanyProvider::class,
         ),
+
+
+//        new Post(
+//            uriTemplate: '/intern/infoForm',
+//            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+//            normalizationContext: ['groups' => ['read:intern_infoForm_infoFormId_infoFormIntern']],
+//            denormalizationContext: ['groups' => ['create:intern_infoForm_add']],
+//            name: 'intern_infoForm_add',
+//            processor: CompanyProcessor::class,
+//        ),
 
 
         new Patch(

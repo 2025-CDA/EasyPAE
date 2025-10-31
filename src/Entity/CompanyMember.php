@@ -10,6 +10,8 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Enum\CompanyRole;
 use App\Repository\CompanyMemberRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -113,6 +115,17 @@ class CompanyMember
     ])]
     private ?\DateTimeImmutable $createdAt = null;
 
+    /**
+     * @var Collection<int, InfoForm>
+     */
+    #[ORM\ManyToMany(targetEntity: InfoForm::class, inversedBy: 'companyMembers')]
+    private Collection $infoForms;
+
+    public function __construct()
+    {
+        $this->infoForms = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -184,6 +197,30 @@ class CompanyMember
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, InfoForm>
+     */
+    public function getInfoForms(): Collection
+    {
+        return $this->infoForms;
+    }
+
+    public function addInfoForm(InfoForm $infoForm): static
+    {
+        if (!$this->infoForms->contains($infoForm)) {
+            $this->infoForms->add($infoForm);
+        }
+
+        return $this;
+    }
+
+    public function removeInfoForm(InfoForm $infoForm): static
+    {
+        $this->infoForms->removeElement($infoForm);
 
         return $this;
     }
