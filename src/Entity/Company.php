@@ -110,19 +110,6 @@ class Company
     ])]
     private Collection $companyMembers;
 
-    /**
-     * @var Collection<int, InfoForm>
-     */
-    #[ORM\OneToMany(targetEntity: InfoForm::class, mappedBy: 'company')]
-    #[MaxDepth(1)]
-    #[Groups([
-        'read:company',
-        'read:company_collection',
-        'create:company',
-        'update:company'
-    ])]
-    private Collection $infoForms;
-
     #[ORM\Column(nullable: true)]
     #[MaxDepth(1)]
     #[Groups([
@@ -145,7 +132,6 @@ class Company
     public function __construct()
     {
         $this->companyMembers = new ArrayCollection();
-        $this->infoForms = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -219,36 +205,6 @@ class Company
         return $this;
     }
 
-    /**
-     * @return Collection<int, InfoForm>
-     */
-    public function getInfoForms(): Collection
-    {
-        return $this->infoForms;
-    }
-
-    public function addInfoForm(InfoForm $infoForm): static
-    {
-        if (!$this->infoForms->contains($infoForm)) {
-            $this->infoForms->add($infoForm);
-            $infoForm->setCompany($this);
-        }
-
-        return $this;
-    }
-
-    public function removeInfoForm(InfoForm $infoForm): static
-    {
-        if ($this->infoForms->removeElement($infoForm)) {
-            // set the owning side to null (unless already changed)
-            if ($infoForm->getCompany() === $this) {
-                $infoForm->setCompany(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
@@ -284,4 +240,5 @@ class Company
 
         return $this;
     }
+
 }

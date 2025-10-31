@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bienvenue sur EasyPAE</title>
+	</head>
+	<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+		<div style="background-color: #4F46E5; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+			<h1 style="color: white; margin: 0;">EasyPAE</h1>
+		</div>
+
+		<div style="background-color: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px;">
+			<h2 style="color: #4F46E5; margin-top: 0;">🎉 Bienvenue sur EasyPAE !</h2>
+
+			<p>Bonjour,</p>
+
+			<p>Votre entreprise
+				<strong>{{ companyName }}</strong>
+				vient d'être ajoutée à notre plateforme EasyPAE, la solution de gestion des Périodes d'Application en Entreprise.</p>
+
+			<p>Un stagiaire souhaite effectuer son stage chez vous :</p>
+
+			<div style="background-color: white; padding: 20px; border-left: 4px solid #4F46E5; margin: 20px 0;">
+				<p style="margin: 5px 0;">
+					<strong>Stagiaire :</strong>
+					{{ internFirstName }}
+					{{ internLastName }}</p>
+			</div>
+
+			<p>Pour commencer, vous devez
+				<strong>activer votre compte</strong>
+				en définissant votre mot de passe. Vous pourrez ensuite :</p>
+
+			<ul style="background-color: white; padding: 20px 20px 20px 40px; margin: 20px 0;">
+				<li>Consulter et valider les demandes de stage</li>
+				<li>Gérer les informations de votre entreprise</li>
+				<li>Suivre l'évolution des dossiers PAE</li>
+				<li>Communiquer avec les organismes de formation</li>
+			</ul>
+
+			<div style="text-align: center; margin: 30px 0;">
+				<a href="{{ activationLink }}" style="background-color: #4F46E5; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+					Activer mon compte
+				</a>
+			</div>
+
+			<p style="font-size: 14px; color: #666;">
+				<strong>⏰ Ce lien est valide pendant 24 heures.</strong>
+			</p>
+
+			<p style="font-size: 14px; color: #666; margin-top: 30px;">
+				Si vous n'êtes pas la bonne personne ou si vous avez des questions, merci de contacter l'organisme de formation.
+			</p>
+		</div>
+
+		<div style="text-align: center; padding: 20px; font-size: 12px; color: #999;">
+			<p>© 2025 EasyPAE - Plateforme de gestion des PAE</p>
+			<p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+		</div>
+	</body>
+</html>

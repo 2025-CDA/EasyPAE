@@ -6,13 +6,15 @@ import Button from "../../ui/Button";
 
 
 export function LoginForm(props) {
+            const test = props.handleSubmit
 
     return (
         <Container className={`${props.className || ""}`}>
             <form
-                onSubmit={props.handleSubmit}
+                onSubmit={test}
                 className="text-black px-3 pb-3 w-full h-full"
             >
+                
                 <div>
                     <h3 className="font-semibold mb-5 flex justify-self-center md:justify-self-start">
                         Connectez-vous

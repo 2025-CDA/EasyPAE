@@ -4,6 +4,7 @@ namespace App\State;
 
 use App\Dto\InternDTO;
 use App\Entity\InfoForm;
+use App\Enum\InfoFormStatus;
 use App\Entity\InfoFormIntern;
 use App\Entity\InfoFormCompany;
 use ApiPlatform\Metadata\Operation;
@@ -11,24 +12,31 @@ use App\Entity\InfoFormOrganization;
 use App\Entity\InfoFormInternCompany;
 use App\Repository\InfoFormRepository;
 use App\Enum\InfoFormOrganizationStatus;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
 use App\Repository\InternMemberRepository;
-use App\Repository\OrganizationRepository;
 use App\Repository\InfoFormInternRepository;
-use App\Repository\TrainingSessionRepository;
+use JsonException;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 
 readonly class InternProcessor implements ProcessorInterface
 {
     public function __construct(
-        private InfoFormRepository $infoFormRepository,
+        private InfoFormRepository       $infoFormRepository,
         private InfoFormInternRepository $infoFormInternRepository,
-        private InternMemberRepository $internMemberRepository,
-        private OrganizationRepository $organizationRepository,
-        private TrainingSessionRepository $trainingSessionRepository,
-        private EntityManagerInterface $entityManager
+        private InternMemberRepository   $internMemberRepository,
+        private UserRepository           $userRepository,
+        private EntityManagerInterface   $entityManager,
+        private string                   $frontendUrl,
+        private MailerInterface          $mailer,
+        private \App\Repository\CompanyRepository $companyRepository,
+        private \App\Service\EmailService $emailService,
     )
     {
     }
@@ -52,20 +60,6 @@ readonly class InternProcessor implements ProcessorInterface
 
     private function internInfoFormAdd(InternDTO $data): InternDTO
     {
-        if (!$data->trainingSessionId || !$data->organizationId || !$data->internId) {
-            throw new BadRequestHttpException('Missing required fields: trainingSessionId, organizationId, or internId');
-        }
-
-        $trainingSession = $this->trainingSessionRepository->find($data->trainingSessionId);
-        if (!$trainingSession) {
-            throw new NotFoundHttpException('Training session not found');
-        }
-
-        $organization = $this->organizationRepository->find($data->organizationId);
-        if (!$organization) {
-            throw new NotFoundHttpException('Organization not found');
-        }
-
         $internMember = $this->internMemberRepository->find($data->internId);
         if (!$internMember) {
             throw new NotFoundHttpException('Intern member not found');
@@ -73,14 +67,11 @@ readonly class InternProcessor implements ProcessorInterface
 
         $infoForm = new InfoForm();
         $infoForm->setInternMember($internMember);
-        $infoForm->setOrganization($organization);
-        $infoForm->setTrainingSession($trainingSession);
+        // $infoForm->setOrganization($organization);
+        // $infoForm->setTrainingSession($trainingSession);
+        $infoForm->setStatus(InfoFormStatus::INITIALIZED);
 
-//dd($data->infoFormStatus);
 
-        if ($data->infoFormStatus !== null) {
-            $infoForm->setStatus($data->infoFormStatus);
-        }
         $this->entityManager->persist($infoForm);
 
         $infoFormIntern = new InfoFormIntern();
@@ -101,12 +92,11 @@ readonly class InternProcessor implements ProcessorInterface
         // if ($data->infoFormOrganizationStatus !== null) {
         //     $infoFormOrganization->setStatus($data->infoFormOrganizationStatus);
         // }
-            $infoFormOrganization->setStatus(InfoFormOrganizationStatus::INITIALIZED);
-                    
-
+        $infoFormOrganization->setStatus(InfoFormOrganizationStatus::INITIALIZED);
 
         $this->entityManager->persist($infoFormOrganization);
         $infoForm->setInfoFormOrganization($infoFormOrganization);
+
 
         if ($data->infoFormInternCompanyName !== null) {
             $infoFormInternCompany = new InfoFormInternCompany();
@@ -128,18 +118,22 @@ readonly class InternProcessor implements ProcessorInterface
                 $infoFormInternCompany->setEmail($data->infoFormInternCompanyLegalRepresentativeEmail);
             }
 
+            if ($data->infoFormInternCompanySiret !== null) {
+                $infoFormInternCompany->setSiret($data->infoFormInternCompanySiret);
+            }
+
             $this->entityManager->persist($infoFormInternCompany);
             $infoFormIntern->setInfoFormInternCompany($infoFormInternCompany);
         }
 
-        if ($data->infoFormCompanyStatus !== null) {
-            $infoFormCompany = new InfoFormCompany();
-            $infoFormCompany->setStatus($data->infoFormCompanyStatus);
-            $this->entityManager->persist($infoFormCompany);
-            $infoForm->setInfoFormCompany($infoFormCompany);
-        }
+        // if ($data->infoFormCompanyStatus !== null) {
+        $infoFormCompany = new InfoFormCompany();
+        $infoFormCompany->setStatus($data->infoFormCompanyStatus);
+        $infoForm->setInfoFormCompany($infoFormCompany);
+        $this->entityManager->persist($infoFormCompany);
+        // }
 
-         $this->entityManager->flush();
+        $this->entityManager->flush();
 
         // remplir les identifiants attendus par ApiPlatform
         $data->infoFormId = $infoForm->getId();
@@ -150,7 +144,7 @@ readonly class InternProcessor implements ProcessorInterface
 
     private function internInfoFormInfoFormInternEdit(InternDTO $data, array $uriVariables): InternDTO
     {
-        $infoFormInternId = $uriVariables['infoFormInternId'] ?? null;
+        $infoFormInternId = $uriVariables['infoFormId'] ?? null;
 
         if (!$infoFormInternId) {
             throw new BadRequestHttpException('Missing required URI variable: infoFormInternId');
@@ -218,11 +212,19 @@ readonly class InternProcessor implements ProcessorInterface
             $infoFormInternCompany->setEmail($data->infoFormInternCompanyLegalRepresentativeEmail);
         }
 
+        if ($data->infoFormInternCompanySiret !== null) {
+            $infoFormInternCompany->setSiret($data->infoFormInternCompanySiret);
+        }
+
         $this->entityManager->flush();
 
         return $data;
     }
 
+    /**
+     * @throws JsonException
+     * @throws TransportExceptionInterface
+     */
     private function internInfoFormInfoFormInternInfoFormInternCompanyValidation(InternDTO $data, array $uriVariables): InternDTO
     {
         $infoFormId = $uriVariables['infoFormId'] ?? null;
@@ -236,18 +238,94 @@ readonly class InternProcessor implements ProcessorInterface
             throw new NotFoundHttpException('InfoForm not found');
         }
 
-        if ($data->infoFormStatus !== null) {
-            $infoForm->setStatus($data->infoFormStatus);
-        }
+        // 1. Mettre à jour les statuts selon le workflow
+        // Changement automatique du statut InfoForm à COMPLETED_INTERN
+        $infoForm->setStatus(\App\Enum\InfoFormStatus::COMPLETED_INTERN_VALIDATION);
 
+        // Changement automatique du statut InfoFormIntern à VALIDATED
         $infoFormIntern = $infoForm->getInfoFormIntern();
-        if ($infoFormIntern && $data->infoFormInternStatus !== null) {
-            $infoFormIntern->setStatus($data->infoFormInternStatus);
+        if ($infoFormIntern) {
+            $infoFormIntern->setStatus(\App\Enum\InfoFormInternStatus::VALIDATED);
         }
 
+        // 2. Changement automatique : passer le statut company à PENDING
         $infoFormCompany = $infoForm->getInfoFormCompany();
-        if ($infoFormCompany && $data->infoFormCompanyStatus !== null) {
-            $infoFormCompany->setStatus($data->infoFormCompanyStatus);
+        if ($infoFormCompany) {
+            $infoFormCompany->setStatus(\App\Enum\InfoFormCompanyStatus::PENDING);
+        }
+
+        $infoFormInternCompany = $infoFormIntern?->getInfoFormInternCompany();
+        $companyEmail = $infoFormInternCompany?->getEmail();
+        $companyName = $infoFormInternCompany?->getCompanyName();
+
+        if (!$companyEmail) {
+            throw new BadRequestHttpException('Company email is required');
+        }
+
+        // 3. Vérification de l'email du contact entreprise selon la logique du workflow
+        $existingUser = $this->userRepository->findOneBy(['email' => $companyEmail]);
+
+        if ($existingUser) {
+            // CAS A - Email existe déjà : l'entreprise a déjà un compte
+            $companyMember = $existingUser->getCompanyMember();
+
+            if ($companyMember) {
+                // Lier le CompanyMember existant à ce dossier
+                $companyMember->addInfoForm($infoForm);
+                $this->entityManager->flush();
+
+                // Email de NOTIFICATION simple à l'entreprise existante
+                // Utiliser des valeurs par défaut si firstName/lastName sont null
+                $this->emailService->sendCompanyNotificationExistingUserEmail(
+                    $existingUser->getEmail(),
+                    $existingUser->getFirstName() ?? 'Utilisateur',
+                    $existingUser->getLastName() ?? '',
+                    $companyMember->getCompany()?->getName() ?? $companyName,
+                    $infoForm->getInternMember()?->getUser()?->getFirstName() ?? '',
+                    $infoForm->getInternMember()?->getUser()?->getLastName() ?? '',
+                    $this->frontendUrl . '/login'
+                );
+            }
+
+        } else {
+            // CAS B - Email n'existe pas : envoyer un email au contact pour qu'il remplisse le formulaire entreprise
+            // Le contact devra renseigner le SIRET dans le formulaire InfoFormCompany
+            // La vérification du SIRET et la création de Company/User/CompanyMember se fera dans CompanyProcessor
+            
+            // Génération d'un lien d'activation/inscription pour le formulaire entreprise
+            $registrationData = [
+                'email' => $companyEmail,
+                'infoFormId' => $infoFormId,
+                'expires' => time() + 86400  // 24h
+            ];
+            $token = base64_encode(json_encode($registrationData, JSON_THROW_ON_ERROR));
+            $activationLink = $this->frontendUrl . '/company/register/' . $token;
+
+            // Email invitant le contact à compléter le formulaire entreprise (avec SIRET)
+            $this->emailService->sendCompanyActivationNewCompanyEmail(
+                $companyEmail,
+                $infoFormInternCompany->getLegalRepresentativeFirstName() ?? '',
+                $infoFormInternCompany->getLegalRepresentativeLastName() ?? '',
+                $companyName ?? 'Votre entreprise',
+                $infoForm->getInternMember()?->getUser()?->getFirstName() ?? '',
+                $infoForm->getInternMember()?->getUser()?->getLastName() ?? '',
+                $activationLink
+            );
+        }
+
+        // 4. Email à l'organisme : le stagiaire a validé son volet
+        // Récupérer les OrganizationMembers via la TrainingSession (table tampon organization_member_training_session)
+        $trainingSession = $infoForm->getTrainingSession();
+        if ($trainingSession) {
+            $organizationMembers = $trainingSession->getOrganizationMembers();
+            foreach ($organizationMembers as $orgMember) {
+                $this->emailService->sendOrganizationInternValidatedEmail(
+                    $orgMember->getUser()->getEmail(),
+                    $infoForm->getInternMember()?->getUser()?->getFirstName() ?? '',
+                    $infoForm->getInternMember()?->getUser()?->getLastName() ?? '',
+                    $infoFormInternCompany->getCompanyName()
+                );
+            }
         }
 
         $this->entityManager->flush();

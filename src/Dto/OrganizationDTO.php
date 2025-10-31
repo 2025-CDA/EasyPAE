@@ -66,6 +66,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
             denormalizationContext: ['groups' => ['denorm-create:organization_session_sessionId_intern_add']],
             name: 'organization_session_sessionId_intern_add',
             processor: OrganizationProcessor::class,
+            // read: false,
+            // output: false,
         ),
 
 
@@ -87,6 +89,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
             denormalizationContext: ['groups' => ['denorm-update:organization_session_sessionId_archive']],
             read: false,
             name: 'organization_session_sessionId_archive',
+            processor: OrganizationProcessor::class,
+        ),
+        new Patch(
+            uriTemplate: '/organization/infoForm/{infoFormId}/sign',
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            uriVariables: ['infoFormId'],
+            normalizationContext: ['groups' => ['update:organization_infoForm_infoFormId_sign']],
+            denormalizationContext: ['groups' => ['denorm-update:organization_infoForm_infoFormId_sign']],
+            read: false,
+            name: 'organization_infoForm_infoFormId_sign',
             processor: OrganizationProcessor::class,
         ),
     ],
@@ -222,4 +234,19 @@ class OrganizationDTO
         'update:organization_session_sessionId_archive',
     ])]
     public ?bool $hasEnded = null;
+
+    #[Groups([
+        'update:organization_infoForm_infoFormId_sign',
+    ])]
+    public ?int $infoFormId = null;
+
+    #[Groups([
+        'denorm-update:organization_infoForm_infoFormId_sign',
+    ])]
+    public ?string $signature = null;
+
+    #[Groups([
+        'denorm-update:organization_infoForm_infoFormId_sign',
+    ])]
+    public ?\DateTimeInterface $validationDate = null;
 }

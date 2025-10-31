@@ -16,14 +16,14 @@ use App\Enum\InfoFormStatus;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class InfoFormProvider implements ProviderInterface
+readonly class InfoFormProvider implements ProviderInterface
 {
     public function __construct(
-        private readonly InfoFormRepository $infoFormRepository,
-        private readonly InfoFormCompanyRepository $infoFormCompanyRepository,
-        private readonly InfoFormInternRepository $infoFormInternRepository,
-        private readonly InfoFormOrganizationRepository $infoFormOrganizationRepository,
-        private readonly TrainingSessionRepository $trainingSessionRepository
+        private InfoFormRepository             $infoFormRepository,
+        private InfoFormCompanyRepository      $infoFormCompanyRepository,
+        private InfoFormInternRepository       $infoFormInternRepository,
+        private InfoFormOrganizationRepository $infoFormOrganizationRepository,
+        private TrainingSessionRepository      $trainingSessionRepository
     ) {
     }
 
@@ -85,11 +85,11 @@ class InfoFormProvider implements ProviderInterface
 
         $dto = new InfoFormDTO();
         $dto->id = 'resume_card_' . $infoFormId;
-        $dto->internAvatar = $user->getAvatar();
-        $dto->internFirstName = $user->getFirstName();
-        $dto->internLastName = $user->getLastName();
-        $dto->internLogin = $user->getLogin();
-        $dto->internEmail = $user->getEmail();
+        $dto->internAvatar = $user?->getAvatar();
+        $dto->internFirstName = $user?->getFirstName();
+        $dto->internLastName = $user?->getLastName();
+        $dto->internLogin = $user?->getLogin();
+        $dto->internEmail = $user?->getEmail();
         $dto->trainingTitle = $trainingSession?->getTraining()?->getName();
         $dto->offerNumber = $trainingSession?->getOfferNumber();
         $dto->organizationUserFirstName = $organizationUser?->getFirstName();
@@ -204,9 +204,9 @@ class InfoFormProvider implements ProviderInterface
 
         if ($internMember && $internMember->getUser()) {
             $user = $internMember->getUser();
-            $dto->internFirstNameFull = $user->getFirstName();
-            $dto->internLastNameFull = $user->getLastName();
-            $dto->internEmailFull = $user->getEmail();
+            $dto->internFirstNameFull = $user?->getFirstName();
+            $dto->internLastNameFull = $user?->getLastName();
+            $dto->internEmailFull = $user?->getEmail();
         }
 
         if ($trainingSession) {
@@ -225,25 +225,25 @@ class InfoFormProvider implements ProviderInterface
             $legalRepMember = null;
 
             foreach ($company->getCompanyMembers() as $member) {
-                if ($member->getRole() === 'Tuteur' && !$tutorMember) {
+                if (!$tutorMember && $member->getRole() === 'Tuteur') {
                     $tutorMember = $member;
-                } elseif ($member->getRole() === 'Représentant légal' && !$legalRepMember) {
+                } elseif (!$legalRepMember && $member->getRole() === 'Représentant légal') {
                     $legalRepMember = $member;
                 }
             }
 
             if ($tutorMember && $tutorMember->getUser()) {
                 $tutorUser = $tutorMember->getUser();
-                $dto->tutorFirstNameFull = $tutorUser->getFirstName();
-                $dto->tutorLastNameFull = $tutorUser->getLastName();
-                $dto->tutorEmailFull = $tutorUser->getEmail();
+                $dto->tutorFirstNameFull = $tutorUser?->getFirstName();
+                $dto->tutorLastNameFull = $tutorUser?->getLastName();
+                $dto->tutorEmailFull = $tutorUser?->getEmail();
             }
 
             if ($legalRepMember && $legalRepMember->getUser()) {
                 $legalRepUser = $legalRepMember->getUser();
-                $dto->legalResponsibleFirstNameFull = $legalRepUser->getFirstName();
-                $dto->legalResponsibleLastNameFull = $legalRepUser->getLastName();
-                $dto->legalResponsibleEmailFull = $legalRepUser->getEmail();
+                $dto->legalResponsibleFirstNameFull = $legalRepUser?->getFirstName();
+                $dto->legalResponsibleLastNameFull = $legalRepUser?->getLastName();
+                $dto->legalResponsibleEmailFull = $legalRepUser?->getEmail();
             }
 
             // Utiliser les infos générales de l'entreprise
@@ -272,6 +272,7 @@ class InfoFormProvider implements ProviderInterface
 
         $status = $infoForm->getStatus();
         $dto->infoFormStatus = $status?->value ?? 'unknown';
+        $dto->updated_at = $infoForm->getUpdatedAt();
 
         // Log pour debug en production
         error_log("InfoForm {$infoFormId} status: " . ($status?->value ?? 'null'));
@@ -295,6 +296,7 @@ class InfoFormProvider implements ProviderInterface
             $dto = new InfoFormDTO();
             $dto->id = 'company_status_' . $infoFormCompanyId;
             $dto->companyStatus = $infoFormCompany->getStatus()->value;
+            $dto->updated_at = $infoFormCompany->getUpdatedAt();
 
             return $dto;
 
@@ -302,7 +304,7 @@ class InfoFormProvider implements ProviderInterface
             // Fallback en cas de problème
             $dto = new InfoFormDTO();
             $dto->id = 'company_status_' . $infoFormCompanyId;
-            $dto->companyStatus = \App\Enum\InfoFormStatus::COMPLETED_COMPANY_VALIDATION->value;
+            $dto->companyStatus = InfoFormStatus::COMPLETED_COMPANY_VALIDATION->value;
 
             return $dto;
         }
@@ -324,6 +326,7 @@ class InfoFormProvider implements ProviderInterface
             $dto = new InfoFormDTO();
             $dto->id = 'intern_status_' . $infoFormInternId;
             $dto->internStatus = $infoFormIntern->getStatus()->value;
+            $dto->updated_at = $infoFormIntern->getUpdatedAt();
 
             return $dto;
 
@@ -331,7 +334,7 @@ class InfoFormProvider implements ProviderInterface
             // Fallback en cas de problème
             $dto = new InfoFormDTO();
             $dto->id = 'intern_status_' . $infoFormInternId;
-            $dto->internStatus = \App\Enum\InfoFormStatus::COMPLETED_INTERN_VALIDATION->value;
+            $dto->internStatus = InfoFormStatus::COMPLETED_INTERN_VALIDATION->value;
 
             return $dto;
         }
@@ -353,6 +356,7 @@ class InfoFormProvider implements ProviderInterface
             $dto = new InfoFormDTO();
             $dto->id = 'organization_status_' . $infoFormOrganizationId;
             $dto->organizationStatus = $infoFormOrganization->getStatus()->value;
+            $dto->updated_at = $infoFormOrganization->getUpdatedAt();
 
             return $dto;
 
@@ -360,7 +364,7 @@ class InfoFormProvider implements ProviderInterface
             // Fallback en cas de problème
             $dto = new InfoFormDTO();
             $dto->id = 'organization_status_' . $infoFormOrganizationId;
-            $dto->organizationStatus = \App\Enum\InfoFormStatus::COMPLETED_ORGANIZATION_VALIDATION->value;
+            $dto->organizationStatus = InfoFormStatus::COMPLETED_ORGANIZATION_VALIDATION->value;
 
             return $dto;
         }

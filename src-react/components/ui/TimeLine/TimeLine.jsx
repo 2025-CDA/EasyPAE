@@ -3,7 +3,7 @@ import TimeLineItem from "./TimeLineItem";
 
 export default function TimeLine({
     content = [
-        {
+        { 
             date: "1 Aug, 2023",
             icon: <CircleAlert className="text-yellow-400"></CircleAlert>,
             title: "Created Preline in React task",
@@ -24,7 +24,7 @@ export default function TimeLine({
     ],
 }) {
     return (
-        <div>
+        <div class>
             {content.map((item, i) => (
                 <TimeLineItem key={i} content={item} />
             ))}
