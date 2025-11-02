@@ -51,7 +51,13 @@ readonly class UserProvider implements ProviderInterface
         $dto->firstName = $user->getFirstName();
         $dto->lastName = $user->getLastName();
         $dto->avatar = $user->getAvatar();
-        $dto->role = $user->getRole()?->value;
+
+
+
+        $dto->roles = $user->getRoles();
+
+
+
 
 
         return $dto;
@@ -74,7 +80,7 @@ readonly class UserProvider implements ProviderInterface
         $dto->firstName = $user->getFirstName();
         $dto->lastName = $user->getLastName();
         $dto->email = $user->getEmail();
-        $dto->avatar = $user->getAvatar();        
+        $dto->avatar = $user->getAvatar();
         $dto->phone = $user->getPhone();
         $dto->birthday = $user->getBirthday() ? $user->getBirthday()->format('Y-m-d') : null;
         $dto->address = $user->getAddress();
