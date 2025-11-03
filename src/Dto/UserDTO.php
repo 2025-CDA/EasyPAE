@@ -112,6 +112,17 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
             name: 'mark_notification_as_read',
             processor: UserProcessor::class,
         ),
+        new Patch(
+            uriTemplate: '/account/{userId}/password',
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            uriVariables: ['userId'],
+            normalizationContext: ['groups' => ['read:user_password']],
+            denormalizationContext: ['groups' => ['write:user_password']],
+            read: false,
+            // deserialize: false,
+            name: 'user_password_change',
+            processor: UserProcessor::class,
+        ),
     ],
 )]
 class UserDTO
@@ -167,8 +178,22 @@ class UserDTO
     #[Groups([
         'create:user_companyMember_add',
         'denorm-create:user_companyMember_add',
+        'read:user_password',
+        'write:user_password'
     ])]
     public ?string $plainPassword = null;
+
+    #[Groups([
+        'read:user_password',
+        'write:user_password'
+    ])]
+    public ?string $resetPassword = null;
+
+    #[Groups([
+        'read:user_password',
+        'write:user_password'
+    ])]
+    public ?string $resetPasswordAgain = null;
 
     #[Groups([
         'create:user_companyMember_add',

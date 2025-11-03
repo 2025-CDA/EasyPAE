@@ -48,6 +48,7 @@ readonly class UserProcessor implements ProcessorInterface
             'mark_notification_as_read' => $this->markNotificationAsRead($data ?? new UserDTO(), $uriVariables),
             'upload_user_avatar' => $this->uploadUserAvatar($uriVariables),
             'user_companyMember' => $this->createCompanyMemberAndCompany($data),
+            'user_password_change' => $this->changeUserPassword($data, $uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
     }
@@ -329,6 +330,63 @@ readonly class UserProcessor implements ProcessorInterface
             $dto->companyName = $company->getName();
             $dto->siret = $company->getSiret();
         }
+
+        return $dto;
+    }
+
+    private function changeUserPassword(UserDTO $data, array $uriVariables): UserDTO|null
+    {
+        $userId = $uriVariables['userId'] ?? null;
+        if (!$userId) {
+            throw new BadRequestHttpException('User ID is required');
+        }
+
+        $user = $this->userRepository->find($userId);
+        if (!$user) {
+            throw new NotFoundHttpException('User not found');
+        }
+
+        if (!$this->passwordHasher->isPasswordValid($user, $data->plainPassword)) {
+            throw new BadRequestHttpException('Previous password is incorrect');
+        }
+
+        if (!$data->plainPassword) {
+            throw new BadRequestHttpException('Previous password is required');
+        }
+
+        if ($data->plainPassword === $data->resetPassword) {
+            throw new BadRequestHttpException('Passwords are the same as the previous one, choose another one for the new password');
+        }
+        if ($data->plainPassword === $data->resetPasswordAgain) {
+            throw new BadRequestHttpException('Passwords are the same as the previous one, please type the same new password');
+        }
+
+        if ($data->resetPassword === null) {
+            throw new BadRequestHttpException('Reset password is required');
+        }
+        if ($data->resetPasswordAgain === null) {
+            throw new BadRequestHttpException('Reset password again is required');
+        }
+        if ($data->plainPassword === null) {
+            throw new BadRequestHttpException('Previous password is required');
+        }
+
+        if ($data->resetPassword !== $data->resetPasswordAgain) {
+            throw new BadRequestHttpException('New passwords do not match');
+        }
+
+        if ($data->plainPassword !== $data->resetPassword && $data->plainPassword !== $data->resetPasswordAgain && $data->resetPassword === $data->resetPasswordAgain) {
+            
+            // dd($data->resetPassword);
+            $hashedPassword = $this->passwordHasher->hashPassword($user, $data->resetPassword);
+            $user->setPassword($hashedPassword);
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        }
+
+        $dto = new UserDTO();
+        $dto->id = (string) $userId;
 
         return $dto;
     }
