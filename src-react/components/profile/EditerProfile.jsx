@@ -1,50 +1,81 @@
-import React, { useState } from 'react'
-import Container from '../ui/Container'
+import { useState, useEffect } from "react";
+import Container from "../ui/Container";
+import useAxios from "../../hooks/useAxios";
+import { useAuthContext } from "../../store/auth_context/authContext";
 
 function EditerProfile() {
-    const [form, setForm] = useState({
-        nom: 'Martin',
-        prenom: 'Jean',
-        email: 'jeanmartin@gmail.com',
-        telephone: '0770707070',
-        lieu: '31 rue du poulet 33600 Pessac',
-        naissance: '1995-01-20',
-    });
+    const { userData } = useAuthContext();
+    const userId = userData.id;
+    const { fetchData } = useAxios();
+
+    const [form, setForm] = useState({});
+
+    useEffect(() => {
+        const getData = async () => {
+            const res = await fetchData("GET", `account/${userId}/info`);
+            setForm(res.data);
+        };
+        getData();
+    }, []);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // TODO: Envoyer les données au backend ou les traiter ici
-        alert('Informations enregistrées !');
+        await fetchData("PATCH", `account/${userId}/info`, {
+            firstName: form.firstName,
+            lastName: form.lastName,
+            avatar: form.avatar,
+            email: form.email,
+            phone: form.phone,
+            address: form.address,
+            birthday: form.birthday,
+        });
+        alert("Informations enregistrées !");
     };
 
     return (
         <Container className="mb-5 flex flex-col border-transparent md:border-gray-200">
-            <h4 className='text-primary font-semibold text-lg mb-4 text-center hidden md:flex'>Changer vos informations</h4>
-            <form className="flex flex-col gap-4 w-[80%] m-auto md:w-full" onSubmit={handleSubmit}>
+            <h4 className="text-primary font-semibold text-lg mb-4 text-center hidden md:flex">
+                Changer vos informations
+            </h4>
+            <form
+                className="flex flex-col gap-4 w-[80%] m-auto md:w-full"
+                onSubmit={handleSubmit}
+            >
                 <div className="flex gap-4">
                     <div className="flex-1">
-                        <label className="block text-sm font-medium mb-1" htmlFor="prenom">Prénom</label>
+                        <label
+                            className="block text-sm font-medium mb-1"
+                            htmlFor="firstName"
+                        >
+                            Prénom
+                        </label>
                         <input
                             type="text"
-                            id="prenom"
-                            name="prenom"
-                            value={form.prenom}
+                            id="firstName"
+                            name="firstName"
+                            value={form.firstName}
                             onChange={handleChange}
                             className="w-full border border-gray-300 rounded px-3 py-2"
                             required
                         />
                     </div>
                     <div className="flex-1">
-                        <label className="block text-sm font-medium mb-1" htmlFor="nom">Nom</label>
+                        <label
+                            className="block text-sm font-medium mb-1"
+                            htmlFor="lastName"
+                        >
+                            Nom de famille
+                        </label>
                         <input
                             type="text"
-                            id="nom"
-                            name="nom"
-                            value={form.nom}
+                            id="lastName"
+                            name="lastName"
+                            value={form.lastName}
                             onChange={handleChange}
                             className="w-full border border-gray-300 rounded px-3 py-2"
                             required
@@ -52,7 +83,12 @@ function EditerProfile() {
                     </div>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1" htmlFor="email">Adresse mail</label>
+                    <label
+                        className="block text-sm font-medium mb-1"
+                        htmlFor="email"
+                    >
+                        Adresse email
+                    </label>
                     <input
                         type="email"
                         id="email"
@@ -64,36 +100,51 @@ function EditerProfile() {
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1" htmlFor="telephone">Téléphone</label>
+                    <label
+                        className="block text-sm font-medium mb-1"
+                        htmlFor="phone"
+                    >
+                        Téléphone
+                    </label>
                     <input
                         type="tel"
-                        id="telephone"
-                        name="telephone"
-                        value={form.telephone}
+                        id="phone"
+                        name="phone"
+                        value={form.phone}
                         onChange={handleChange}
                         className="w-full border border-gray-300 rounded px-3 py-2"
                         required
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1" htmlFor="lieu">Lieu de résidence</label>
+                    <label
+                        className="block text-sm font-medium mb-1"
+                        htmlFor="address"
+                    >
+                        Adresse de résidence
+                    </label>
                     <input
                         type="text"
-                        id="lieu"
-                        name="lieu"
-                        value={form.lieu}
+                        id="address"
+                        name="address"
+                        value={form.address}
                         onChange={handleChange}
                         className="w-full border border-gray-300 rounded px-3 py-2"
                         required
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1" htmlFor="naissance">Date de naissance</label>
+                    <label
+                        className="block text-sm font-medium mb-1"
+                        htmlFor="birthday"
+                    >
+                        Date de naissance
+                    </label>
                     <input
                         type="date"
-                        id="naissance"
-                        name="naissance"
-                        value={form.naissance}
+                        id="birthday"
+                        name="birthday"
+                        value={form.birthday}
                         onChange={handleChange}
                         className="w-full border border-gray-300 rounded px-3 py-2"
                         required
@@ -113,7 +164,7 @@ function EditerProfile() {
                 </button>
             </form>
         </Container>
-    )
+    );
 }
 
-export default EditerProfile
+export default EditerProfile;
