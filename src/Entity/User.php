@@ -33,48 +33,48 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-#[ApiResource(
-    operations: [
-        new Get(
-//            THIS ROUTE IS ONLY TO TEST RESTRICTED ROUTES
-//            TODO: WE NEED TO CHANGE IT LATER
-            openapi: new Operation(
-                summary: 'Retrieves the User resource.',
-                description: 'Retrieves the User resource.',
-                security: [['bearerAuth' => []]]
-            ),
-            normalizationContext: ['groups' => ['read:user']],
-            security: "is_granted('ROLE_STAGIAIRE')",
-        ),
-        new GetCollection(
-            paginationItemsPerPage: 10,
-            paginationMaximumItemsPerPage: 10,
-            paginationClientItemsPerPage: true,
-            normalizationContext: ['groups' => ['read:user_collection']]
-        ),
-        new Post(
-//            controller: CreateUserController::class,
-            denormalizationContext: ['groups' => ['create:user']],
-//            write: false,
-            // When using a custom controller that handles persistence,
-            // you should disable API Platform's default writer.
-            processor: UserStateProcessor::class
-        ),
-        new Patch(
-//            controller: UpdateUserController::class,
-            denormalizationContext: ['groups' => ['update:user']],
-            // Also disable the writer here for the same reason.
-//            write: false
-            processor: UserStateProcessor::class
+// #[ApiResource(
+//     operations: [
+//         new Get(
+// //            THIS ROUTE IS ONLY TO TEST RESTRICTED ROUTES
+// //            TODO: WE NEED TO CHANGE IT LATER
+//             openapi: new Operation(
+//                 summary: 'Retrieves the User resource.',
+//                 description: 'Retrieves the User resource.',
+//                 security: [['bearerAuth' => []]]
+//             ),
+//             normalizationContext: ['groups' => ['read:user']],
+//             security: "is_granted('ROLE_STAGIAIRE')",
+//         ),
+//         new GetCollection(
+//             paginationItemsPerPage: 10,
+//             paginationMaximumItemsPerPage: 10,
+//             paginationClientItemsPerPage: true,
+//             normalizationContext: ['groups' => ['read:user_collection']]
+//         ),
+//         new Post(
+// //            controller: CreateUserController::class,
+//             denormalizationContext: ['groups' => ['create:user']],
+// //            write: false,
+//             // When using a custom controller that handles persistence,
+//             // you should disable API Platform's default writer.
+//             processor: UserStateProcessor::class
+//         ),
+//         new Patch(
+// //            controller: UpdateUserController::class,
+//             denormalizationContext: ['groups' => ['update:user']],
+//             // Also disable the writer here for the same reason.
+// //            write: false
+//             processor: UserStateProcessor::class
 
-        ),
-        new Put(
-            denormalizationContext: ['groups' => ['update:user']]
-        ),
-        new Delete()
-    ],
-    order: ['id' => 'ASC']
-)]
+//         ),
+//         new Put(
+//             denormalizationContext: ['groups' => ['update:user']]
+//         ),
+//         new Delete()
+//     ],
+//     order: ['id' => 'ASC']
+// )]
 #[ApiFilter(
     SearchFilter::class,
     properties: [
