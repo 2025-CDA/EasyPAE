@@ -9,6 +9,8 @@ function CardFormation({
     trainerName,
     startDateInternship,
     endDateInternship,
+    startDateTraining,
+    endDateTraining,
     onClick,
     id,
 }) {
@@ -38,6 +40,7 @@ function CardFormation({
         !trainerName &&
         !startDateInternship &&
         !endDateInternship;
+    !startDateTraining && !endDateTraining;
 
     if (isEmpty) {
         return (
@@ -88,6 +91,11 @@ function CardFormation({
                         Offre n°{nbOffer}
                     </p>
                     <p className="mt-1 text-secondary-text">{trainerName}</p>
+                    <p className="mt-1  text-secondary-text">
+                        Période de formation du
+                        <br />
+                        {startDateTraining} au {endDateTraining}
+                    </p>
                     <p className="mt-1  text-secondary-text">
                         Période de stage du
                         <br />

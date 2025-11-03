@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/profile/ProfilePage";
 import HelpPage from "./pages/help/HelpPage";
 import NotificationsPage from "./pages/NotificationsPage";
+import { ToastContainer } from "react-toastify";
 
 export default function App() {
     const { token, userData, getUser, loadingUser } = useAuthContext();
@@ -98,6 +99,7 @@ export default function App() {
                                 element={<ProfilePage />}
                             ></Route>
                             <Route path="*" element={<ErrorPage />}></Route>
+                            {/* <ToastContainer /> */}
                         </Routes>
                     )}
                 </>

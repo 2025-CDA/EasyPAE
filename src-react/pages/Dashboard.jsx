@@ -22,6 +22,8 @@ function Dashboard({
         offerNumber: "",
         internshipStart: "",
         internshipEnd: "",
+        trainingStart: "",
+        trainingEnd: "",
     });
 
     const { fetchData } = useAxios();
@@ -57,13 +59,17 @@ function Dashboard({
     }
     async function handleNewTrainingSubmit(e) {
         e.preventDefault();
-        await fetchData("POST", "organization/session", {
-            trainerId: userData?.id,
+        console.log(typeof userData.id);
+        const res = await fetchData("POST", "organization/session", {
+            trainerId: parseInt(userData.id),
             trainingName: trainingForm.trainingName,
             offerNumber: trainingForm.offerNumber,
             internshipStart: trainingForm.internshipStart,
             internshipEnd: trainingForm.internshipEnd,
+            trainingPeriodStart: trainingForm.trainingStart,
+            trainingPeriodEnd: trainingForm.trainingEnd,
         });
+        console.log(res);
     }
 
     return (
@@ -120,6 +126,12 @@ function Dashboard({
                                         formation.internshipEnd
                                     ).toLocaleDateString("fr-FR")}
                                     id={formation.sessionId}
+                                    startDateTraining={new Date(
+                                        formation.trainingPeriodStart
+                                    ).toLocaleDateString("fr-FR")}
+                                    endDateTraining={new Date(
+                                        formation.trainingPeriodEnd
+                                    ).toLocaleDateString("fr-FR")}
                                 />
                             ))}
                             <div className="h-88">
@@ -161,7 +173,24 @@ function Dashboard({
                                     onSubmit={handleNewTrainingSubmit}
                                     className="p-5 border-1 border-gray-200 flex flex-col shadow-xl rounded-2xl overflow-hidden h-auto bg-white mb-6"
                                 >
-                                    <h3 className="mb-4">Nouveau Formation</h3>
+                                    <h3 className="mb-4 font-semibold">
+                                        Nouveau Formation Session
+                                    </h3>
+                                    <Input
+                                        type="text"
+                                        label="Nom de formation"
+                                        withCopy={false}
+                                        className="mb-5"
+                                        placeholder="Nom de formation"
+                                        required
+                                        value={trainingForm.trainingName}
+                                        onChange={(e) =>
+                                            updateTrainingForm(
+                                                "trainingName",
+                                                e.target.value
+                                            )
+                                        }
+                                    />
                                     <Input
                                         type="text"
                                         label="Offre n°"
@@ -173,6 +202,36 @@ function Dashboard({
                                         onChange={(e) =>
                                             updateTrainingForm(
                                                 "offerNumber",
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+                                    <Input
+                                        type="date"
+                                        label="Date de debut de formation"
+                                        withCopy={false}
+                                        className="mb-5"
+                                        placeholder="Date de debut de formation"
+                                        required
+                                        value={trainingForm.trainingStart}
+                                        onChange={(e) =>
+                                            updateTrainingForm(
+                                                "trainingStart",
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+                                    <Input
+                                        type="date"
+                                        label="Date de fin de formation"
+                                        withCopy={false}
+                                        className="mb-5"
+                                        placeholder="Date de fin de formation"
+                                        required
+                                        value={trainingForm.trainingEnd}
+                                        onChange={(e) =>
+                                            updateTrainingForm(
+                                                "trainingEnd",
                                                 e.target.value
                                             )
                                         }

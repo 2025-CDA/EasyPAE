@@ -10,7 +10,6 @@ import { rolesTranslation } from "../../helpers/roles";
 function MainLayout({
     withMainHeader = true,
     withFooter = true,
-    role = "Stagiaire",
     children,
     avatarColor = "#f31c1c",
     withSearchbar = true,
@@ -23,8 +22,7 @@ function MainLayout({
             <DesktopSidebar
                 avatarColor={avatarColor}
                 userName={userData?.firstName + " " + userData?.lastName}
-                // role={rolesTranslation[userData?.roles[0]]}
-                role={userData?.role}
+                role={rolesTranslation[userData?.roles[0]]}
                 avatarUrl={userData?.avatar}
             ></DesktopSidebar>
             <div className="flex flex-col justify-center items-center w-full">
@@ -66,10 +64,10 @@ function MainLayout({
                             />
                             <div className="w-full">
                                 <h4 className="font-medium">
-                                    {userData?.fullName}
+                                    {userData?.lastName} {userData?.firstName}
                                 </h4>
                                 <span className="text-secondary-text">
-                                    {role}
+                                    {rolesTranslation[userData?.roles[0]]}
                                 </span>
                             </div>
                         </div>

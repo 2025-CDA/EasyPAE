@@ -29,6 +29,7 @@
         "react-router": "^7.9.5",
         "react-router-dom": "^7.9.5",
         "react-spinners": "^0.17.0",
+        "react-toastify": "^11.0.5",
         "styled-components": "^6.1.19",
         "tailwind-styled-components": "^2.2.0",
         "uuid": "^13.0.0"
