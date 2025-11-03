@@ -5,6 +5,7 @@ namespace App\State;
 use App\Dto\OrganizationDTO;
 use App\Enum\InfoFormStatus;
 use ApiPlatform\Metadata\Operation;
+use App\Repository\TrainingRepository;
 use ApiPlatform\State\ProviderInterface;
 use App\Repository\TrainingSessionRepository;
 use App\Repository\OrganizationMemberRepository;
@@ -16,6 +17,7 @@ readonly class OrganizationProvider implements ProviderInterface
     public function __construct(
         private TrainingSessionRepository    $trainingSessionRepository,
         private OrganizationMemberRepository $organizationMemberRepository,
+        private TrainingRepository $trainingRepository,
     ) {}
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
@@ -27,6 +29,7 @@ readonly class OrganizationProvider implements ProviderInterface
             'organization_organizationMemberId_sessions' => $this->getOrganizationOrganizationMemberIdSessions($uriVariables),
             'organization_session_sessionId_interns' => $this->getOrganizationSessionSessionIdInterns($uriVariables),
             'organization_session_sessionId' => $this->getOrganizationSessionSessionId($uriVariables),
+            'organization_training_names' => $this->getAllTrainingNames(),
             default => throw new BadRequestHttpException('Operation not supported')
         };
     }
@@ -205,5 +208,22 @@ readonly class OrganizationProvider implements ProviderInterface
         }
 
         return $dto;
+    }
+
+    public function getAllTrainingNames(): array
+    {
+        $trainings = $this->trainingRepository->findAll();
+        $names = [];
+
+        foreach ($trainings as $training) {
+            if (is_object($training) && method_exists($training, 'getName')) {
+                $n = $training->getName();
+                if ($n !== null && $n !== '') {
+                    $names[] = $n;
+                }
+            }
+        }
+
+        return array_values(array_unique($names));
     }
 }
