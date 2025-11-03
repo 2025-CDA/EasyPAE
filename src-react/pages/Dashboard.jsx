@@ -7,6 +7,7 @@ import Input from "../components/ui/Input";
 import MainLayout from "../components/layout/MainLayout";
 import useAxios from "../hooks/useAxios";
 import { useEffect } from "react";
+import { useAuthContext } from "../store/auth_context/authContext";
 
 function Dashboard({
     selectDiv = true, // props pour gérer l'affichage du select dans le header
@@ -15,14 +16,16 @@ function Dashboard({
     const [selected, setSelected] = useState(""); // État pour la formation sélectionnée dans le select
     const [showForm, setShowForm] = useState(false); // État pour contrôler l'affichage du formulaire
     const [formations, setFormation] = useState([]); // État pour contrôler l'affichage du formulaire
-    const [internForm, setInternForm] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        internNum: "",
+    const [trainingForm, setTrainingForm] = useState({
+        trainerId: "",
+        trainingName: "",
+        offerNumber: "",
+        internshipStart: "",
+        internshipEnd: "",
     });
 
     const { fetchData } = useAxios();
+    const { userData } = useAuthContext();
 
     useEffect(() => {
         const getData = async () => {
@@ -49,10 +52,19 @@ function Dashboard({
         setShowForm(!showForm);
     };
 
-    function updateInternForm(key, value) {
-        setInternForm({ ...internForm, [key]: value });
+    function updateTrainingForm(key, value) {
+        setTrainingForm({ ...trainingForm, [key]: value });
     }
-    function handleNewInterneSubmit() {}
+    async function handleNewTrainingSubmit(e) {
+        e.preventDefault();
+        await fetchData("POST", "organization/session", {
+            trainerId: userData?.id,
+            trainingName: trainingForm.trainingName,
+            offerNumber: trainingForm.offerNumber,
+            internshipStart: trainingForm.internshipStart,
+            internshipEnd: trainingForm.internshipEnd,
+        });
+    }
 
     return (
         <MainLayout avatarColor="#c1459e">
@@ -146,67 +158,58 @@ function Dashboard({
                         >
                             {showForm && (
                                 <form
-                                    onSubmit={handleNewInterneSubmit}
+                                    onSubmit={handleNewTrainingSubmit}
                                     className="p-5 border-1 border-gray-200 flex flex-col shadow-xl rounded-2xl overflow-hidden h-auto bg-white mb-6"
                                 >
-                                    <h3 className="mb-4">Nouveau stagiaire</h3>
+                                    <h3 className="mb-4">Nouveau Formation</h3>
                                     <Input
                                         type="text"
-                                        label="Nom"
+                                        label="Offre n°"
                                         withCopy={false}
                                         className="mb-5"
-                                        placeholder=""
-                                        value={internForm.lastName}
+                                        placeholder="Offre n°"
+                                        required
+                                        value={trainingForm.offerNumber}
                                         onChange={(e) =>
-                                            updateInternForm(
-                                                "lastName",
+                                            updateTrainingForm(
+                                                "offerNumber",
                                                 e.target.value
                                             )
                                         }
                                     />
                                     <Input
-                                        type="text"
-                                        label="Prénom"
+                                        type="date"
+                                        label="Date de debut de stage"
                                         withCopy={false}
                                         className="mb-5"
                                         placeholder=""
-                                        value={internForm.firstName}
+                                        required
+                                        value={trainingForm.internshipStart}
                                         onChange={(e) =>
-                                            updateInternForm(
-                                                "firstName",
+                                            updateTrainingForm(
+                                                "internshipStart",
                                                 e.target.value
                                             )
                                         }
                                     />
                                     <Input
-                                        type="text"
-                                        label="Adresse email"
+                                        type="date"
+                                        label="Date de fin de stage"
                                         withCopy={false}
                                         className="mb-5"
                                         placeholder=""
-                                        value={internForm.email}
+                                        required
+                                        value={trainingForm.internshipEnd}
                                         onChange={(e) =>
-                                            updateInternForm(
-                                                "email",
+                                            updateTrainingForm(
+                                                "internshipEnd",
                                                 e.target.value
                                             )
                                         }
                                     />
-                                    <Input
-                                        type="text"
-                                        label="N° de stagiaire"
-                                        withCopy={false}
-                                        className="mb-5"
-                                        placeholder=""
-                                        value={internForm.internNum}
-                                        onChange={(e) =>
-                                            updateInternForm(
-                                                "internNum",
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-                                    <Button>Envoyer l'invitation</Button>
+                                    <Button type={"submit"}>
+                                        Envoyer l'invitation
+                                    </Button>
                                 </form>
                             )}
                         </div>
