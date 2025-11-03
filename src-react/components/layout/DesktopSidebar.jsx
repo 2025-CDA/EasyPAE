@@ -5,15 +5,22 @@ import {
     Bell,
     Lightbulb,
     ArrowRightFromLine,
+    LogOut,
+    LayoutDashboard,
 } from "lucide-react";
 import Avatar from "../../components/ui/Avatar.jsx";
 import logo from "../../assets/Logo-light.png";
+import { useAuthContext } from "../../store/auth_context/authContext.js";
+import { useNavigate } from "react-router";
 
 export default function DesktopSidebar({
     avatarColor = "#ffe561",
     userName = "Axel Érez",
     role = "Stagiaire",
+    avatarUrl,
 }) {
+    const { signOut } = useAuthContext();
+    const navigate = useNavigate();
     // ------------------------------------ Gérer l'affichache de la Sidbar etendu ou compact ------------------------------------
     const [collapsed, setCollapsed] = useState(false);
 
@@ -28,7 +35,11 @@ export default function DesktopSidebar({
             {/* ------Avatar + Infos utilisateur ----------- */}
             <div className="flex flex-col items-center py-10">
                 {/* Avatar version icône */}
-                <Avatar size={collapsed ? "sm" : "xl"} color={avatarColor} />
+                <Avatar
+                    size={collapsed ? "sm" : "xl"}
+                    url={avatarUrl}
+                    color={avatarColor}
+                />
 
                 {/* Quand la barre n’est pas réduite (collapsed = false), affiche le nom et le rôle en texte. */}
                 {!collapsed && (
@@ -48,24 +59,40 @@ export default function DesktopSidebar({
                     }`}
                 >
                     <SidebarItem
+                        icon={<LayoutDashboard size={20} strokeWidth={1} />}
+                        label="Dashboard"
+                        collapsed={collapsed}
+                        onClick={() => navigate("/")}
+                    />
+                    <SidebarItem
                         icon={<User size={20} strokeWidth={1} />}
                         label="Mon compte"
                         collapsed={collapsed}
+                        onClick={() => navigate("/profile")}
                     />
                     <SidebarItem
                         icon={<Folder size={20} strokeWidth={1} />}
                         label="Mes documents"
                         collapsed={collapsed}
+                        onClick={() => navigate("/help")}
                     />
                     <SidebarItem
                         icon={<Bell size={20} strokeWidth={1} />}
                         label="Notifications"
                         collapsed={collapsed}
+                        onClick={() => navigate("/notifications")}
                     />
                     <SidebarItem
                         icon={<Lightbulb size={20} strokeWidth={1} />}
                         label="Aide / Astuces"
                         collapsed={collapsed}
+                        onClick={() => navigate("/help")}
+                    />
+                    <SidebarItem
+                        icon={<LogOut size={20} strokeWidth={1} />}
+                        label="Déconnexion"
+                        collapsed={collapsed}
+                        onClick={() => signOut()}
                     />
                 </div>
             </nav>
@@ -95,9 +122,12 @@ export default function DesktopSidebar({
 }
 
 // function qui permet de (Si la sidebar est étendue, affiche aussi le texte du label ; si elle est réduite, ne montre que l’icône.)
-function SidebarItem({ icon, label, collapsed }) {
+function SidebarItem({ icon, label, collapsed, onClick }) {
     return (
-        <div className="flex items-center gap-6 px-4 py-2 hover:bg-blue-700 rounded-lg cursor-pointer w-full">
+        <div
+            onClick={onClick}
+            className="flex items-center gap-6 px-4 py-2 hover:bg-blue-700 rounded-lg cursor-pointer w-full"
+        >
             <span>{icon}</span>
             {!collapsed && <span>{label}</span>}
         </div>

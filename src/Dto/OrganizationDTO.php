@@ -91,6 +91,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
             name: 'organization_session_sessionId_archive',
             processor: OrganizationProcessor::class,
         ),
+        new Patch(
+            uriTemplate: '/organization/infoForm/{infoFormId}/sign',
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            uriVariables: ['infoFormId'],
+            normalizationContext: ['groups' => ['update:organization_infoForm_infoFormId_sign']],
+            denormalizationContext: ['groups' => ['denorm-update:organization_infoForm_infoFormId_sign']],
+            read: false,
+            name: 'organization_infoForm_infoFormId_sign',
+            processor: OrganizationProcessor::class,
+        ),
     ],
 )]
 class OrganizationDTO
@@ -114,7 +124,7 @@ class OrganizationDTO
 
     #[Groups([
         'create:organization_session_sessionId_intern_add'
-//        TODO: change this later, this is just for testing.
+        //        TODO: change this later, this is just for testing.
     ])]
     public ?string $plainPassword = null;
 
@@ -224,4 +234,29 @@ class OrganizationDTO
         'update:organization_session_sessionId_archive',
     ])]
     public ?bool $hasEnded = null;
+
+    #[Groups([
+        'update:organization_infoForm_infoFormId_sign',
+    ])]
+    public ?int $infoFormId = null;
+
+    #[Groups([
+        'denorm-update:organization_infoForm_infoFormId_sign',
+    ])]
+    public ?string $signature = null;
+
+    #[Groups([
+        'denorm-update:organization_infoForm_infoFormId_sign',
+    ])]
+    public ?\DateTimeInterface $validationDate = null;
+
+    #[Groups([
+        'create:organization_session_add'
+    ])]
+    public ?\DateTimeImmutable $trainingPeriodStart = null;
+
+    #[Groups([
+        'create:organization_session_add'
+    ])]
+    public ?\DateTimeImmutable $trainingPeriodEnd = null;
 }

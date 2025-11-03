@@ -1,28 +1,20 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import AssistantPage from "./pages/assistant/AssistantPage";
-import AssistantFicheRenseignement from "./pages/assistant/AssistantFicheRenseignement";
-import DemandePae from "./pages/assistant/DemandePae";
-import CalendarSimpleGet from "./components/calendar/CalendarSimpleGET";
-import Dashboard from "./pages/assistant/Dashboard";
+import { useEffect } from "react";
+import { Route, Routes } from "react-router";
+import { useAuthContext } from "./store/auth_context/authContext";
+import LoginPage from "./pages/security/LoginPage";
+import LoadingModal from "./pages/security/LoadingModal";
+import ErrorPage from "./pages/security/ErrorPage";
+import Dashboard from "./pages/Dashboard";
+import ProfilePage from "./pages/profile/ProfilePage";
+import HelpPage from "./pages/help/HelpPage";
+import NotificationsPage from "./pages/NotificationsPage";
 
 export default function App() {
-    // const [showAlert, setShowAlert] = useState(true);
+    const { token, userData, getUser, loadingUser } = useAuthContext();
 
     useEffect(() => {
-        // const fetchData = async () => {
-        //     try {
-        //         // Await the response from the GET request
-        //         const response = await axios.get("http://127.0.0.1:8000/");
-        //         // Access the data directly from response.data
-        //         setData(response.data);
-        //     } catch (error) {
-        //         // This single block catches both network errors and bad HTTP statuses (like 404 or 500)
-        //         console.error("Failed to fetch data:", error);
-        //     }
-        // };
-        // fetchData();
-    }, []);
+        !token && getUser();
+    }, [token]);
 
     // console.log(data[0])
 

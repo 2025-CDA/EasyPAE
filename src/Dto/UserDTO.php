@@ -188,6 +188,12 @@ class UserDTO
     public ?string $role = null;
 
     #[Groups([
+        'read:user_info',
+        'read:user_basic',
+    ])]
+    public ?array $roles = null;
+
+    #[Groups([
         'create:user_companyMember_add',
         'denorm-create:user_companyMember_add',
     ])]
