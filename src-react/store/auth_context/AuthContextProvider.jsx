@@ -46,9 +46,13 @@ export default function AuthContextProvider({ children }) {
         if (token) {
             const decodedToken = tokenManager.decodeToken(token);
             const res = await fetchData("GET", `user/${decodedToken.id}`);
+            const updatedData = {
+                ...res.data,
+                id: res.data["@id"].split("/")[3],
+            };
             setToken(token);
-            setUserData(res.data);
-            console.log("🚀 ~ getUser ~ res.data:", res.data);
+            setUserData(updatedData);
+            // console.log("🚀 ~ getUser ~ res.data:", res.data);
             setLoadingUser(false);
         } else {
             setLoadingUser(false);
