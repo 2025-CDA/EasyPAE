@@ -121,6 +121,8 @@ class OrganizationDTO
         'update:organization_session_sessionId_edit',
         'read:organization_session_sessionId_interns',
         'update:organization_session_sessionId_archive',
+        'read:organization_training_names'
+
     ])]
     public ?int $sessionId = null;
 

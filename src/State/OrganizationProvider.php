@@ -213,17 +213,21 @@ readonly class OrganizationProvider implements ProviderInterface
     public function getAllTrainingNames(): array
     {
         $trainings = $this->trainingRepository->findAll();
-        $names = [];
+        $map = [];
 
         foreach ($trainings as $training) {
-            if (is_object($training) && method_exists($training, 'getName')) {
-                $n = $training->getName();
-                if ($n !== null && $n !== '') {
-                    $names[] = $n;
-                }
+            if (!is_object($training) || !method_exists($training, 'getId') || !method_exists($training, 'getName')) {
             }
+
+            $id = $training->getId();
+            $name = $training->getName();
+            $map[$id] = $name; 
         }
 
-        return array_values(array_unique($names));
+        $result = [];
+        foreach ($map as $id => $name) {
+            $result[] = ['id' => $id, 'name' => $name];
+        }
+        return $result;
     }
 }
