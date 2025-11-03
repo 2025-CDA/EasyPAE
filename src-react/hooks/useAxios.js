@@ -25,10 +25,10 @@ export default function useAxios() {
             });
 
             setData(response.data);
-            return { status: response.status, data: response.data };
+            return { success: true, data: response.data };
         } catch (err) {
             setError(err);
-            return { error: err };
+            return { success: false, error: err };
         } finally {
             setLoading(false);
         }
