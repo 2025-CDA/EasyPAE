@@ -23,6 +23,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
             name: 'organization_sessions',
             provider: OrganizationProvider::class,
         ),
+
+        new GetCollection(
+            uriTemplate: '/organization/training-names',
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            normalizationContext: ['groups' => ['read:organization_training_names']],
+            name: 'organization_training_names',
+            provider: OrganizationProvider::class,
+        ),
+
         new GetCollection(
             uriTemplate: '/organization/{organizationMemberId}/sessions',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
@@ -151,6 +160,7 @@ class OrganizationDTO
         'update:organization_session_sessionId_edit',
         'denorm-update:organization_session_sessionId_edit',
         'read:organization_session_sessionId_interns',
+        'read:organization_training_names'
     ])]
     public ?string $trainingName = null;
 
