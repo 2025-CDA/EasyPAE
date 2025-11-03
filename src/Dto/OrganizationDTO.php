@@ -251,12 +251,18 @@ class OrganizationDTO
     public ?\DateTimeInterface $validationDate = null;
 
     #[Groups([
-        'create:organization_session_add'
+        'create:organization_session_add',
     ])]
     public ?\DateTimeImmutable $trainingPeriodStart = null;
 
     #[Groups([
-        'create:organization_session_add'
+        'create:organization_session_add',
     ])]
     public ?\DateTimeImmutable $trainingPeriodEnd = null;
+
+    #[Groups([
+        'read:organization_session_sessionId',
+        'read:organization_sessions',
+    ])]
+    public ?string $category = null;
 }

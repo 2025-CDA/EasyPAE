@@ -42,9 +42,9 @@ readonly class OrganizationProvider implements ProviderInterface
             $dto->sessionId = $trainingSession->getId();
             $dto->trainingName = $trainingSession->getTraining()?->getName();
             $dto->offerNumber = $trainingSession->getOfferNumber();
+            $dto->category = $trainingSession->getTraining()?->getCategory();
 
             $organizationMembers = $trainingSession->getOrganizationMembers();
-
             if (!$organizationMembers->isEmpty()) {
                 $firstMember = $organizationMembers->first();
                 $dto->trainerId = $firstMember->getId();
@@ -53,7 +53,6 @@ readonly class OrganizationProvider implements ProviderInterface
                     $dto->trainerLastName = $user->getLastName();
                 }
             }
-
             $dto->internshipStart = $trainingSession->getInternShipPeriodStart();
             $dto->internshipEnd = $trainingSession->getInternshipPeriodEnd();
 
@@ -190,6 +189,7 @@ readonly class OrganizationProvider implements ProviderInterface
         $dto->offerNumber = $session->getOfferNumber();
         $dto->internshipStart = $session->getInternShipPeriodStart();
         $dto->internshipEnd = $session->getInternshipPeriodEnd();
+        $dto->category = $session->getTraining()?->getCategory();
 
         $organizationMembers = $session->getOrganizationMembers();
         if (!$organizationMembers->isEmpty()) {
