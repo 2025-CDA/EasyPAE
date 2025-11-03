@@ -27,9 +27,9 @@ export default function App() {
     // console.log(data[0])
 
     return <div className="w-full">
-        <AssistantPage /> 
+        {/* <AssistantPage /> 
         <AssistantFicheRenseignement /> 
-        <DemandePae /> 
+        <DemandePae />  */}
         {/* <CalendarSimpleGet justToday={true} /> */}
         
     </div>;

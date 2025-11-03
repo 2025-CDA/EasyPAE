@@ -25,7 +25,7 @@ function CardIntern({
 
 
   return (
-    <Container className={`flex flex-col font-medium w-full h-full lg:flex-row gap-6   ${className}`}>
+    <Container className={`flex flex-col font-medium w-full  lg:flex-row gap-6   ${className}`}>
       {/* -------------------------------Div donner de stagiare  -------------------------*/}
       <div className="w-full lg:w-2/3 flex flex-col">
         {/* ----Header avec avatar et nom---- */}
