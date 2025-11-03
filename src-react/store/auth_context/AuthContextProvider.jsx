@@ -52,7 +52,7 @@ export default function AuthContextProvider({ children }) {
             };
             setToken(token);
             setUserData(updatedData);
-            // console.log("🚀 ~ getUser ~ res.data:", res.data);
+            console.log("🚀 ~ getUser ~ res.data:", updatedData);
             setLoadingUser(false);
         } else {
             setLoadingUser(false);
