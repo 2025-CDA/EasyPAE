@@ -15,15 +15,17 @@ function MainLayout({
     avatarColor = "#f31c1c",
     withSearchbar = true,
     withHeader = true,
-    avatarUrl = "",
 }) {
     const { userData } = useAuthContext();
+
     return (
         <div className="flex flex-col md:flex-row flex-grow min-h-screen w-screen">
             <DesktopSidebar
                 avatarColor={avatarColor}
-                userName={userData?.fullName}
-                role={rolesTranslation[userData?.roles[0]]}
+                userName={userData?.firstName + " " + userData?.lastName}
+                // role={rolesTranslation[userData?.roles[0]]}
+                role={userData?.role}
+                avatarUrl={userData?.avatar}
             ></DesktopSidebar>
             <div className="flex flex-col justify-center items-center w-full">
                 {withMainHeader && (
@@ -32,11 +34,12 @@ function MainLayout({
                             className={"md:hidden"}
                             size="sm"
                             color={"#eddf16"}
+                            url={userData?.avatar}
                         />
 
                         <div className="w-full">
                             <h4 className="text-secondary-text">
-                                Bonjour, {userData?.fullName}
+                                Bonjour, {userData?.firstName}
                             </h4>
                         </div>
                         {withSearchbar && (
@@ -59,7 +62,7 @@ function MainLayout({
                                 className={"md:hidden"}
                                 size="sm"
                                 color={"#eddf16"}
-                                url={avatarUrl}
+                                url={userData?.avatar}
                             />
                             <div className="w-full">
                                 <h4 className="font-medium">

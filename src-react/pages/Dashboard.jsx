@@ -15,8 +15,14 @@ function Dashboard({
     const [selected, setSelected] = useState(""); // État pour la formation sélectionnée dans le select
     const [showForm, setShowForm] = useState(false); // État pour contrôler l'affichage du formulaire
     const [formations, setFormation] = useState([]); // État pour contrôler l'affichage du formulaire
+    const [internForm, setInternForm] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        internNum: "",
+    });
 
-    const { data, error, loading, fetchData } = useAxios();
+    const { fetchData } = useAxios();
 
     useEffect(() => {
         const getData = async () => {
@@ -42,6 +48,11 @@ function Dashboard({
     const toggleForm = () => {
         setShowForm(!showForm);
     };
+
+    function updateInternForm(key, value) {
+        setInternForm({ ...internForm, [key]: value });
+    }
+    function handleNewInterneSubmit() {}
 
     return (
         <MainLayout avatarColor="#c1459e">
@@ -134,7 +145,10 @@ function Dashboard({
                             }`}
                         >
                             {showForm && (
-                                <div className="p-5 border-1 border-gray-200 flex flex-col shadow-xl rounded-2xl overflow-hidden h-auto bg-white mb-6">
+                                <form
+                                    onSubmit={handleNewInterneSubmit}
+                                    className="p-5 border-1 border-gray-200 flex flex-col shadow-xl rounded-2xl overflow-hidden h-auto bg-white mb-6"
+                                >
                                     <h3 className="mb-4">Nouveau stagiaire</h3>
                                     <Input
                                         type="text"
@@ -142,6 +156,13 @@ function Dashboard({
                                         withCopy={false}
                                         className="mb-5"
                                         placeholder=""
+                                        value={internForm.lastName}
+                                        onChange={(e) =>
+                                            updateInternForm(
+                                                "lastName",
+                                                e.target.value
+                                            )
+                                        }
                                     />
                                     <Input
                                         type="text"
@@ -149,6 +170,13 @@ function Dashboard({
                                         withCopy={false}
                                         className="mb-5"
                                         placeholder=""
+                                        value={internForm.firstName}
+                                        onChange={(e) =>
+                                            updateInternForm(
+                                                "firstName",
+                                                e.target.value
+                                            )
+                                        }
                                     />
                                     <Input
                                         type="text"
@@ -156,6 +184,13 @@ function Dashboard({
                                         withCopy={false}
                                         className="mb-5"
                                         placeholder=""
+                                        value={internForm.email}
+                                        onChange={(e) =>
+                                            updateInternForm(
+                                                "email",
+                                                e.target.value
+                                            )
+                                        }
                                     />
                                     <Input
                                         type="text"
@@ -163,9 +198,16 @@ function Dashboard({
                                         withCopy={false}
                                         className="mb-5"
                                         placeholder=""
+                                        value={internForm.internNum}
+                                        onChange={(e) =>
+                                            updateInternForm(
+                                                "internNum",
+                                                e.target.value
+                                            )
+                                        }
                                     />
                                     <Button>Envoyer l'invitation</Button>
-                                </div>
+                                </form>
                             )}
                         </div>
                     </div>

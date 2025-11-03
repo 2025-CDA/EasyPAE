@@ -6,6 +6,7 @@ import {
     Lightbulb,
     ArrowRightFromLine,
     LogOut,
+    LayoutDashboard,
 } from "lucide-react";
 import Avatar from "../../components/ui/Avatar.jsx";
 import logo from "../../assets/Logo-light.png";
@@ -16,6 +17,7 @@ export default function DesktopSidebar({
     avatarColor = "#ffe561",
     userName = "Axel Érez",
     role = "Stagiaire",
+    avatarUrl,
 }) {
     const { signOut } = useAuthContext();
     const navigate = useNavigate();
@@ -33,7 +35,11 @@ export default function DesktopSidebar({
             {/* ------Avatar + Infos utilisateur ----------- */}
             <div className="flex flex-col items-center py-10">
                 {/* Avatar version icône */}
-                <Avatar size={collapsed ? "sm" : "xl"} color={avatarColor} />
+                <Avatar
+                    size={collapsed ? "sm" : "xl"}
+                    url={avatarUrl}
+                    color={avatarColor}
+                />
 
                 {/* Quand la barre n’est pas réduite (collapsed = false), affiche le nom et le rôle en texte. */}
                 {!collapsed && (
@@ -52,6 +58,12 @@ export default function DesktopSidebar({
                         collapsed ? "space-y-12" : "space-y-6"
                     }`}
                 >
+                    <SidebarItem
+                        icon={<LayoutDashboard size={20} strokeWidth={1} />}
+                        label="Dashboard"
+                        collapsed={collapsed}
+                        onClick={() => navigate("/")}
+                    />
                     <SidebarItem
                         icon={<User size={20} strokeWidth={1} />}
                         label="Mon compte"

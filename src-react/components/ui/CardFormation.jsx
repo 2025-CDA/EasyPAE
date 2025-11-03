@@ -18,12 +18,18 @@ function CardFormation({
     useEffect(() => {
         getProgress(id);
     }, []);
-    
+
     async function getProgress(id) {
-        const res = await fetchData("GET", `percentage-form-validation/${id}`);
-        const cal =
-            (parseInt(res.data.validationPercentage / 10, 10) + 1) * 10 + "%";
-        setProgress(cal);
+        if (id) {
+            const res = await fetchData(
+                "GET",
+                `percentage-form-validation/${id}`
+            );
+            const cal =
+                (parseInt(res.data.validationPercentage / 10, 10) + 1) * 10 +
+                "%";
+            setProgress(cal);
+        }
     }
 
     const isEmpty =
