@@ -55,6 +55,10 @@ readonly class OrganizationProvider implements ProviderInterface
             }
             $dto->internshipStart = $trainingSession->getInternShipPeriodStart();
             $dto->internshipEnd = $trainingSession->getInternshipPeriodEnd();
+            $dto->trainingPeriodStart = $trainingSession->getTrainingPeriodStart();
+            $dto->trainingPeriodEnd = $trainingSession->getTrainingPeriodEnd();
+
+
 
             //            TODO: add percentage, I'm not sure what I'm supposed to do here.
             //            $dto->validationPercentage = $trainingSession->getValidationPercentage();
@@ -190,6 +194,9 @@ readonly class OrganizationProvider implements ProviderInterface
         $dto->internshipStart = $session->getInternShipPeriodStart();
         $dto->internshipEnd = $session->getInternshipPeriodEnd();
         $dto->category = $session->getTraining()?->getCategory();
+        $dto->trainingPeriodStart = $session->getTrainingPeriodStart();
+        $dto->trainingPeriodEnd = $session->getTrainingPeriodEnd();
+
 
         $organizationMembers = $session->getOrganizationMembers();
         if (!$organizationMembers->isEmpty()) {
