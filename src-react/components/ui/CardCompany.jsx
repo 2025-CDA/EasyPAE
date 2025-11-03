@@ -10,7 +10,7 @@ function CardCompany({companyName, adresse, tutorEmail, tel, tutorName, classNam
   return (
 
 
-    <Container className={`flex flex-col font-medium w-full h-full ${className}`}>
+    <Container className={`flex flex-col font-medium w-full ${className}`}>
 
         <h3 className='font-medium'>Entreprise d'accueil</h3>
 

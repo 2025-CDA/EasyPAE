@@ -17,91 +17,12 @@ export default function App() {
     }, [token]);
 
     // console.log(data[0])
-    return (
-        <>
-            {loadingUser ? (
-                <LoadingModal />
-            ) : (
-                <>
-                    {!token && (
-                        <Routes>
-                            <Route
-                                index
-                                path="/"
-                                element={<LoginPage />}
-                            ></Route>
-                            <Route path="*" element={<ErrorPage />} />
-                        </Routes>
-                    )}
-                    {token && (
-                        <Routes>
-                            {["company", "intern"].some((role) =>
-                                [userData?.roles].includes(role)
-                            ) && (
-                                <>
-                                    <Route
-                                        path="/dashboardIntern"
-                                        element={App}
-                                    ></Route>
-                                    <Route
-                                        path="/paeApplication"
-                                        element={App}
-                                    ></Route>
-                                    <Route
-                                        path="/informationSheet"
-                                        element={App}
-                                    ></Route>
-                                </>
-                            )}
-                            {["company", "intern"].some(
-                                (role) => ![userData?.roles].includes(role)
-                            ) && (
-                                <>
-                                    <Route
-                                        index
-                                        path="/"
-                                        element={<Dashboard />}
-                                    ></Route>
-                                    <Route
-                                        path="/listInterns"
-                                        element={App}
-                                    ></Route>
-                                    <Route
-                                        path="/formIntern"
-                                        element={App}
-                                    ></Route>
-                                    <Route
-                                        path="/paeCalendar"
-                                        element={App}
-                                    ></Route>
-                                    <Route
-                                        path="/interForm"
-                                        element={App}
-                                    ></Route>
-                                    {[userData?.roles].includes(
-                                        "SuperAdmin"
-                                    ) && (
-                                        <Route
-                                            path="/superAdmin"
-                                            element={App}
-                                        ></Route>
-                                    )}
-                                </>
-                            )}
-                            <Route
-                                path="/notifications"
-                                element={<NotificationsPage />}
-                            ></Route>
-                            <Route path="/help" element={<HelpPage />}></Route>
-                            <Route
-                                path="/profile"
-                                element={<ProfilePage />}
-                            ></Route>
-                            <Route path="*" element={<ErrorPage />}></Route>
-                        </Routes>
-                    )}
-                </>
-            )}
-        </>
-    );
+
+    return <div className="w-full">
+        {/* <AssistantPage /> 
+        <AssistantFicheRenseignement /> 
+        <DemandePae />  */}
+        {/* <CalendarSimpleGet justToday={true} /> */}
+        
+    </div>;
 }
