@@ -121,15 +121,25 @@ export default function DesktopSidebar({
     );
 }
 
-// function qui permet de (Si la sidebar est étendue, affiche aussi le texte du label ; si elle est réduite, ne montre que l’icône.)
+// function qui permet de (Si la sidebar est étendue, affiche aussi le texte du label ; si elle est réduite, ne montre que l'icône.)
 function SidebarItem({ icon, label, collapsed, onClick }) {
     return (
         <div
             onClick={onClick}
-            className="flex items-center gap-6 px-4 py-2 hover:bg-blue-700 rounded-lg cursor-pointer w-full"
+            className={`flex items-center gap-6 px-4 py-2 hover:bg-blue-700 rounded-lg cursor-pointer w-full ${
+                collapsed ? 'relative group' : ''
+            }`}
         >
             <span>{icon}</span>
             {!collapsed && <span>{label}</span>}
+            
+            {/* Apparaît au hover quand collapsed = true */}
+            {collapsed && (
+                <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                    {label}
+                </div>
+            )}
+            
         </div>
     );
 }
