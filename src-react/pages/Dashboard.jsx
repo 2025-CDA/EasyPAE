@@ -8,14 +8,16 @@ import MainLayout from "../components/layout/MainLayout";
 import useAxios from "../hooks/useAxios";
 import { useEffect } from "react";
 import { useAuthContext } from "../store/auth_context/authContext";
+import { toast } from "react-toastify";
 
-function Dashboard({
+export default function Dashboard({
     selectDiv = true, // props pour gérer l'affichage du select dans le header
     calendarDiv = true, // props pour gérer l'affichage du calendrier dans la grille principale
 }) {
     const [selected, setSelected] = useState(""); // État pour la formation sélectionnée dans le select
     const [showForm, setShowForm] = useState(false); // État pour contrôler l'affichage du formulaire
     const [formations, setFormation] = useState([]); // État pour contrôler l'affichage du formulaire
+    const [trainingNames, setTrainingNames] = useState([]); // État pour contrôler l'affichage du formulaire
     const [trainingForm, setTrainingForm] = useState({
         trainerId: "",
         trainingName: "",
@@ -34,15 +36,15 @@ function Dashboard({
             const res = await fetchData("GET", "organization/sessions");
             setFormation(res.data.member);
         };
+        const getTrainingsNames = async () => {
+            const res = await fetchData("GET", "organization/training-names");
+            setTrainingNames(res.data.member);
+        };
+        getTrainingsNames();
         getData();
     }, []);
 
     // ----------------------------- Options pour le composant Select-----------------------------
-    const options = [
-        { value: "formation1", label: "Formation 1" },
-        { value: "formation2", label: "Formation 2" },
-        { value: "formation3", label: "Formation 3" },
-    ];
 
     // ------------------ Filtrer les formations en fonction de la sélection-------------------------
     const formationsFiltered = selected
@@ -59,7 +61,6 @@ function Dashboard({
     }
     async function handleNewTrainingSubmit(e) {
         e.preventDefault();
-        console.log(typeof userData.id);
         const res = await fetchData("POST", "organization/session", {
             trainerId: parseInt(userData.id),
             trainingName: trainingForm.trainingName,
@@ -69,9 +70,36 @@ function Dashboard({
             trainingPeriodStart: trainingForm.trainingStart,
             trainingPeriodEnd: trainingForm.trainingEnd,
         });
-        console.log(res);
+        if (res.success == true) {
+            // setFormation({...formations,{}})
+            setTrainingForm({
+                trainerId: "",
+                trainingName: "",
+                offerNumber: "",
+                internshipStart: "",
+                internshipEnd: "",
+                trainingStart: "",
+                trainingEnd: "",
+            });
+            toast.success("Session a ete ajoute!", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                theme: "light",
+            });
+        } else {
+            toast.error("Error!", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                theme: "light",
+            });
+        }
     }
-
     return (
         <MainLayout avatarColor="#c1459e">
             {/* -------------------------------------------------Header--------------------------------------- */}
@@ -80,7 +108,7 @@ function Dashboard({
                 {selectDiv && (
                     <div>
                         <Select
-                            options={options}
+                            options={trainingNames}
                             value={selected}
                             onChange={setSelected}
                         />
@@ -278,5 +306,3 @@ function Dashboard({
         </MainLayout>
     );
 }
-
-export default Dashboard;

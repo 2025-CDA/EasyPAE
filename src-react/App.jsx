@@ -99,11 +99,11 @@ export default function App() {
                                 element={<ProfilePage />}
                             ></Route>
                             <Route path="*" element={<ErrorPage />}></Route>
-                            {/* <ToastContainer /> */}
                         </Routes>
                     )}
                 </>
             )}
+            <ToastContainer />
         </>
     );
 }
