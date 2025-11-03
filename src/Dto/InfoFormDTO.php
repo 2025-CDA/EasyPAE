@@ -2,13 +2,15 @@
 
 namespace App\Dto;
 
-use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Metadata\ApiResource;
+use DateTimeImmutable;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use App\State\InfoFormProvider;
-use App\State\InfoFormProcessor;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Context;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ApiResource(
     operations: [
@@ -48,16 +50,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             provider: InfoFormProvider::class,
         ),
 
-        new Patch(
-            uriTemplate: '/resum-form/{infoFormId}/validation-status',
-            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-            uriVariables: ['infoFormId'],
-            normalizationContext: ['groups' => ['read:validation_status']],
-            read: false,
-            name: 'validate_resume_form',
-            processor: InfoFormProcessor::class,
-        ),
-
         new Get(
             uriTemplate: '/status/{infoFormId}',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
@@ -76,13 +68,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
             provider: InfoFormProvider::class,
         ),
 
-         new Get(
+        new Get(
             uriTemplate: '/status/intern/{infoFormInternId}',
-             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-             uriVariables: ['infoFormInternId'],
-             normalizationContext: ['groups' => ['read:intern_status']],
-             name: 'info_form_intern_status',
-             provider: InfoFormProvider::class,
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            uriVariables: ['infoFormInternId'],
+            normalizationContext: ['groups' => ['read:intern_status']],
+            name: 'info_form_intern_status',
+            provider: InfoFormProvider::class,
         ),
 
         new Get(
@@ -297,4 +289,13 @@ class InfoFormDTO
 
     #[Groups(['read:validation_percentage'])]
     public ?string $sessionName = null;
+
+    #[Groups([
+        'read:info_form_status',
+        'read:company_status',
+        'read:intern_status',
+        'read:organization_status'
+    ])]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d-H-i'])]
+    public ?DateTimeImmutable $updated_at = null;
 }

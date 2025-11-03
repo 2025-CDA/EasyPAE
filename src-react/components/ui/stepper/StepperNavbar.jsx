@@ -2,7 +2,7 @@ import React from "react";
 
 function StepperNavbar({ validated, currentStep, finishedStep = [], content , isHorizontal}) {
     return (
-        <ul className={`w-full flex justify-center md:items-center ${!isHorizontal && 'flex-col'} md:flex-row gap-2`}>
+        <ul className={`w-full flex  justify-center md:items-center ${!isHorizontal && 'flex-col'} md:flex-row gap-2`}>
             {content.map((step, i) => (
                 <StepItem
                     key={i}
@@ -12,7 +12,7 @@ function StepperNavbar({ validated, currentStep, finishedStep = [], content , is
                     isActive={i === currentStep}
                     isDone={finishedStep.includes(i)}
                     isValidated={validated}
-                    isHorizontal
+                    isHorizontal={isHorizontal}
                 />
             ))}
         </ul>
@@ -39,8 +39,8 @@ function StepItem({ step, title, description, isValidated, isActive, isDone, isH
     }
 
     return (
-        <li className="md:shrink md:basis-0 flex-1 group  gap-x-2 md:block">
-            <div className={` min-w-7 min-h-7 flex ${!isHorizontal && 'flex-col' } items-center md:w-full md:inline-flex md:flex-wrap md:flex-row text-xs align-middle`}>
+        <li className={`md:shrink md:basis-0 flex-1 group ${!isHorizontal && 'flex'}  gap-x-2 md:block`}>
+            <div className={` min-w-7 min-h-7 flex ${!isHorizontal && 'flex-col' }  items-center md:w-full md:inline-flex md:flex-wrap md:flex-row text-xs align-middle`}>
                 <span
                     className={` ${stepCircleClass} size-8 flex justify-center items-center shrink-0 font-medium rounded-full`}
                 >

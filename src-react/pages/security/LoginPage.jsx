@@ -5,35 +5,26 @@ import { useState } from "react";
 import logoNameFullWhite from "../../assets/LogoNameFullWhite.png";
 import ManWorkingComputer from "../../assets/Man-working-computer.png";
 import useWindowSize from "../../hooks/useWindowSize";
-import Container from "../../components/ui/Container"
+import Container from "../../components/ui/Container";
+import axios from "axios";
+import useAxios from "../../hooks/useAxios";
+import { redirect } from "react-router-dom";
+import { useAuthContext } from "../../store/auth_context/authContext";
 
 function LoginPage({ initialStep = "login", className }) {
-    console.log(initialStep);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [provisionalPassword, setProvisionalPassword] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
     const [remember, setRemember] = useState(false);
     const [step, setStep] = useState(initialStep); // 'login' | 'error' | 'firstConnect' | 'forgetPassword' | 'mailSent'
     const { width } = useWindowSize();
     const isMobile = width < 768;
 
-    // useEffect(() => { setStep(initialStep); }, [initialStep]);
-    // Handler de soumission classique
-    const handleSubmit = (e) => {
+    const { signIn } = useAuthContext();
+    async function handleLogin(e) {
         e.preventDefault();
-        // Appel API ici, gestion du résultat
-        // Si erreur → setStep('error')
-        // Si première connexion → setStep('firstConnect')
-    };
-
-    // Handler pour recup mdp oublié
-    const handleForgot = (e) => {
-        e.preventDefault();
-        // Traitement ici
-    };
-
-    // Handlers pour chaque étape
+        signIn(email, password);
+    }
 
     return (
         <div className="flex w-screen min-h-screen h-screen flex-col md:flex-row bg-primary min-w-screen overflow-hidden">
@@ -96,7 +87,7 @@ function LoginPage({ initialStep = "login", className }) {
                             setRemember={setRemember}
                             step={step}
                             setStep={setStep}
-                            handleSubmit={handleSubmit}
+                            handleSubmit={handleLogin}
                             iconMail={!isMobile}
                             iconPassword={!isMobile}
                             withShowPassword={!isMobile}
@@ -121,13 +112,18 @@ function LoginPage({ initialStep = "login", className }) {
                     {step === "mailSent" && (
                         <Container className=" mx-10 border-t-4 border-t-blue-600 bg-background">
                             <div>
-                                <h4 className="pb-2 font-semibold">Email envoyé</h4>         
-                                <p>Si une adresse email correspond à un compte existant, un lien de réinitialisation du mot de passe vient d’être envoyé. Pensez à vérifier vos spams ou courriers indésirables.</p>                   
-
+                                <h4 className="pb-2 font-semibold">
+                                    Email envoyé
+                                </h4>
+                                <p>
+                                    Si une adresse email correspond à un compte
+                                    existant, un lien de réinitialisation du mot
+                                    de passe vient d’être envoyé. Pensez à
+                                    vérifier vos spams ou courriers
+                                    indésirables.
+                                </p>
                             </div>
-
                         </Container>
-
                     )}
                 </div>
 

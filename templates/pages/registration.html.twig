@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>EasyPAE - Ajouter un stagiaire</title>
+</head>
+<body>
+    <h1>Ajouter un stagiaire</h1>
+    
+    {% if success is defined and success %}
+        <div style="color: green;">
+            <p>Le stagiaire a été créé avec succès ! Un email d'activation lui a été envoyé.</p>
+        </div>
+    {% elseif error is defined and error %}
+        <div style="color: red;">
+            <p> {{ error }}</p>
+        </div>
+    {% endif %}
+    
+    {% if not (success is defined and success) %}
+    <form method="POST" action="/registration">
+        <div>
+            <label for="first_name">Prénom :</label><br>
+            <input type="text" id="first_name" name="first_name" required>
+        </div>
+        <br>
+        
+        <div>
+            <label for="last_name">Nom :</label><br>
+            <input type="text" id="last_name" name="last_name" required>
+        </div>
+        <br>
+        
+        <div>
+            <label for="email">Email :</label><br>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <br>
+        
+        <div>
+            <button type="submit">Créer le stagiaire</button>
+        </div>
+    </form>
+    {% endif %}
+    
+   <br>
+    <div>
+        <a href="/home">
+            <button type="button">Retour à l'accueil</button>
+        </a>
+    </div>
+</body>
+</html>

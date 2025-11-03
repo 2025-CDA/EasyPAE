@@ -44,14 +44,17 @@ function InformationSheet() {
 
     function CompanyDetails() {
         return (
-            <form className={"flex flex-row border-0 gap-5"} action="">
+            <form
+                className={"flex flex-col md:flex-row border-0 gap-5"}
+                action=""
+            >
                 <CompanyForm
                     companyDetails={formState.company}
                     handleCompanyDetailsChange={(key, value) =>
                         updateSection("company", key, value)
                     }
                 />
-                <div className="flex flex-col gap-5 w-[35%]">
+                <div className="flex flex-col gap-5 md:w-[35%]">
                     <LegalRepresentativeForm
                         legalRep={formState.legalRep}
                         handleLegalRepChange={(key, value) =>
