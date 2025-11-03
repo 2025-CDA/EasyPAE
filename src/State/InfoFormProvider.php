@@ -147,7 +147,15 @@ readonly class InfoFormProvider implements ProviderInterface
             throw new NotFoundHttpException('InfoForm not found');
         }
 
-        $company = $infoForm->getCompany();
+        $companyMembers = $infoForm->getCompanyMembers();
+        if (!$companyMembers || $companyMembers->isEmpty()) {
+            throw new NotFoundHttpException('Company not found for this InfoForm');
+        }
+
+        // Récupérer le premier CompanyMember et son Company
+        $firstCompanyMember = $companyMembers->first();
+        $company = $firstCompanyMember?->getCompany();
+        
         if (!$company) {
             throw new NotFoundHttpException('Company not found for this InfoForm');
         }
@@ -155,17 +163,16 @@ readonly class InfoFormProvider implements ProviderInterface
         // Récupérer l'utilisateur de l'entreprise (tuteur)
         $companyUser = null;
         $tutorName = null;
-        if ($company->getCompanyMembers()->count() > 0) {
+        if ($companyMembers->count() > 0) {
             // ALTERNATIVES possibles :
-            // 1. Filtrer par rôle : $company->getCompanyMembers()->filter(fn($m) => $m->getRole() === 'TUTEUR')
+            // 1. Filtrer par rôle : $companyMembers->filter(fn($m) => $m->getRole() === CompanyRole::TUTEUR)
             // 2. Utiliser les données InfoFormCompany (tutor_first_name, tutor_last_name)
             // 3. Créer une relation directe InfoForm -> CompanyMember (tuteur)
 
             // Pour l'instant : prendre le premier membre
-            $firstCompanyMember = $company->getCompanyMembers()->first();
             if ($firstCompanyMember) {
                 $companyUser = $firstCompanyMember->getUser();
-                $tutorName = $companyUser->getFirstName() . ' ' . $companyUser->getLastName();
+                $tutorName = $companyUser?->getFirstName() . ' ' . $companyUser?->getLastName();
             }
         }
 
@@ -200,7 +207,7 @@ readonly class InfoFormProvider implements ProviderInterface
 
         $internMember = $infoForm->getInternMember();
         $trainingSession = $infoForm->getTrainingSession();
-        $company = $infoForm->getCompany();
+        $companyMembers = $infoForm->getCompanyMembers();
 
         if ($internMember && $internMember->getUser()) {
             $user = $internMember->getUser();
@@ -216,15 +223,21 @@ readonly class InfoFormProvider implements ProviderInterface
             $dto->internshipEndDateFull = $trainingSession->getInternshipPeriodEnd();
         }
 
-        if ($company) {
-            $dto->companyNameFull = $company->getName();
-            $dto->companyPhoneNumberFull = $company->getPhoneNumber();
-            $dto->companySiretFull = $company->getSiret();
+        if ($companyMembers && !$companyMembers->isEmpty()) {
+            // Récupérer le premier CompanyMember et son Company
+            $firstCompanyMember = $companyMembers->first();
+            $company = $firstCompanyMember?->getCompany();
+            
+            if ($company) {
+                $dto->companyNameFull = $company->getName();
+                $dto->companyPhoneNumberFull = $company->getPhoneNumber();
+                $dto->companySiretFull = $company->getSiret();
+            }
 
             $tutorMember = null;
             $legalRepMember = null;
 
-            foreach ($company->getCompanyMembers() as $member) {
+            foreach ($companyMembers as $member) {
                 if (!$tutorMember && $member->getRole() === 'Tuteur') {
                     $tutorMember = $member;
                 } elseif (!$legalRepMember && $member->getRole() === 'Représentant légal') {
@@ -246,8 +259,7 @@ readonly class InfoFormProvider implements ProviderInterface
                 $dto->legalResponsibleEmailFull = $legalRepUser?->getEmail();
             }
 
-            // Utiliser les infos générales de l'entreprise
-            $dto->companyNameFull = $company->getName();
+            // Ajouter les emails de contact
             $dto->companyContactEmailFull = $tutorMember?->getUser()?->getEmail();
             $dto->companyEmailFull = $tutorMember?->getUser()?->getEmail();
         }
