@@ -180,7 +180,7 @@ readonly class InfoFormProvider implements ProviderInterface
         $dto->id = 'company_resume_card_' . $infoFormId;
         $dto->companyUserAvatar = $companyUser?->getAvatar();
         $dto->companyName = $company->getName();
-        $dto->companyAddress = null;
+        $dto->companyAddress = $company->getAddress();
         // TODO: Ajouter la propriété address à l'entité Company
         // TODO: Arnaud: C'est fait. Mais en fait je suis pas sur que ca soit néccessaire?
         $dto->companyContactEmail = $companyUser?->getEmail(); // Utiliser l'email de l'utilisateur de l'entreprise
