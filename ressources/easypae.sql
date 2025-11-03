@@ -5,11 +5,11 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 SET NAMES utf8mb4;
 
 
-INSERT INTO `training` (`id`, `name`, `updated_at`, `created_at`) VALUES
-(1,	'CDA',	'2025-10-22 09:00:00',	'2025-01-10 10:00:00'),
-(2,	'CDUI',	'2025-10-22 09:01:00',	'2025-01-10 10:01:00'),
-(3,	'DWWM',	'2025-10-22 09:02:00',	'2025-01-10 10:02:00'),
-(4,	'DevOps Engineer',	'2025-10-24 12:06:57',	'2025-10-24 12:06:57');
+INSERT INTO `training` (`id`, `name`, `category`, `updated_at`, `created_at`) VALUES
+(1,	'CDA', 'informatique',	'2025-10-22 09:00:00',	'2025-01-10 10:00:00'),
+(2,	'CDUI', 'design informatique',	'2025-10-22 09:01:00',	'2025-01-10 10:01:00'),
+(3,	'DWWM', 'creation site web',	'2025-10-22 09:02:00',	'2025-01-10 10:02:00'),
+(4,	'DevOps Engineer', 'déploiement applicatif',	'2025-10-24 12:06:57',	'2025-10-24 12:06:57');
 
 
 INSERT INTO `organization` (`id`, `siret`, `name`, `updated_at`, `created_at`) VALUES

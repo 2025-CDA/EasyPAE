@@ -124,7 +124,7 @@ class OrganizationDTO
 
     #[Groups([
         'create:organization_session_sessionId_intern_add'
-//        TODO: change this later, this is just for testing.
+        //        TODO: change this later, this is just for testing.
     ])]
     public ?string $plainPassword = null;
 
@@ -249,4 +249,14 @@ class OrganizationDTO
         'denorm-update:organization_infoForm_infoFormId_sign',
     ])]
     public ?\DateTimeInterface $validationDate = null;
+
+    #[Groups([
+        'create:organization_session_add'
+    ])]
+    public ?\DateTimeImmutable $trainingPeriodStart = null;
+
+    #[Groups([
+        'create:organization_session_add'
+    ])]
+    public ?\DateTimeImmutable $trainingPeriodEnd = null;
 }

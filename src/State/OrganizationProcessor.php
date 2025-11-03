@@ -82,12 +82,16 @@ readonly class OrganizationProcessor implements ProcessorInterface
             throw new BadRequestHttpException('A training session with this offerNumber already exists.');
         }
 
+
+
         $session = new TrainingSession();
         $session->setTraining($training);
         $session->setOfferNumber($data->offerNumber);
         $session->setInternShipPeriodStart($data->internshipStart);
         $session->setInternshipPeriodEnd($data->internshipEnd);
         $session->addOrganizationMember($trainer);
+        $session->setTrainingPeriodStart($data->trainingPeriodStart);
+        $session->setTrainingPeriodEnd($data->trainingPeriodEnd);
 
         $this->entityManager->persist($session);
         $this->entityManager->flush();
