@@ -2,14 +2,18 @@ import { useState } from "react";
 import axios from "axios";
 
 export default function useAxios() {
-
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    
+
     const baseUrl = import.meta.env.VITE_DB_URL;
 
-    const fetchData = async (method = 'GET', url, requestData = null, options = {}) => {
+    const fetchData = async (
+        method = "GET",
+        url,
+        requestData = null,
+        options = {}
+    ) => {
         setLoading(true);
         setError(null);
         try {
@@ -17,14 +21,14 @@ export default function useAxios() {
                 method,
                 url: `${baseUrl}/api/${url}`,
                 data: requestData,
-                ...options
+                ...options,
             });
-            
+
             setData(response.data);
-            return { success: true, data: response.data };
+            return { status: response.status, data: response.data };
         } catch (err) {
             setError(err);
-            return { success: false, error: err };
+            return { error: err };
         } finally {
             setLoading(false);
         }

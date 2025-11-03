@@ -10,11 +10,10 @@ import HelpPage from "./pages/help/HelpPage";
 import NotificationsPage from "./pages/NotificationsPage";
 
 export default function App() {
-    const { signOut, token, userData, getUser, loadingUser } = useAuthContext();
+    const { token, userData, getUser, loadingUser } = useAuthContext();
 
     useEffect(() => {
-        getUser();
-        // signOut();
+        !token && getUser();
     }, [token]);
 
     // console.log(data[0])
@@ -37,7 +36,7 @@ export default function App() {
                     {token && (
                         <Routes>
                             {["company", "intern"].some((role) =>
-                                userData?.roles.includes(role)
+                                [userData?.roles].includes(role)
                             ) && (
                                 <>
                                     <Route
@@ -55,7 +54,7 @@ export default function App() {
                                 </>
                             )}
                             {["company", "intern"].some(
-                                (role) => !userData?.roles.includes(role)
+                                (role) => ![userData?.roles].includes(role)
                             ) && (
                                 <>
                                     <Route
@@ -79,7 +78,9 @@ export default function App() {
                                         path="/interForm"
                                         element={App}
                                     ></Route>
-                                    {userData?.roles.includes("SuperAdmin") && (
+                                    {[userData?.roles].includes(
+                                        "SuperAdmin"
+                                    ) && (
                                         <Route
                                             path="/superAdmin"
                                             element={App}
