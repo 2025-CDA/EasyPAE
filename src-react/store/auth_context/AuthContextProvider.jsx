@@ -3,12 +3,14 @@ import { AuthContext } from "./authContext";
 import useAxios from "../../hooks/useAxios";
 import { TokenManager } from "../../helpers/TokenManager";
 
+
 export default function AuthContextProvider({ children }) {
     const [token, setToken] = useState(null);
     const [userData, setUserData] = useState(null);
     const [loadingUser, setLoadingUser] = useState(false);
     const { error, fetchData } = useAxios();
     const tokenManager = new TokenManager();
+    
 
     const signIn = async (userName, password) => {
         setLoadingUser(true);
@@ -34,10 +36,12 @@ export default function AuthContextProvider({ children }) {
             setToken(null);
             setUserData(null);
             setLoadingUser(false);
+            
         } else {
             setLoadingUser(false);
             return new Error("You are not signed in!");
         }
+        window.location.href = "/";
     };
 
     const getUser = async () => {
@@ -46,13 +50,8 @@ export default function AuthContextProvider({ children }) {
         if (token) {
             const decodedToken = tokenManager.decodeToken(token);
             const res = await fetchData("GET", `user/${decodedToken.id}`);
-            const updatedData = {
-                ...res.data,
-                id: res.data["@id"].split("/")[3],
-            };
             setToken(token);
-            setUserData(updatedData);
-            console.log("🚀 ~ getUser ~ res.data:", updatedData);
+            setUserData(res.data);
             setLoadingUser(false);
         } else {
             setLoadingUser(false);
