@@ -27,6 +27,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
             provider: InternProvider::class,
         ),
 
+        new Get(
+            uriTemplate: '/intern/{userId}/infoForms',
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            uriVariables: ['userId'],
+            normalizationContext: ['groups' => ['read:intern_userId_infoForms']],
+            name: 'intern_userId_infoForms',
+            provider: InternProvider::class,
+        ),
+
 
         new Post(
             uriTemplate: '/intern/infoForm',
@@ -82,8 +91,9 @@ class InternDTO
     ])]
     public ?int $infoFormInternId = null;
 
-    // #[ApiProperty(identifier: true)]
+    #[ApiProperty(identifier: true)]
     #[Groups([
+        'read:intern_userId_infoForms',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
     ])]
@@ -107,6 +117,7 @@ class InternDTO
 
 
     #[Groups([
+        'read:intern_userId_infoForms',
         // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
@@ -124,6 +135,7 @@ class InternDTO
     // public ?InfoFormOrganizationStatus $infoFormOrganizationStatus = null;
 
     #[Groups([
+        'read:intern_userId_infoForms',
         // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_edit',
@@ -131,6 +143,7 @@ class InternDTO
     public ?\DateTimeInterface $infoFormInternDateStart = null;
 
     #[Groups([
+        'read:intern_userId_infoForms',
         // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_edit',
@@ -234,5 +247,41 @@ class InternDTO
         'read:intern_infoForm_infoFormId_infoFormIntern',
     ])]
     public ?\DateTimeInterface $internshipEnd = null;
+
+    // Nouvelles propriétés pour la liste des infoForms
+    #[Groups([
+        'read:intern_userId_infoForms',
+    ])]
+    public ?string $companyUserAvatar = null;
+
+    #[Groups([
+        'read:intern_userId_infoForms',
+    ])]
+    public ?string $companyName = null;
+
+    #[Groups([
+        'read:intern_userId_infoForms',
+    ])]
+    public ?string $companyAddress = null;
+
+    #[Groups([
+        'read:intern_userId_infoForms',
+    ])]
+    public ?string $companyPhoneNumber = null;
+
+    #[Groups([
+        'read:intern_userId_infoForms',
+    ])]
+    public ?string $infoFormCompanyContactEmail = null;
+
+    #[Groups([
+        'read:intern_userId_infoForms',
+    ])]
+    public ?string $infoFormCompanyTutorFirstName = null;
+
+    #[Groups([
+        'read:intern_userId_infoForms',
+    ])]
+    public ?string $infoFormCompanyTutorLastName = null;
 
 }
