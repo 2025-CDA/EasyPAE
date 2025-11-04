@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import MainLayout from "../../components/layout/MainLayout";
 import StepperNavbar from "../../components/ui/stepper/StepperNavbar";
 import Breadcrumb from "../../components/ui/Breadcrumb";
@@ -7,8 +7,11 @@ import CardIntern from "../../components/ui/CardIntern";
 import Stepper from "../../components/ui/stepper/Stepper";
 import CalendarSimpleGET from "../../components/calendar/CalendarSimpleGET";
 import BusinessMan from '../../assets/Business-man.png';
-import Container from "../../components/ui/container";
+import Container from "../../components/ui/Container";
 // import Container from "../../components/ui/Container";
+// import useAxios from "../hooks/useAxios";
+import useAxios from "../../hooks/useAxios";
+import { useParams } from "react-router";
 
 
 const steps = [
@@ -31,6 +34,18 @@ const breadcrumbContent = [
 
 
 function FicheStagiaire({name, internNumber, email, courseName, courseNumber, trainerName, startDateInternship, endDateInternship, className, companyName, adresse, tutorEmail, tel, tutorName}) {
+
+    // ----------------------------------   ESSAI RECUPERATION DATA STAGIAIRE  --------------------------------
+
+    const { id } = useParams(); // ex: /fiches-stagiaires/:id
+    const { data, loading, error } = useAxios(`/api/intern/infoForm/{infoFormId}/infoFormIntern/${id}`);
+
+    
+
+
+    // -------------  FIN ESSAI RECUPERATION DATA STAGIAIRE  -------------------------------------------------------  // 
+
+
     const [currentFormation] = useState({
             periodStart: new Date(2026, 0, 5),  // 5 janvier 2026
             periodEnd: new Date(2026, 2, 27),   // 27 mars 2026

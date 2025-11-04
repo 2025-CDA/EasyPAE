@@ -9,6 +9,8 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import HelpPage from "./pages/help/HelpPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import { ToastContainer } from "react-toastify";
+import FicheStagiaire from './pages/intern/FicheStagiaire'
+
 
 export default function App() {
     const { token, userData, getUser, loadingUser } = useAuthContext();
@@ -20,7 +22,9 @@ export default function App() {
     // console.log(data[0])
     return (
         <>
-            {loadingUser ? (
+
+        <FicheStagiaire />
+            {/* {loadingUser ? (
                 <LoadingModal />
             ) : (
                 <>
@@ -100,10 +104,10 @@ export default function App() {
                             ></Route>
                             <Route path="*" element={<ErrorPage />}></Route>
                         </Routes>
-                    )}
+                    )} */}
                 </>
-            )}
-            <ToastContainer position="top-center" />
-        </>
+            // )}
+    //         <ToastContainer position="top-center" />
+    //     </>
     );
 }
