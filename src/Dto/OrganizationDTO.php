@@ -254,6 +254,7 @@ class OrganizationDTO
 
     #[Groups([
         'update:organization_infoForm_infoFormId_sign',
+        'read:organization_session_sessionId_interns',
     ])]
     public ?int $infoFormId = null;
 
