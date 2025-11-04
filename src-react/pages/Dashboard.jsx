@@ -39,6 +39,7 @@ export default function Dashboard({
             const res = await fetchData("GET", "organization/sessions");
             setFormation(res.data.member);
             setFormationsFiltered(res.data.member);
+            console.log("🚀 ~ getData ~ res.data.member:", res.data.member);
         };
 
         const getTrainingsNames = async () => {
@@ -58,7 +59,7 @@ export default function Dashboard({
         console.log("🚀 ~ handleSelectCat ~ e:", e);
 
         if (e != "Tout" || e == "") {
-            const filtered = formations.filter((f) => f.trainerId == e - 1);
+            const filtered = formations.filter((f) => f.trainingId == e);
             console.log("🚀 ~ handleSelectCat ~ filtered:", filtered);
             setFormationsFiltered(filtered);
             setSelectedCat(e);

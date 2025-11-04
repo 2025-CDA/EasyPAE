@@ -101,9 +101,11 @@ function CardFormation({
                         <br />
                         {startDateInternship} au {endDateInternship}
                     </p>
-                    <div className="flex items-center space-x-14">
-                        <p className="text-secondary-text">PAE validées :</p>
-                        <CircleProgress statusPae={progress} className="mt-1" />
+                    <div className="flex items-center justify-between space-x-14 py-5">
+                        <p className="text-secondary-text pr-5">
+                            PAE validées :
+                        </p>
+                        <CircleProgress statusPae={progress} />
                     </div>
                     <div className="w-24">
                         <Button color="blue" variant="solid" className="h-12">
