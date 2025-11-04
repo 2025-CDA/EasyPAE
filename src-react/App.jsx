@@ -65,8 +65,8 @@ export default function App() {
                                         element={<Dashboard />}
                                     ></Route>
                                     <Route
-                                        path="/listInterns"
-                                        element={App}
+                                        path="/listInterns/:id"
+                                        element={<InternListPage />}
                                     ></Route>
                                     <Route
                                         path="/formIntern"

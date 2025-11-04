@@ -33,13 +33,11 @@ export default function Dashboard({
     const { userData } = useAuthContext();
 
     // ------------------ Filtrer les formations en fonction de la sélection-------------------------
-
     useEffect(() => {
         const getData = async () => {
             const res = await fetchData("GET", "organization/sessions");
             setFormation(res.data.member);
             setFormationsFiltered(res.data.member);
-            console.log("🚀 ~ getData ~ res.data.member:", res.data.member);
         };
 
         const getTrainingsNames = async () => {
@@ -94,23 +92,9 @@ export default function Dashboard({
                 trainingStart: "",
                 trainingEnd: "",
             });
-            toast.success("Session a ete ajoute!", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "light",
-            });
+            toast.success("Session a ete ajoute!");
         } else {
-            toast.error("Error!", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "light",
-            });
+            toast.error("Error!");
         }
     }
     return (
@@ -216,6 +200,24 @@ export default function Dashboard({
                                             )
                                         }
                                     />
+                                    {/* <div className="py-4">
+                                        <label htmlFor="">
+                                            Nom de formation{" "}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>{" "}
+                                        </label>
+                                        <Select
+                                            options={trainingNames}
+                                            onChange={(e) => {
+                                                updateTrainingForm(
+                                                    "trainingName",
+                                                    e.target.value
+                                                );
+                                                console.log(e.target.label);
+                                            }}
+                                        />
+                                    </div> */}
                                     <Input
                                         type="text"
                                         label="Offre n°"

@@ -1,134 +1,108 @@
-import React from 'react'
-import { useState } from 'react'
-import Label from '../ui/Label'
-import Container from '../ui/Container'
+import React from "react";
+import { useState } from "react";
+import Label from "../ui/Label";
+import Container from "../ui/Container";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
 
-function FormAddIntern({visibilityAddForm, onAddIntern}) {
-    
+function FormAddIntern({ visibilityAddForm, onAddIntern }) {
     const [formData, setFormData] = useState({
         last_name: "",
         first_name: "",
-        email:"",
+        email: "",
         intern_member_id: "",
         status: "",
     });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (onAddIntern) {
-      onAddIntern(formData);
-      setFormData({ first_name: "", intern_member_id: "", status: "Aucune demande" }); // reset
-    }
-  };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (onAddIntern) {
+            onAddIntern(formData);
+            setFormData({
+                first_name: "",
+                intern_member_id: "",
+                status: "Aucune demande",
+            }); // reset
+        }
+    };
 
-  return (
-    <div className= {visibilityAddForm ||"w-full w-full transition-all duration-1000 ease-in-out max-h-[700px] opacity-100 translate-y-0"}>
-        {console.log(visibilityAddForm)}
-        <Container>
-            <form onSubmit={handleSubmit}  className=" flex flex-col w-full items-start gap-4">
-
+    return (
+        <Container
+            className={
+                visibilityAddForm ||
+                "w-full transition-all duration-1000 ease-in-out max-h-[700px] opacity-100 translate-y-0"
+            }
+        >
+            <form
+                onSubmit={handleSubmit}
+                className=" flex flex-col w-full gap-4 p-2"
+            >
                 {/* Titre formulaire Ajout */}
                 <Label
-                    text= {"Nouveau stagiaire"}
+                    text={"Nouveau stagiaire"}
                     weight={"semibold"}
                     size={"2xl"}
                     color={"primary-text"}
                 />
 
-                {/* Input et label pour nom */}
+                <Input
+                    type="text"
+                    placeholder="Nom"
+                    label="Nom"
+                    required
+                    name="last_name"
+                    value={formData.last_name}
+                    onChange={handleChange}
+                />
+                <Input
+                    type="text"
+                    placeholder="Prénom"
+                    label="Prénom"
+                    required
+                    name="first_name"
+                    value={formData.first_name}
+                    onChange={handleChange}
+                />
+                <Input
+                    type="text"
+                    placeholder="Email"
+                    label="Email"
+                    required
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                />
+                <Input
+                    type="text"
+                    placeholder="ID"
+                    label="ID"
+                    required
+                    name="intern_member_id"
+                    value={formData.intern_member_id}
+                    onChange={handleChange}
+                />
                 <div className="space-y-3 w-full ">
                     <Label
-                        text= {"Nom"}
-                        weight={"semibold"}
-                        size={"sm"}
-                        color={"primary-text"}
-                        labelFor={"last_name"}
-                    />
-                    <input type="text" 
-                        className="py-2.5 sm:py-3 px-4 block w-full border-1 border-gray-200 outline-gray-200 rounded-lg sm:text-sm focus:border-secondary focus:ring-secondary disabled:opacity-50 placeholder:text-lg placeholder:font-semibold placeholder:text-secondary-text" placeholder="Nom*" 
-                        name="last_name"
-                        value = {formData.last_name}
-                        onChange= {handleChange}
-                    />
-                    
-                </div>
-
-                {/* Input prenom */}
-                 <div className="w-full space-y-3">
-                    <Label
-                        text= {"Prenom"}
-                        weight={"semibold"}
-                        size={"sm"}
-                        color={"primary-text"}
-                        labelFor={"first_name"}
-                    />
-                    <input 
-                        type="text" 
-                        className="py-2.5 sm:py-3 px-4 block w-full border-1 border-gray-200 outline-gray-200 rounded-lg sm:text-sm focus:border-secondary focus:ring-secondary disabled:opacity-50 placeholder:text-lg placeholder:font-semibold placeholder:text-secondary-text" placeholder="Prenom*" 
-                        name="first_name"
-                        value = {formData.first_name}
-                        onChange= {handleChange}
-                    />
-                </div>
-            
-                {/* Input email */}
-                 <div className="w-full space-y-3">
-                    <Label
-                        text= {"Adresse email"}
-                        weight={"semibold"}
-                        size={"sm"}
-                        color={"primary-text"}
-                        labelFor={"email"}
-                    />
-                    <input 
-                        type="text" 
-                        className="py-2.5 sm:py-3 px-4 block w-full border-1 border-gray-200 outline-gray-200 rounded-lg sm:text-sm focus:border-secondary focus:ring-secondary disabled:opacity-50 placeholder:text-lg placeholder:font-semibold placeholder:text-secondary-text" placeholder="Mail*"
-                        name="email"
-                        value = {formData.email}
-                        onChange= {handleChange}
-                    />
-                </div>
-                {/* Input N° de stagiaire */}
-
-                <div className="w-full space-y-3">
-                    <Label
-                        text= {"N° de stagiaire"}
-                        weight={"semibold"}
-                        size={"sm"}
-                        color={"primary-text"}
-                        labelFor={"intern_member_id"}
-                    />
-
-                    <input 
-                        type="text" 
-                        className="py-2.5 sm:py-3 px-4 block w-full border-1 border-gray-200 outline-gray-200 rounded-lg sm:text-sm focus:border-secondary focus:ring-secondary disabled:opacity-50 placeholder:text-lg placeholder:font-semibold placeholder:text-secondary-text" placeholder="ID*" 
-                        name="intern_member_id"
-                        value = {formData.intern_member_id}
-                        onChange= {handleChange}
-                    />
-                </div>
-                <div className="space-y-3 w-full ">
-                    <Label
-                        text= {"Status de la demande"}
+                        text={"Status de la demande"}
                         weight={"semibold"}
                         size={"sm"}
                         color={"primary-text"}
                         labelFor={"status"}
                     />
-                    <select 
-                        id="hs-select-label" 
-                        className="py-2.5 sm:py-3 px-4 block w-full border-gray-200 outline-gray-200 rounded-lg sm:text-sm focus:border-secondary focus:ring-secondary disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                    <select
+                        className="w-full"
+                        id="hs-select-label"
                         name="status"
-                        value = {formData.status}
-                        onChange= {handleChange}
+                        value={formData.status}
+                        onChange={handleChange}
                     >
                         {/* <option selected="">Avancée du dossier </option> */}
-                        <option defaultValue >Aucune demande</option>
+                        <option defaultValue>Aucune demande</option>
                         <option>Stagiaire a initié la demande</option>
                         <option>Transmis à l'administration</option>
                         <option>En attente de validation</option>
@@ -137,17 +111,10 @@ function FormAddIntern({visibilityAddForm, onAddIntern}) {
                 </div>
 
                 {/* Bouton de soumission */}
-                <button 
-                    type="submit" 
-                    className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-lg font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-                >
-                    Envoyer l'invitation
-                </button>
-        
+                <Button type="submit">Envoyer l'invitation</Button>
             </form>
-        </Container>     
-    </div>
-  )
+        </Container>
+    );
 }
 
-export default FormAddIntern
+export default FormAddIntern;
