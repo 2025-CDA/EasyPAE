@@ -7,7 +7,7 @@ function Breadcrumb({
     ],
 }) {
     return (
-        <ol className="flex items-center whitespace-nowrap">
+        <ol className="flex items-center whitespace-nowrap my-4">
             {content.map((item, i) => (
                 <BreadcrumbItem key={i} item={item}></BreadcrumbItem>
             ))}
