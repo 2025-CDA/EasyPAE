@@ -283,9 +283,15 @@ readonly class OrganizationProcessor implements ProcessorInterface
         $intern = $infoForm->getInternMember()?->getUser();
         $infoFormIntern = $infoForm->getInfoFormIntern();
         $companyMembers = $infoForm->getCompanyMembers();
-                if ($intern) {
+        $companyMember = $infoForm->getCompanyMembers()->first()->getUser();
+        
+        if ($intern) {
             $this->notificationService->sendInfoFormValidatedInternNotification($intern, $infoForm, $infoFormIntern);
         }
+        if ($companyMember) {
+            $this->notificationService->sendInfoFormValidatedCompanyNotification($companyMember, $infoForm, $infoFormIntern);
+        }
+
 
         // Email au stagiaire
         if ($intern && $infoFormIntern) {
