@@ -15,6 +15,8 @@ use App\Enum\InfoFormOrganizationStatus;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
+use App\Repository\CompanyMemberRepository;
+use App\Repository\CompanyRepository;
 use App\Repository\InternMemberRepository;
 use App\Repository\InfoFormInternRepository;
 use JsonException;
@@ -37,6 +39,7 @@ readonly class InternProcessor implements ProcessorInterface
         private MailerInterface          $mailer,
         private \App\Repository\CompanyRepository $companyRepository,
         private \App\Service\EmailService $emailService,
+        private CompanyMemberRepository $companyMember,
     )
     {
     }
@@ -116,10 +119,6 @@ readonly class InternProcessor implements ProcessorInterface
 
             if ($data->infoFormInternCompanyLegalRepresentativeEmail !== null) {
                 $infoFormInternCompany->setEmail($data->infoFormInternCompanyLegalRepresentativeEmail);
-            }
-
-            if ($data->infoFormInternCompanySiret !== null) {
-                $infoFormInternCompany->setSiret($data->infoFormInternCompanySiret);
             }
 
             $this->entityManager->persist($infoFormInternCompany);
@@ -212,9 +211,6 @@ readonly class InternProcessor implements ProcessorInterface
             $infoFormInternCompany->setEmail($data->infoFormInternCompanyLegalRepresentativeEmail);
         }
 
-        if ($data->infoFormInternCompanySiret !== null) {
-            $infoFormInternCompany->setSiret($data->infoFormInternCompanySiret);
-        }
 
         $this->entityManager->flush();
 
