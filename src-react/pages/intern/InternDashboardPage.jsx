@@ -7,14 +7,36 @@ import CalendarSimpleGET from '../../components/calendar/CalendarSimpleGET'
 import Container from '../../components/ui/Container'
 import Buisinessman from '../../assets/Business-man.png'
 import StepperNavbar from '../../components/ui/stepper/StepperNavbar'
+import useAxios from "../../hooks/useAxios";
+import { useEffect } from "react";
+import { useParams } from 'react-router'
 
 
 function InternDashboardPage() {
+  const [companyDetails, setCompanyDetails] = useState({});
+  const [currentFormation, setCurrentFormation] = useState({});
 
-  const [currentFormation] = useState({
-            periodStart: new Date(2026, 0, 5),  // 5 janvier 2026
-            periodEnd: new Date(2026, 2, 27),   // 27 mars 2026
-        });
+  const { fetchData } = useAxios();
+  const {infoFormId} = useParams();
+
+  
+      useEffect(() => {
+          const getData = async () => {
+              const res = await fetchData("GET", `resume-card/${infoFormId}/company`);
+              setCompanyDetails(res.data);
+          };
+          getData();
+
+          const getDataDates = async () => {
+            const res = await fetchData("GET", `intern/infoForm/${infoFormId}/infoFormIntern` );
+            setCurrentFormation(res.data);
+          };
+          getDataDates();
+
+
+      }, []);
+
+ 
 
   const steps = [{
                   title: "Vous",
@@ -38,6 +60,12 @@ function InternDashboardPage() {
 
   const [finishedStep] = useState([0]);
 
+  // const [resumeCard, setResumeCard] = useState([
+
+
+
+  // ])
+
   return (
 
         <MainLayout withSearchbar = {false} >
@@ -52,7 +80,7 @@ function InternDashboardPage() {
               <StepperNavbar content = {steps} currentStep={1} finishedStep={finishedStep} />
             </Container>
 
-            <CardCompany companyName={"ViveCom'"} adresse={"123 Rue 33000 Bordeaux"} tel={"05555555"}/>
+            <CardCompany avatar={companyDetails.companyUserAvatar} tutorEmail={companyDetails.companyContactEmail} companyName={companyDetails.companyName} adresse={companyDetails.companyAddress} tel={companyDetails.companyPhoneNumber} tutorName={companyDetails.tutorName}/>
             
             <div className='col-span-2' >
               <Container>
@@ -60,8 +88,7 @@ function InternDashboardPage() {
               </Container>
             </div>
 
-            <CalendarSimpleGET
-              dates={currentFormation}
+            <CalendarSimpleGET dates={{ periodStart: new Date(currentFormation.internshipStartDate) , periodEnd: currentFormation.internshipEndDate }}
             />
 
           </div>

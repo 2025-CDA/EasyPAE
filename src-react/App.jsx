@@ -9,7 +9,7 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import HelpPage from "./pages/help/HelpPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import { ToastContainer } from "react-toastify";
-import InternListPage from "./components/intern_list/InternListPage";
+import InternDashboardPage from "./pages/intern/InternDashboardPage";
 
 export default function App() {
     const { token, userData, getUser, loadingUser } = useAuthContext();
@@ -37,13 +37,13 @@ export default function App() {
                     )}
                     {token && (
                         <Routes>
-                            {["company", "intern"].some((role) =>
+                            {/* {["company", "intern"].some((role) =>
                                 [userData?.roles].includes(role)
-                            ) && (
+                            ) && ( */}
                                 <>
                                     <Route
-                                        path="/dashboardIntern"
-                                        element={App}
+                                        path="/dashboardIntern/:infoFormId"
+                                        element={<InternDashboardPage/>}
                                     ></Route>
                                     <Route
                                         path="/paeApplication"
@@ -54,7 +54,7 @@ export default function App() {
                                         element={App}
                                     ></Route>
                                 </>
-                            )}
+                            {/* )} */}
                             {["company", "intern"].some(
                                 (role) => ![userData?.roles].includes(role)
                             ) && (
