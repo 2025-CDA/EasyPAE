@@ -12,7 +12,9 @@ use App\Entity\InfoFormOrganization;
 use App\Entity\InfoFormInternCompany;
 use App\Repository\InfoFormRepository;
 use App\Enum\InfoFormOrganizationStatus;
+use App\Repository\OrganizationRepository;
 use App\Repository\UserRepository;
+use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
 use App\Repository\CompanyMemberRepository;
@@ -36,10 +38,8 @@ readonly class InternProcessor implements ProcessorInterface
         private UserRepository           $userRepository,
         private EntityManagerInterface   $entityManager,
         private string                   $frontendUrl,
-        private MailerInterface          $mailer,
-        private \App\Repository\CompanyRepository $companyRepository,
-        private \App\Service\EmailService $emailService,
-        private CompanyMemberRepository $companyMember,
+        private EmailService             $emailService,
+        private OrganizationRepository   $organizationRepository,
     )
     {
     }
@@ -70,9 +70,33 @@ readonly class InternProcessor implements ProcessorInterface
 
         $infoForm = new InfoForm();
         $infoForm->setInternMember($internMember);
-        // $infoForm->setOrganization($organization);
-        // $infoForm->setTrainingSession($trainingSession);
+
+//        We should remove the hardcoded organization id if this app is going to be used for many organization (Training Center)
+        $organization = $this->organizationRepository->find(1);
+        $infoForm->setOrganization($organization);
+
+// Setting the training session by checking the only active session of a user.
+        $filterActiveTraining = function($ts) {
+            return $ts->hasEnded() === false;
+        };
+
+        $trainingSession = $internMember->getTrainingSessions()->filter($filterActiveTraining)->first();
+
+        if (!$trainingSession) {
+            throw new NotFoundHttpException('Active training session not found for this user');
+        }
+
+        $infoForm->setTrainingSession($trainingSession);
+
         $infoForm->setStatus(InfoFormStatus::INITIALIZED);
+
+        $data->internFirstName = $internMember->getUser()?->getFirstName();
+        $data->internLastName = $internMember->getUser()?->getLastName();
+        $data->internEmail = $internMember->getUser()?->getEmail();
+        $data->trainingName = $trainingSession->getTraining()?->getName();
+        $data->offerNumber = $trainingSession->getOfferNumber();
+        $data->internshipStart = $trainingSession->getInternShipPeriodStart();
+        $data->internshipEnd = $trainingSession->getInternShipPeriodEnd();
 
 
         $this->entityManager->persist($infoForm);
@@ -287,7 +311,7 @@ readonly class InternProcessor implements ProcessorInterface
             // CAS B - Email n'existe pas : envoyer un email au contact pour qu'il remplisse le formulaire entreprise
             // Le contact devra renseigner le SIRET dans le formulaire InfoFormCompany
             // La vérification du SIRET et la création de Company/User/CompanyMember se fera dans CompanyProcessor
-            
+
             // Génération d'un lien d'activation/inscription pour le formulaire entreprise
             $registrationData = [
                 'email' => $companyEmail,

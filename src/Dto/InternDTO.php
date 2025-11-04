@@ -40,8 +40,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Post(
             uriTemplate: '/intern/infoForm',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
-            normalizationContext: ['groups' => ['read:intern_infoForm_infoFormId_infoFormIntern']],
-            denormalizationContext: ['groups' => ['create:intern_infoForm_add']],
+            normalizationContext: ['groups' => ['create:intern_infoForm_add']],
+            denormalizationContext: ['groups' => ['denorm-create:intern_infoForm_add']],
             name: 'intern_infoForm_add',
             processor: InternProcessor::class,
         ),
@@ -86,7 +86,6 @@ class InternDTO
     #[ApiProperty(identifier: true)]
     #[Groups([
         'read:intern_infoForm_infoFormId_infoFormIntern',
-        // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_edit',
     ])]
     public ?int $infoFormInternId = null;
@@ -100,43 +99,41 @@ class InternDTO
     public ?int $infoFormId = null;
 
     // #[Groups([
-    //     'create:intern_infoForm_add',
+    //     'denorm-create:intern_infoForm_add',
     // ])]
     // public ?int $trainingSessionId = null;
 
 
     // #[Groups([
-    //     'create:intern_infoForm_add',
+    //     'denorm-create:intern_infoForm_add',
     // ])]
     // public ?int $organizationId = null;
 
     #[Groups([
-        'create:intern_infoForm_add',
+        'denorm-create:intern_infoForm_add',
     ])]
     public ?int $internId = null;
 
 
     #[Groups([
         'read:intern_userId_infoForms',
-        // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
     ])]
     public ?InfoFormStatus $infoFormStatus = null;
 
     // #[Groups([
-    //     'create:intern_infoForm_add',
+    //     'denorm-create:intern_infoForm_add',
     // ])]
     // public ?int $infoFormOrganizationId = null;
 
     // #[Groups([
-    //     'create:intern_infoForm_add',
+    //     'denorm-create:intern_infoForm_add',
     // ])]
     // public ?InfoFormOrganizationStatus $infoFormOrganizationStatus = null;
 
     #[Groups([
         'read:intern_userId_infoForms',
-        // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_edit',
     ])]
@@ -144,26 +141,23 @@ class InternDTO
 
     #[Groups([
         'read:intern_userId_infoForms',
-        // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_edit',
     ])]
     public ?\DateTimeInterface $infoFormInternDateEnd = null;
 
     #[Groups([
-        // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
     ])]
     public ?InfoFormInternStatus $infoFormInternStatus = null;
 
     // #[Groups([
-    //     'create:intern_infoForm_add',
+    //     'denorm-create:intern_infoForm_add',
     // ])]
     // public ?int $infoFormInternCompanyId = null;
 
     #[Groups([
-        // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
@@ -172,26 +166,23 @@ class InternDTO
     public ?InfoFormCompanyStatus $infoFormCompanyStatus = null;
 
     // #[Groups([
-    //     'create:intern_infoForm_add',
+    //     'denorm-create:intern_infoForm_add',
     // ])]
     // public ?int $infoFormCompanyId = null;
 
     #[Groups([
-        // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
     ])]
     public ?string $infoFormInternCompanyName = null;
 
     #[Groups([
-        // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
     ])]
     public ?string $infoFormInternCompanyAddress = null;
 
     #[Groups([
-        // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
     ])]
@@ -199,7 +190,6 @@ class InternDTO
 
     // FirstName + LastName = companyContactName
     #[Groups([
-        // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
     ])]
@@ -207,7 +197,6 @@ class InternDTO
 
     // This is the contact email
     #[Groups([
-        // 'create:intern_infoForm_add',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
     ])]
@@ -215,36 +204,43 @@ class InternDTO
 
     #[Groups([
         'read:intern_infoForm_infoFormId_infoFormIntern',
+        'create:intern_infoForm_add',
     ])]
     public ?string $internFirstName = null;
 
     #[Groups([
         'read:intern_infoForm_infoFormId_infoFormIntern',
+        'create:intern_infoForm_add',
     ])]
     public ?string $internLastName = null;
 
     #[Groups([
         'read:intern_infoForm_infoFormId_infoFormIntern',
+        'create:intern_infoForm_add',
     ])]
     public ?string $internEmail = null;
 
     #[Groups([
         'read:intern_infoForm_infoFormId_infoFormIntern',
+        'create:intern_infoForm_add',
     ])]
     public ?string $trainingName = null;
 
     #[Groups([
         'read:intern_infoForm_infoFormId_infoFormIntern',
+        'create:intern_infoForm_add',
     ])]
     public ?string $offerNumber = null;
 
     #[Groups([
         'read:intern_infoForm_infoFormId_infoFormIntern',
+        'create:intern_infoForm_add',
     ])]
     public ?\DateTimeInterface $internshipStart = null;
 
     #[Groups([
         'read:intern_infoForm_infoFormId_infoFormIntern',
+        'create:intern_infoForm_add',
     ])]
     public ?\DateTimeInterface $internshipEnd = null;
 
