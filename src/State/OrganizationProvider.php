@@ -43,6 +43,7 @@ readonly class OrganizationProvider implements ProviderInterface
         foreach ($trainingSessions as $trainingSession) {
             $dto = new OrganizationDTO(); //
             $dto->sessionId = $trainingSession->getId();
+            $dto->trainingId = $trainingSession->getTraining()?->getId();
             $dto->trainingName = $trainingSession->getTraining()?->getName();
             $dto->offerNumber = $trainingSession->getOfferNumber();
             $dto->category = $trainingSession->getTraining()?->getCategory();
@@ -60,11 +61,6 @@ readonly class OrganizationProvider implements ProviderInterface
             $dto->internshipEnd = $trainingSession->getInternshipPeriodEnd();
             $dto->trainingPeriodStart = $trainingSession->getTrainingPeriodStart();
             $dto->trainingPeriodEnd = $trainingSession->getTrainingPeriodEnd();
-
-
-
-            //            TODO: add percentage, I'm not sure what I'm supposed to do here.
-            //            $dto->validationPercentage = $trainingSession->getValidationPercentage();
 
             $totalFormsWithStatus = 0;
             $validatedForms = 0;
@@ -221,7 +217,7 @@ readonly class OrganizationProvider implements ProviderInterface
 
             $id = $training->getId();
             $name = $training->getName();
-            $map[$id] = $name; 
+            $map[$id] = $name;
         }
 
         $result = [];
