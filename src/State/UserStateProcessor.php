@@ -8,9 +8,8 @@ use App\Entity\User;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-// Added to access the current HTTP request
-use Symfony\Component\HttpFoundation\RequestStack;
 
+// THIS FILE IS FOR TESTING AND USER CREATION DURING TESTING ONLY
 readonly class UserStateProcessor implements ProcessorInterface
 {
     public function __construct(
