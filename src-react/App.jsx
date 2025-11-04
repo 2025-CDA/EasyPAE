@@ -103,7 +103,7 @@ export default function App() {
                     )}
                 </>
             )}
-            <ToastContainer />
+            <ToastContainer position="top-center" />
         </>
     );
 }
