@@ -156,6 +156,11 @@ class OrganizationDTO
 
     #[Groups([
         'read:organization_sessions',
+    ])]
+    public ?int $trainingId = null;
+
+    #[Groups([
+        'read:organization_sessions',
         'read:organization_organizationMemberId_sessions',
         'read:organization_session_sessionId',
         'create:organization_session_add',
