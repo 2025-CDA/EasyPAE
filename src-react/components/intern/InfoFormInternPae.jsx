@@ -1,7 +1,7 @@
 import Container from "../../components/ui/Container";
 import Input from ".././ui/Input";
 
-function InfoFormInternPae({firstNameIntern, mailIntern, nameCourse,nbCourse,startDateInternship,endDateInternship,lastNameIntern,data}) {
+function InfoFormInternPae({ data, onChange }) {
     return (
         <Container className="flex flex-col w-full overflow-hidden gap-3 pl-5 border-hidden">
             {" "}
@@ -18,14 +18,10 @@ function InfoFormInternPae({firstNameIntern, mailIntern, nameCourse,nbCourse,sta
                 <div className="flex-1 w-full ml-7">
                     <Input
                         id="firstNameIntern"
-                        label={false}
+                        label=""
                         type="text"
-                        placeholder={false}
-                        required={false}
-                        withCopy={false}
-                        disabled
                         value={data.firstNameIntern}
-                        className=""
+                        onChange={onChange}
                     />
                 </div>
             </div>
@@ -36,14 +32,10 @@ function InfoFormInternPae({firstNameIntern, mailIntern, nameCourse,nbCourse,sta
                 <div className="flex-1 w-full ml-12.5">
                     <Input
                         id="lastNameIntern"
-                        label={false}
+                        label=""
                         type="text"
-                        placeholder={false}
+                        onChange={onChange}
                         value={data.lastNameIntern}
-                        required={false}
-                        withCopy={false}
-                        disabled
-                        className=""
                     />
                 </div>
             </div>
@@ -54,14 +46,10 @@ function InfoFormInternPae({firstNameIntern, mailIntern, nameCourse,nbCourse,sta
                 <div className="flex-1 w-full ml-12">
                     <Input
                         id="emailIntern"
-                        label={false}
+                        label=""
                         type="email"
+                        onChange={onChange}
                         value={data.mailIntern}
-                        placeholder={false}
-                        required={false}
-                        withCopy={false}
-                        disabled
-                        className=""
                     />
                 </div>
             </div>
@@ -70,16 +58,17 @@ function InfoFormInternPae({firstNameIntern, mailIntern, nameCourse,nbCourse,sta
                     Formation :
                 </p>
                 <div className="flex w-full ml-4">
-                    <p className="text-secondary-text font-medium">{data.nameCourse} N°{data.nbCourse}</p>
-                    
+                    <p className="text-secondary-text font-medium">
+                        {data.nameCourse} N°{data.nbCourse}
+                    </p>
                 </div>
             </div>
             <h3 className="text-primary font-bold">Période en entreprise</h3>
             <div className="flex  self-center flex-row w-full  items-start gap-4 pl-2">
-                <p className=" mb-2 font-semibold mr-2">
-                    Dates : 
+                <p className=" mb-2 font-semibold mr-2">Dates :</p>
+                <p className="text-secondary-text font-semibold">
+                    Du {data.startDateInternship} au {data.endDateInternship}
                 </p>
-                <p className='text-secondary-text font-semibold'>Du {data.startDateInternship} au {data.endDateInternship}</p>
             </div>
         </Container>
     );

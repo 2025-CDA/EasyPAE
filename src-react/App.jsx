@@ -10,8 +10,9 @@ import HelpPage from "./pages/help/HelpPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import { ToastContainer } from "react-toastify";
 import InternDashboardPage from "./pages/intern/InternDashboardPage";
-import FicheStagiaire from './pages/intern/FicheStagiaire'
-import InternListPage from './components/intern_list/InternListPage'
+import FicheStagiaire from './pages/intern/FicheStagiaire';
+import InternListPage from "./components/intern_list/InternListPage";
+import FormInternPage from "./pages/intern/FormInternPage";
 
 export default function App() {
     const { token, userData, getUser, loadingUser } = useAuthContext();
@@ -39,26 +40,30 @@ export default function App() {
                     )}
                     {token && (
                         <Routes>
-                            {/* {["company", "intern"].some((role) =>
-                                [userData?.roles].includes(role)
-                            ) && ( */}
+                            {(userData?.roles.includes("intern") ||
+                                userData?.roles.includes("company")) && (
                                 <>
                                     <Route
-                                        path="/dashboardIntern/:infoFormId"
-                                        element={<InternDashboardPage/>}
-                                    ></Route>
+                                        path="/"
+                                        element={<InternDashboardPage />}
+                                    />
+                                    <Route
+                                        path="/:infoFormId"
+                                        element={<InternDashboardPage />}
+                                    />
                                     <Route
                                         path="/paeApplication"
-                                        element={App}
-                                    ></Route>
+                                        element={<FormInternPage />}
+                                    />
                                     <Route
                                         path="/informationSheet"
                                         element={App}
-                                    ></Route>
+                                    />
                                 </>
-                            {/* )} */}
-                            {["company", "intern"].some(
-                                (role) => ![userData?.roles].includes(role)
+                            )}
+
+                            {["organization"].some((role) =>
+                                [userData?.roles].includes(role)
                             ) && (
                                 <>
                                     <Route

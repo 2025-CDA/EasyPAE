@@ -168,6 +168,7 @@ readonly class OrganizationProvider implements ProviderInterface
             }
 
             $dto->infoFormStatus = $infoForm->getStatus();
+            $dto->infoFormId= $infoForm->getId();
 
             $dtoCollection[] = $dto;
         }
