@@ -10,6 +10,8 @@ import HelpPage from "./pages/help/HelpPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import { ToastContainer } from "react-toastify";
 import InternDashboardPage from "./pages/intern/InternDashboardPage";
+import FicheStagiaire from './pages/intern/FicheStagiaire'
+import InternListPage from './components/intern_list/InternListPage'
 
 export default function App() {
     const { token, userData, getUser, loadingUser } = useAuthContext();
@@ -77,8 +79,8 @@ export default function App() {
                                         element={App}
                                     ></Route>
                                     <Route
-                                        path="/interForm"
-                                        element={App}
+                                        path="/interForm/:id"
+                                        element={<FicheStagiaire />}
                                     ></Route>
                                     {[userData?.roles].includes(
                                         "SuperAdmin"

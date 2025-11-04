@@ -4,10 +4,10 @@ import TableBody from "./TableBody"
 
 function Table(
     {
-      columns, 
-      data, 
-      currentItems, 
-      handleEdit,  
+      columns,
+    //   data,
+      currentItems,
+      handleEdit,
       handleDelete,
       classNameTbody,
       classNameThead,
@@ -18,18 +18,18 @@ function Table(
       divAction,
     }
   ) {
-  
+
   return (
-    
+
     <div className="overflow-hidden">
       <table className={
-          classNameTable || 
+          classNameTable ||
           "min-w-full divide-y divide-gray-200"}
       >
-        <TableHead 
-          columnsThead={columns} 
-          classNameThead={classNameThead} 
-          classNameTdataHead={classNameTdataHead} 
+        <TableHead
+          columnsThead={columns}
+          classNameThead={classNameThead}
+          classNameTdataHead={classNameTdataHead}
 
         />
 
@@ -39,7 +39,7 @@ function Table(
           onEdit={handleEdit}
           onDelete={handleDelete}
           divAction={divAction}
-          
+
           classNameTbody={classNameTbody}
           classNameTdataBody={classNameTdataBody}
           classNameTdataAction={classNameTdataAction}
