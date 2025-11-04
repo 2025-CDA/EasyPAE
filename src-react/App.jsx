@@ -10,6 +10,7 @@ import HelpPage from "./pages/help/HelpPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import { ToastContainer } from "react-toastify";
 import InternDashboardPage from "./pages/intern/InternDashboardPage";
+import InternListPage from "./components/intern_list/InternListPage";
 
 export default function App() {
     const { token, userData, getUser, loadingUser } = useAuthContext();
@@ -40,20 +41,20 @@ export default function App() {
                             {/* {["company", "intern"].some((role) =>
                                 [userData?.roles].includes(role)
                             ) && ( */}
-                                <>
-                                    <Route
-                                        path="/dashboardIntern/:infoFormId"
-                                        element={<InternDashboardPage/>}
-                                    ></Route>
-                                    <Route
-                                        path="/paeApplication"
-                                        element={App}
-                                    ></Route>
-                                    <Route
-                                        path="/informationSheet"
-                                        element={App}
-                                    ></Route>
-                                </>
+                            <>
+                                <Route
+                                    path="/dashboardIntern/:infoFormId"
+                                    element={<InternDashboardPage />}
+                                ></Route>
+                                <Route
+                                    path="/paeApplication"
+                                    element={App}
+                                ></Route>
+                                <Route
+                                    path="/informationSheet"
+                                    element={App}
+                                ></Route>
+                            </>
                             {/* )} */}
                             {["company", "intern"].some(
                                 (role) => ![userData?.roles].includes(role)
