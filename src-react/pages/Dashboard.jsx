@@ -14,10 +14,11 @@ export default function Dashboard({
     selectDiv = true, // props pour gérer l'affichage du select dans le header
     calendarDiv = true, // props pour gérer l'affichage du calendrier dans la grille principale
 }) {
-    const [selected, setSelected] = useState(""); // État pour la formation sélectionnée dans le select
+    const [selectedCat, setSelectedCat] = useState(); // État pour la formation sélectionnée dans le select
     const [showForm, setShowForm] = useState(false); // État pour contrôler l'affichage du formulaire
     const [formations, setFormation] = useState([]); // État pour contrôler l'affichage du formulaire
     const [trainingNames, setTrainingNames] = useState([]); // État pour contrôler l'affichage du formulaire
+    const [formationsFiltered, setFormationsFiltered] = useState(formations); // État pour contrôler l'affichage du formulaire
     const [trainingForm, setTrainingForm] = useState({
         trainerId: "",
         trainingName: "",
@@ -31,11 +32,15 @@ export default function Dashboard({
     const { fetchData } = useAxios();
     const { userData } = useAuthContext();
 
+    // ------------------ Filtrer les formations en fonction de la sélection-------------------------
+
     useEffect(() => {
         const getData = async () => {
             const res = await fetchData("GET", "organization/sessions");
             setFormation(res.data.member);
+            setFormationsFiltered(res.data.member);
         };
+
         const getTrainingsNames = async () => {
             const res = await fetchData("GET", "organization/training-names");
             setTrainingNames(res.data.member);
@@ -44,17 +49,24 @@ export default function Dashboard({
         getData();
     }, []);
 
-    // ----------------------------- Options pour le composant Select-----------------------------
-
-    // ------------------ Filtrer les formations en fonction de la sélection-------------------------
-    const formationsFiltered = selected
-        ? formations.filter((f) => f.value === selected)
-        : formations; //
-
     // ---------------------Fonction pour basculer l'affichage du formulaire--------------------------
     const toggleForm = () => {
         setShowForm(!showForm);
     };
+
+    function handleSelectCat(e) {
+        console.log("🚀 ~ handleSelectCat ~ e:", e);
+
+        if (e != "Tout" || e == "") {
+            const filtered = formations.filter((f) => f.trainerId == e - 1);
+            console.log("🚀 ~ handleSelectCat ~ filtered:", filtered);
+            setFormationsFiltered(filtered);
+            setSelectedCat(e);
+        } else {
+            setSelectedCat("Tout");
+            setFormationsFiltered(formations);
+        }
+    }
 
     function updateTrainingForm(key, value) {
         setTrainingForm({ ...trainingForm, [key]: value });
@@ -109,8 +121,7 @@ export default function Dashboard({
                     <div>
                         <Select
                             options={trainingNames}
-                            value={selected}
-                            onChange={setSelected}
+                            onChange={(e) => handleSelectCat(e.target.value)}
                         />
                     </div>
                 )}
@@ -119,7 +130,8 @@ export default function Dashboard({
             {/* --------------------Grille principale: cartes à gauche, calendrier à droite --------------------*/}
             <div className="flex flex-col flex-1 w-full p-6">
                 <h3 className="text-2xl font-semibold mb-6">
-                    Informatique - Numérique
+                    {selectedCat !== "Tout" &&
+                        trainingNames[selectedCat - 1]?.name}
                 </h3>
 
                 <div className="flex flex-col lg:flex-row gap-6 w-full">
@@ -162,33 +174,17 @@ export default function Dashboard({
                                     ).toLocaleDateString("fr-FR")}
                                 />
                             ))}
-                            <div className="h-88">
-                                <CardFormation onClick={toggleForm}>
-                                    {showForm
-                                        ? "Masquer le formulaire"
-                                        : "Ajouter un stagiaire"}
-                                </CardFormation>
-                            </div>
+                            <CardFormation onClick={toggleForm}>
+                                {showForm
+                                    ? "Masquer le formulaire"
+                                    : "Ajouter un stagiaire"}
+                            </CardFormation>
                         </div>
                     </div>
 
                     {/* Calendrier (1/3 sur desktop) */}
 
                     <div className="w-full lg:w-1/3 flex flex-col gap-2">
-                        {calendarDiv && (
-                            <div
-                                className={
-                                    "border-1 border-gray-200 flex flex-col shadow-xl rounded-2xl overflow-hidden h-110 bg-white"
-                                }
-                            >
-                                <CalendarSimpleGet justToday={true} />
-                                <div className="border-t border-gray-200 py-3 flex items-center justify-center">
-                                    <Button>
-                                        Accéder aux calendriers des formations
-                                    </Button>
-                                </div>
-                            </div>
-                        )}
                         <div
                             className={`transition-all duration-300 ${
                                 showForm
@@ -300,6 +296,20 @@ export default function Dashboard({
                                 </form>
                             )}
                         </div>
+                        {calendarDiv && (
+                            <div
+                                className={
+                                    "border-1 border-gray-200 flex flex-col shadow-xl rounded-2xl overflow-hidden h-110 bg-white"
+                                }
+                            >
+                                <CalendarSimpleGet justToday={true} />
+                                <div className="border-t border-gray-200 py-3 flex items-center justify-center">
+                                    <Button>
+                                        Accéder aux calendriers des formations
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
