@@ -4,6 +4,7 @@ namespace App\State;
 
 use App\Dto\InternDTO;
 use App\Entity\InfoForm;
+use App\Enum\InfoFormInternStatus;
 use App\Enum\InfoFormStatus;
 use App\Entity\InfoFormIntern;
 use App\Entity\InfoFormCompany;
@@ -76,7 +77,7 @@ readonly class InternProcessor implements ProcessorInterface
         $infoForm->setOrganization($organization);
 
 // Setting the training session by checking the only active session of a user.
-        $filterActiveTraining = function($ts) {
+        $filterActiveTraining = function ($ts) {
             return $ts->hasEnded() === false;
         };
 
@@ -102,15 +103,10 @@ readonly class InternProcessor implements ProcessorInterface
         $this->entityManager->persist($infoForm);
 
         $infoFormIntern = new InfoFormIntern();
-        if ($data->infoFormInternDateStart !== null) {
-            $infoFormIntern->setDateStart($data->infoFormInternDateStart);
-        }
-        if ($data->infoFormInternDateEnd !== null) {
-            $infoFormIntern->setDateEnd($data->infoFormInternDateEnd);
-        }
-        if ($data->infoFormInternStatus !== null) {
-            $infoFormIntern->setStatus($data->infoFormInternStatus);
-        }
+
+        $infoFormIntern->setDateStart($data->internshipStart);
+        $infoFormIntern->setDateEnd($data->internshipEnd);
+        $infoFormIntern->setStatus(InfoFormInternStatus::INITIALIZED);
 
         $this->entityManager->persist($infoFormIntern);
         $infoForm->setInfoFormIntern($infoFormIntern);
