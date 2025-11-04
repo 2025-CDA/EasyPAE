@@ -24,7 +24,7 @@ export default function TimeLine({
     ],
 }) {
     return (
-        <div class>
+        <div >
             {content.map((item, i) => (
                 <TimeLineItem key={i} content={item} />
             ))}
