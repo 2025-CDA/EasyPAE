@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MainLayout from "../../components/layout/MainLayout";
 import AProposPAEeasy from "../../components/profile/AProposPAEeasy";
 import Container from "../../components/ui/Container";
@@ -10,8 +10,18 @@ import Preferences from "../../components/profile/Preferences";
 import Avatar from "../../components/ui/Avatar";
 import Button from "../../components/ui/Button";
 import { User, Lock, Heart } from "lucide-react";
+import useAxios from "../../hooks/useAxios";
+import { useAuthContext } from "../../store/auth_context/authContext";
+
+
 
 function ProfilePage() {
+    const { token, userData, getUser, loadingUser } = useAuthContext();
+    const { fetchData } = useAxios();
+
+    const [userInfo, setUserInfo] = useState(userData || {});
+    const userId = userData.id;
+
     // 0 = Informations personnelles, 1 = Préférences, 2 = Plus d'informations
     const [activeBox, setActiveBox] = useState(0);
 
@@ -25,11 +35,7 @@ function ProfilePage() {
         "Mon compte / Plus d'informations",
     ];
 
-    const [stagiaire] = useState({
-        FirstName: "AXEL",
-        email: "axel@gmail.com",
-    });
-
+      
     return (
         <MainLayout withSearchbar={false} withHeader={false}>
             <div className="hidden md:flex min-h-screen">
@@ -74,8 +80,9 @@ function ProfilePage() {
                                 <p className="text-secondary-text">
                                     Personnalisez votre interface
                                 </p>
+                                
                             </Container>
-                            <Container
+                            <Container 
                                 className={`flex flex-col bg-[#f1eeee] cursor-pointer ${
                                     activeBox === 2
                                         ? "border-2 border-blue-600"
@@ -94,8 +101,8 @@ function ProfilePage() {
                         <div className="mr-5 flex-1 min-w-0">
                             {activeBox === 0 && (
                                 <div className="h-full w-full">
-                                    <ModifPictureProfile />
-                                    <EditerProfile />
+                                    <ModifPictureProfile  />
+                                    <EditerProfile data={userInfo}/>
                                     <UpdateMdp />
                                 </div>
                             )}
@@ -123,10 +130,10 @@ function ProfilePage() {
                             </h4>
                             <Avatar size={"md"} />
                             <p className="font-semibold text-sm">
-                                {stagiaire.FirstName}
+                                {userInfo.FirstName}
                             </p>
                             <p className="text-secondary-text text-xs font-semibold">
-                                {stagiaire.email}
+                                {userInfo.email}
                             </p>
                         </div>
                         <div className="flex flex-col items-start">

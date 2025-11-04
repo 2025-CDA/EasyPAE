@@ -6,6 +6,7 @@ import Avatar from "../ui/Avatar";
 import SearchBar from "../ui/SearchBar";
 import { useAuthContext } from "../../store/auth_context/authContext";
 import { rolesTranslation } from "../../helpers/roles";
+import { getAvatarUrl } from "../../helpers/avatarHelper";
 
 function MainLayout({
     withMainHeader = true,
@@ -16,6 +17,9 @@ function MainLayout({
     withHeader = true,
 }) {
     const { userData } = useAuthContext();
+    
+    // Construire l'URL complète de l'avatar
+    const avatarUrl = getAvatarUrl(userData?.avatar);
 
     return (
         <div className="flex flex-col md:flex-row flex-grow min-h-screen w-screen">
@@ -23,7 +27,7 @@ function MainLayout({
                 avatarColor={avatarColor}
                 userName={userData?.firstName + " " + userData?.lastName}
                 role={rolesTranslation[userData?.roles[0]]}
-                avatarUrl={userData?.avatar}
+                avatarUrl={avatarUrl}
             ></DesktopSidebar>
             <div className="flex flex-col justify-center items-center w-full">
                 {withMainHeader && (
@@ -32,7 +36,7 @@ function MainLayout({
                             className={"md:hidden"}
                             size="sm"
                             color={"#eddf16"}
-                            url={userData?.avatar}
+                            url={avatarUrl}
                         />
 
                         <div className="w-full">
@@ -60,7 +64,7 @@ function MainLayout({
                                 className={"md:hidden"}
                                 size="sm"
                                 color={"#eddf16"}
-                                url={userData?.avatar}
+                                url={avatarUrl}
                             />
                             <div className="w-full">
                                 <h4 className="font-medium">
