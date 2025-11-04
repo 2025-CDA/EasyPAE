@@ -112,42 +112,22 @@ readonly class InternProcessor implements ProcessorInterface
         $infoForm->setInfoFormIntern($infoFormIntern);
 
         $infoFormOrganization = new InfoFormOrganization();
-        // if ($data->infoFormOrganizationStatus !== null) {
-        //     $infoFormOrganization->setStatus($data->infoFormOrganizationStatus);
-        // }
-        $infoFormOrganization->setStatus(InfoFormOrganizationStatus::INITIALIZED);
+
+//        WHY ? it should be initialized when the company validates its part no?
+//        $infoFormOrganization->setStatus(InfoFormOrganizationStatus::INITIALIZED);
 
         $this->entityManager->persist($infoFormOrganization);
         $infoForm->setInfoFormOrganization($infoFormOrganization);
 
+        $infoFormInternCompany = new InfoFormInternCompany();
 
-        if ($data->infoFormInternCompanyName !== null) {
-            $infoFormInternCompany = new InfoFormInternCompany();
-            $infoFormInternCompany->setCompanyName($data->infoFormInternCompanyName);
+        $infoFormIntern->setInfoFormInternCompany($infoFormInternCompany);
 
-            if ($data->infoFormInternCompanyAddress !== null) {
-                $infoFormInternCompany->setAddress($data->infoFormInternCompanyAddress);
-            }
+        $this->entityManager->persist($infoFormInternCompany);
 
-            if ($data->infoFormInternCompanyLegalRepresentativeFirstName !== null) {
-                $infoFormInternCompany->setLegalRepresentativeFirstName($data->infoFormInternCompanyLegalRepresentativeFirstName);
-            }
-
-            if ($data->infoFormInternCompanyLegalRepresentativeLastName !== null) {
-                $infoFormInternCompany->setLegalRepresentativeLastName($data->infoFormInternCompanyLegalRepresentativeLastName);
-            }
-
-            if ($data->infoFormInternCompanyLegalRepresentativeEmail !== null) {
-                $infoFormInternCompany->setEmail($data->infoFormInternCompanyLegalRepresentativeEmail);
-            }
-
-            $this->entityManager->persist($infoFormInternCompany);
-            $infoFormIntern->setInfoFormInternCompany($infoFormInternCompany);
-        }
-
-        // if ($data->infoFormCompanyStatus !== null) {
         $infoFormCompany = new InfoFormCompany();
-        $infoFormCompany->setStatus($data->infoFormCompanyStatus);
+//        WHY ? it should be initialized when the intern validates its part no?
+//        $infoFormCompany->setStatus(InfoFormCompanyStatus::INITIALIZED);
         $infoForm->setInfoFormCompany($infoFormCompany);
         $this->entityManager->persist($infoFormCompany);
         // }
