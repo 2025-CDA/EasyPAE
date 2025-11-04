@@ -2,25 +2,27 @@
 
 namespace App\State;
 
-use App\Dto\OrganizationDTO;
-use App\Entity\InternMember;
-use App\Entity\Training;
-use App\Entity\TrainingSession;
-use ApiPlatform\Metadata\Operation;
 use App\Entity\User;
 use App\Enum\UserRole;
-use App\Repository\InternMemberRepository;
-use App\Repository\OrganizationMemberRepository;
-use App\Repository\TrainingRepository;
+use App\Entity\Training;
+use Random\RandomException;
+use App\Dto\OrganizationDTO;
+use App\Entity\InternMember;
+use App\Entity\TrainingSession;
 use App\Repository\UserRepository;
+use ApiPlatform\Metadata\Operation;
+use App\Service\NotificationService;
+use App\Repository\TrainingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
+use App\Repository\CompanyMemberRepository;
+use App\Repository\InternMemberRepository;
 use App\Repository\TrainingSessionRepository;
-use Random\RandomException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use App\Repository\OrganizationMemberRepository;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 readonly class OrganizationProcessor implements ProcessorInterface
@@ -35,6 +37,8 @@ readonly class OrganizationProcessor implements ProcessorInterface
         private UserPasswordHasherInterface  $passwordHasher,
         private string $frontendUrl,
         private \App\Service\EmailService $emailService,
+        private NotificationService $notificationService,
+        private CompanyMemberRepository $companyMemberRepository
     )
     {
     }
@@ -273,10 +277,15 @@ readonly class OrganizationProcessor implements ProcessorInterface
 
         $this->entityManager->flush();
 
+
         // Envoyer emails au stagiaire et à l'entreprise via EmailService
+        // envoyer notifications (stockées en base) au stagiaire si présent
         $intern = $infoForm->getInternMember()?->getUser();
         $infoFormIntern = $infoForm->getInfoFormIntern();
         $companyMembers = $infoForm->getCompanyMembers();
+                if ($intern) {
+            $this->notificationService->sendInfoFormValidatedInternNotification($intern, $infoForm, $infoFormIntern);
+        }
 
         // Email au stagiaire
         if ($intern && $infoFormIntern) {
