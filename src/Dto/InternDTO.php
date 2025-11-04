@@ -95,6 +95,7 @@ class InternDTO
         'read:intern_userId_infoForms',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
+        'create:intern_infoForm_add',
     ])]
     public ?int $infoFormId = null;
 
