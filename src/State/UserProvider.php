@@ -51,6 +51,7 @@ readonly class UserProvider implements ProviderInterface
         $dto->firstName = $user->getFirstName();
         $dto->lastName = $user->getLastName();
         $dto->avatar = $user->getAvatar();
+        $dto->email = $user->getEmail();
 
 
 
