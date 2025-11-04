@@ -9,6 +9,8 @@ const Notification = ({
     onClose,
 }) => {
     const [show, setShow] = useState(showProp);
+    const [read, setRead] = useState(false);
+
 
     if (!show) return null;
 
@@ -39,6 +41,12 @@ const Notification = ({
         uploadSuccess:
             "bg-primary text-white  border border-gray-200 rounded-lg shadow-lg p-4  text-gray-500 ",
     };
+
+    const handleClick = () => {
+        if (!read) {
+            setRead(true);
+        }
+    };
     // ----------------------- return ---------------------------
     return (
         <div
@@ -46,12 +54,13 @@ const Notification = ({
             role="notification"
             tabIndex={0}
             aria-labelledby="notification-title"
+            onClick={handleClick}
         >
             <div className="flex mr-7">
                 <div className="shrink-0 flex">{icons[type] || null}</div>
                 <div className="ms-3 pt-1">
                     <h5 id="alert-title" className="font-semibold">
-                        {title}
+                        {title}{read && <span className="text-xs text-red-500"> (lu)</span>}
                     </h5>
                     <ul className="">
                         <li>
