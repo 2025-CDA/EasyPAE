@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 import MainLayout from "../../components/layout/MainLayout";
 import Breadcrumb from "../../components/ui/Breadcrumb";
 import Stepper from "../../components/ui/stepper/Stepper";
@@ -6,36 +6,44 @@ import InfoFormInternPae from "../../components/intern/InfoFormInternPae";
 import InfoFormCompanyPae from "../../components/intern/InfoFormCompanyPae";
 import Container from "../../components/ui/Container";
 import FicheRenseignStagaire from "../assistant/FicheRenseignStagiaire";
+import { useAuthContext } from "../../store/auth_context/authContext";
 
 function FormInternPage() {
+    const { userData } = useAuthContext();
 
-const [internInfo, setInternInfo] = useState({
-    firstNameIntern: "Amine",
-    lastNameIntern: "Amine",
-    mailIntern: "test@test.com",
-    nameCourse: "CDUI",
-    nbCourse: "24758",
-    startDateInternship: "10 Novembre",
-    endDateInternship: "24 Décembre 2025",
-  });
+    const [internInfo, setInternInfo] = useState({
+        firstNameIntern: "",
+        lastNameIntern: "",
+        mailIntern: "",
+        nameCourse: "",
+        nbCourse: "",
+        startDateInternship: "",
+        endDateInternship: "",
+    });
 
-   const [companyInfo, setCompanyInfo] = useState({
-    companyName: "",
-    companyAddress: "",
-    companyMail: "",
-    tutorName: "",
-  });
+    const [companyInfo, setCompanyInfo] = useState({
+        companyName: "",
+        companyAddress: "",
+        companyMail: "",
+        tutorName: "",
+    });
 
-  const handleValidateEvent = () => {
+    const handleInternStateChange = (e) => {
+        console.log(e);
+        const { id, value } = e.target;
+        setInternInfo((prev) => ({ ...prev, [id]: value }));
+    };
+
+    const handleValidateEvent = () => {
         // Ici, tu peux envoyer les données à une API, valider, ou naviguer
         console.log("Données soumises :", { internInfo, companyInfo });
-        
+
         // Exemple : Validation simple (ajoute ta logique réelle)
         if (!companyInfo.companyName || !companyInfo.companyAddress) {
             alert("Veuillez remplir tous les champs obligatoires.");
             return;
         }
-        
+
         // Soumission réussie : par exemple, naviguer ou afficher un message
         // Ou : navigate("/confirmation"); si tu utilises React Router
     };
@@ -71,8 +79,7 @@ const [internInfo, setInternInfo] = useState({
                                 <Container>
                                     <InfoFormInternPae
                                         data={internInfo}
-                                        onChange={setInternInfo}
-
+                                        onChange={handleInternStateChange}
                                     />{" "}
                                 </Container>
                             ),
@@ -82,23 +89,27 @@ const [internInfo, setInternInfo] = useState({
                             stepContent: (
                                 <Container>
                                     <InfoFormCompanyPae
-                                    data={companyInfo}
-                                    onChange={setCompanyInfo}
+                                        data={companyInfo}
+                                        onChange={setCompanyInfo}
                                     />{" "}
                                 </Container>
                             ),
                         },
                         {
                             title: "Valider",
-                            stepContent: (<Container >
-                                    <FicheRenseignStagaire withCopy={true} data={{ ...internInfo, ...companyInfo }} />
-                                </Container>)
+                            stepContent: (
+                                <Container>
+                                    <FicheRenseignStagaire
+                                        withCopy={true}
+                                        data={{ ...internInfo, ...companyInfo }}
+                                    />
+                                </Container>
+                            ),
                         },
                     ]}
                     isHorizontal={true}
                     handleValidateEvent={handleValidateEvent}
-                    lastEventButtonTitle = {false}
-
+                    lastEventButtonTitle={false}
                 />
             </div>
         </MainLayout>

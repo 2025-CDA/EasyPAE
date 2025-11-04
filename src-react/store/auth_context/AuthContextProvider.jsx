@@ -55,6 +55,7 @@ export default function AuthContextProvider({ children }) {
             };
             setToken(token);
             setUserData(updatedData);
+            console.log("🚀 ~ getUser ~ updatedData:", updatedData);
             setLoadingUser(false);
         } else {
             setLoadingUser(false);
