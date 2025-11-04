@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { TriangleAlert, CircleCheck, X, Info } from "lucide-react";
 
 const Alerts = ({
@@ -7,6 +7,9 @@ const Alerts = ({
     type, // "error", "success", "warning", "info"
     show = true,
 }) => {
+
+    const [read, setRead] = useState(false);
+
     if (!show) return null;
     // ------------------------- declarer les const pour les icon de chaque alert -----------------------------
     const icons = {
@@ -31,6 +34,12 @@ const Alerts = ({
             "bg-yellow-100 border border-yellow-200 rounded-lg p-4 text-yellow-800 ",
         info: "bg-gray-50  border border-gray-200 rounded-lg shadow-lg p-4  text-gray-500 ",
     };
+
+    const handleClick = () => {
+        if (!read) {
+            setRead(true);
+        }
+    };
     // ----------------------- return ---------------------------
     return (
         <div
@@ -38,6 +47,7 @@ const Alerts = ({
             role="alert"
             tabIndex={0}
             aria-labelledby="alert-title"
+            onClick={handleClick}
         >
             <div className="flex">
                 <div className="shrink-0 items-center justify-center">
@@ -45,7 +55,7 @@ const Alerts = ({
                 </div>
                 <div className="ms-3">
                     <h5 id="alert-title" className="font-semibold">
-                        {title}
+                        {title}{read && <span className="text-xs text-red-500"> (lu)</span>}
                     </h5>
                     <span>{message}</span>
                 </div>

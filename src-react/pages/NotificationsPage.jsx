@@ -15,14 +15,13 @@ function NotificationsPage() {
     const { fetchData } = useAxios();
     
 
-    const idtest = userData['@id'].split('/')[3];
 
 //---------------------------------- Fetch Notifications ---------------------------------------------    
     useEffect(() => {
         const fetchDataNotif = async ()  => {
           try {
             // Fetch notifications from API
-            const response = await fetchData('GET','notifications/user/'+idtest);
+            const response = await fetchData('GET',`notifications/user/${userData.id}`);
             setNotifications(response.data.notifications);
             console.log("🚀 ~ fetchDataNotif ~ response:", response.data.notifications)
 
@@ -68,7 +67,7 @@ function NotificationsPage() {
                         key={i}
                         message={not.message}
                         title={not.title}
-                        type={"action"}
+                        type={"uploadSuccess"}
                         show={true}
                         onClose={() => console.log("test")}
                     ></Notification>
