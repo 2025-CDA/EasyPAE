@@ -17,7 +17,7 @@ function MainLayout({
     withHeader = true,
 }) {
     const { userData } = useAuthContext();
-    
+
     // Construire l'URL complète de l'avatar
     const avatarUrl = getAvatarUrl(userData?.avatar);
 
