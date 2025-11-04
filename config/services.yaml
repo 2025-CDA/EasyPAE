@@ -21,11 +21,11 @@ services:
             - "../src/Kernel.php"
             - "../src/EventListener/UserPasswordHasherListener.php"
             - "../src/EventListener/UserRegistrationMailListener.php"
-    #            - '../src/State/UserStateProcessor.php'
+            - '../src/State/UserStateProcessor.php'
 
-    App\State\UserStateProcessor:
-        arguments:
-            $persistProcessor: "@api_platform.doctrine.orm.state.persist_processor"
+#    App\State\UserStateProcessor:
+#        arguments:
+#            $persistProcessor: "@api_platform.doctrine.orm.state.persist_processor"
 
     App\State\UserProcessor:
         arguments:
