@@ -1,0 +1,21 @@
+CalendarSimpleGET
+
+    const infoFormId = ........
+    const [currentFormation, setCurrentFormation] = useState({});
+
+    ****** Dans useEffect ajouter fonction :
+    const getDates = async () => {
+            const res = await fetchData('GET', `resume-card/${infoFormId}/intern`);
+            const dates = {
+                periodStart: new Date(res.data.internshipStartDate),
+                periodEnd: new Date(res.data.internshipEndDate),
+            };
+            setCurrentFormation(dates);
+            console.log('dates envoyées au calendrier : ', dates);
+        };
+    getDates();
+
+    <CalendarSimpleGet dates={currentFormation} />
+
+
+
