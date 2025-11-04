@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MainLayout from "../../components/layout/MainLayout";
 import AProposPAEeasy from "../../components/profile/AProposPAEeasy";
 import Container from "../../components/ui/Container";
@@ -10,6 +10,7 @@ import Preferences from "../../components/profile/Preferences";
 import Avatar from "../../components/ui/Avatar";
 import Button from "../../components/ui/Button";
 import { User, Lock, Heart } from "lucide-react";
+import { useAuthContext } from "../../store/auth_context/authContext";
 
 function ProfilePage() {
     // 0 = Informations personnelles, 1 = Préférences, 2 = Plus d'informations
@@ -25,10 +26,7 @@ function ProfilePage() {
         "Mon compte / Plus d'informations",
     ];
 
-    const [stagiaire] = useState({
-        FirstName: "AXEL",
-        email: "axel@gmail.com",
-    });
+    const { userData } = useAuthContext();
 
     return (
         <MainLayout withSearchbar={false} withHeader={false}>
@@ -123,10 +121,10 @@ function ProfilePage() {
                             </h4>
                             <Avatar size={"md"} />
                             <p className="font-semibold text-sm">
-                                {stagiaire.FirstName}
+                                {userData?.firstName}
                             </p>
                             <p className="text-secondary-text text-xs font-semibold">
-                                {stagiaire.email}
+                                {userData?.email}
                             </p>
                         </div>
                         <div className="flex flex-col items-start">

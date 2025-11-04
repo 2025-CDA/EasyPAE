@@ -1,24 +1,93 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Container from '../ui/Container'
+import { useAuthContext } from '../../store/auth_context/authContext';
+import useAxios from '../../hooks/useAxios';
 
 function EditerProfile() {
-    const [form, setForm] = useState({
-        nom: 'Martin',
-        prenom: 'Jean',
-        email: 'jeanmartin@gmail.com',
-        telephone: '0770707070',
-        lieu: '31 rue du poulet 33600 Pessac',
-        naissance: '1995-01-20',
+    const { userData } = useAuthContext();
+    const { fetchData } = useAxios();
+
+    // Récupère l'id utilisateur depuis le contexte
+    const userId = userData?.id;
+
+    // State local pour l'édition du profil
+    const [userInfo, setUserInfo] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        address: "",
+        birthday: "",
     });
 
+    useEffect(() => {
+        const getData = async () => {
+            if (!userId) return;
+            const res = await fetchData("GET", `account/${userId}/info`);
+            if (res && res.data) {
+                setUserInfo({
+                    firstName: res.data.firstName ?? "",
+                    lastName: res.data.lastName ?? "",
+                    email: res.data.email ?? "",
+                    phone: res.data.phone ?? "",
+                    address: res.data.address ?? "",
+                    birthday: res.data.birthday ?? "",
+                });
+            }
+        };
+        getData();
+        // eslint-disable-next-line
+    }, [userId]);
+
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        let key = "";
+        switch (name) {
+            case "prenom":
+                key = "firstName";
+                break;
+            case "nom":
+                key = "lastName";
+                break;
+            case "email":
+                key = "email";
+                break;
+            case "telephone":
+                key = "phone";
+                break;
+            case "lieu":
+                key = "address";
+                break;
+            case "naissance":
+                key = "birthday";
+                break;
+            default:
+                key = name;
+        }
+        setUserInfo({ ...userInfo, [key]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // TODO: Envoyer les données au backend ou les traiter ici
-        alert('Informations enregistrées !');
+        if (!userId) return;
+        // Envoie les données modifiées à l'API
+        const res = await fetchData(
+            "PATCH",
+            `account/${userId}/info`,
+            {
+                firstName: userInfo.firstName,
+                lastName: userInfo.lastName,
+                email: userInfo.email,
+                phone: userInfo.phone,
+                address: userInfo.address,
+                birthday: userInfo.birthday,
+            }
+        );
+        if (res && res.status && res.status < 400) {
+            alert('Informations enregistrées !');
+        } else {
+            alert('Erreur lors de la sauvegarde des informations.');
+        }
     };
 
     return (
@@ -32,7 +101,7 @@ function EditerProfile() {
                             type="text"
                             id="prenom"
                             name="prenom"
-                            value={form.prenom}
+                            value={userInfo.firstName}
                             onChange={handleChange}
                             className="w-full border border-gray-300 rounded px-3 py-2"
                             required
@@ -44,7 +113,7 @@ function EditerProfile() {
                             type="text"
                             id="nom"
                             name="nom"
-                            value={form.nom}
+                            value={userInfo.lastName}
                             onChange={handleChange}
                             className="w-full border border-gray-300 rounded px-3 py-2"
                             required
@@ -57,7 +126,7 @@ function EditerProfile() {
                         type="email"
                         id="email"
                         name="email"
-                        value={form.email}
+                        value={userInfo.email}
                         onChange={handleChange}
                         className="w-full border border-gray-300 rounded px-3 py-2"
                         required
@@ -69,7 +138,7 @@ function EditerProfile() {
                         type="tel"
                         id="telephone"
                         name="telephone"
-                        value={form.telephone}
+                        value={userInfo.phone}
                         onChange={handleChange}
                         className="w-full border border-gray-300 rounded px-3 py-2"
                         required
@@ -81,7 +150,7 @@ function EditerProfile() {
                         type="text"
                         id="lieu"
                         name="lieu"
-                        value={form.lieu}
+                        value={userInfo.address}
                         onChange={handleChange}
                         className="w-full border border-gray-300 rounded px-3 py-2"
                         required
@@ -93,7 +162,13 @@ function EditerProfile() {
                         type="date"
                         id="naissance"
                         name="naissance"
-                        value={form.naissance}
+                        value={
+                            userInfo.birthday
+                                ? userInfo.birthday.length === 10
+                                    ? userInfo.birthday
+                                    : userInfo.birthday.slice(0, 10)
+                                : ""
+                        }
                         onChange={handleChange}
                         className="w-full border border-gray-300 rounded px-3 py-2"
                         required

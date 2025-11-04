@@ -8,6 +8,7 @@ import MainLayout from "../components/layout/MainLayout";
 import useAxios from "../hooks/useAxios";
 import { useEffect } from "react";
 import { useAuthContext } from "../store/auth_context/authContext";
+import { rolesTranslation } from "../helpers/roles";
 
 function Dashboard({
     selectDiv = true, // props pour gérer l'affichage du select dans le header
@@ -27,13 +28,34 @@ function Dashboard({
     const { fetchData } = useAxios();
     const { userData } = useAuthContext();
 
+    // Utilise la traduction du rôle si disponible
+    const rawRole =
+        Array.isArray(userData?.roles) && userData.roles.length > 0
+            ? userData.roles[0]
+            : userData?.role || "Stagiaire";
+    const role = rolesTranslation[rawRole] || rawRole;
+
     useEffect(() => {
         const getData = async () => {
-            const res = await fetchData("GET", "organization/sessions");
-            setFormation(res.data.member);
+            try {
+                const res = await fetchData("GET", "organization/sessions");
+                // Vérifie que la réponse est bien structurée
+                if (res && res.data && Array.isArray(res.data.member)) {
+                    setFormation(res.data.member);
+                } else {
+                    setFormation([]); // fallback vide
+                }
+            } catch (err) {
+                setFormation([]); // fallback vide en cas d'erreur
+                // Optionnel : affiche une erreur ou log
+                // console.error("Erreur lors du fetch des formations", err);
+            }
         };
-        getData();
-    }, []);
+        // N'appelle getData que si fetchData est bien une fonction
+        if (typeof fetchData === "function") {
+            getData();
+        }
+    }, [fetchData]);
 
     // ----------------------------- Options pour le composant Select-----------------------------
     const options = [
@@ -66,8 +88,9 @@ function Dashboard({
         });
     }
 
+
     return (
-        <MainLayout avatarColor="#c1459e">
+        <MainLayout avatarColor="#c1459e" role={role}>
             {/* -------------------------------------------------Header--------------------------------------- */}
             <div className="w-full flex flex-row justify-between items-center px-6">
                 <h3 className="text-2xl font-bold">Dashboard</h3>
