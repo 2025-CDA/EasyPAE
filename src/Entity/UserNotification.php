@@ -16,9 +16,6 @@ class UserNotification
     #[ORM\ManyToOne]
     private ?User $user = null;
 
-    #[ORM\ManyToOne]
-    private ?Notification $notification = null;
-
     #[ORM\Column(nullable: true)]
     private ?bool $isRead = null;
 
@@ -44,18 +41,6 @@ class UserNotification
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    public function getNotification(): ?Notification
-    {
-        return $this->notification;
-    }
-
-    public function setNotification(?Notification $notification): static
-    {
-        $this->notification = $notification;
 
         return $this;
     }
