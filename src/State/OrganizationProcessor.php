@@ -128,7 +128,7 @@ readonly class OrganizationProcessor implements ProcessorInterface
         $user->setFirstName($data->internFirstName);
         $user->setLastName($data->internLastName);
         $user->setLogin($data->internLogin);
-        // Ne pas définir de mot de passe pour le moment (sera défini lors de l'activation)
+        $user->setPassword('');
         $user->setRole(UserRole::INTERN);
 
         $this->entityManager->persist($user);
