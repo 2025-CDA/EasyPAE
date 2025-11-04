@@ -290,7 +290,7 @@ INSERT INTO `company_member_info_form` (`company_member_id`, `info_form_id`) VAL
 (12, 118);
 
 
-INSERT INTO `user_notification` (`id`, `user_id`, `is_read`, `is_signed`, `updated_at`, `created_at`, `title`, `content`,) VALUES
+INSERT INTO `user_notification` (`id`, `user_id`, `is_read`, `is_signed`, `updated_at`, `created_at`, `title`, `content`) VALUES
 (1,	1,	0,	0,	'2025-10-22 08:00:00',	'2025-10-22 08:00:00', 'Titre 1', 'Content 1'),
 (2,	1,	1,	1,	'2025-10-22 10:15:00',	'2025-10-22 10:15:00', 'Titre 2', 'Content 2'),
 (3,	1,	1,	1,	'2025-10-20 17:00:00',	'2025-10-20 17:00:00', 'Titre 3', 'Content 3'),
