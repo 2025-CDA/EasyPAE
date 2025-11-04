@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import CircleProgress from "./CircleProgress";
 import Button from "./Button";
 import useAxios from "../../hooks/useAxios";
+import { useNavigate } from "react-router";
 
 function CardFormation({
     trainingTitle,
@@ -16,6 +17,7 @@ function CardFormation({
 }) {
     const [progress, setProgress] = useState("0%");
     const { data, error, loading, fetchData } = useAxios();
+    const navigate = useNavigate();
 
     useEffect(() => {
         getProgress(id);
@@ -108,7 +110,12 @@ function CardFormation({
                         <CircleProgress statusPae={progress} />
                     </div>
                     <div className="w-24">
-                        <Button color="blue" variant="solid" className="h-12">
+                        <Button
+                            onClick={() => navigate(`/listInterns/${id}`)}
+                            color="blue"
+                            variant="solid"
+                            className="h-12"
+                        >
                             Consulter
                         </Button>
                     </div>

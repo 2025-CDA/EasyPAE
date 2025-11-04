@@ -9,6 +9,7 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import HelpPage from "./pages/help/HelpPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import { ToastContainer } from "react-toastify";
+import InternListPage from "./components/intern_list/InternListPage";
 
 export default function App() {
     const { token, userData, getUser, loadingUser } = useAuthContext();
@@ -64,8 +65,8 @@ export default function App() {
                                         element={<Dashboard />}
                                     ></Route>
                                     <Route
-                                        path="/listInterns"
-                                        element={App}
+                                        path="/listInterns/:id"
+                                        element={<InternListPage />}
                                     ></Route>
                                     <Route
                                         path="/formIntern"
