@@ -115,7 +115,7 @@ function AppTable({
 
     // const handleEdit = (id) => console.log(`Modifier l'élément ID : ${id}`)
     // const handleDelete = (id) => console.log(`Supprimer l'élément ID : ${id}`)
-
+    
     //Vous pouvez changer ici la logique qui sera appliquée dans vos bouttons d'action
     const editDisplay = (id) => console.log(`Modifier l'élément ID : ${id}`);
     const handleDelete = (id) => console.log(`Supprimer l'élément ID : ${id}`);
@@ -185,9 +185,9 @@ function AppTable({
 
                         {/* Table */}
                         <Table
-                            data={data} //Récupère et passe les data du tableau data à l'enfant
+                            // data={data} //Récupère et passe les data du tableau data à l'enfant
                             columns={columns} //les data du tableau des colonnes à l'enfant
-                            currentItems={currentItems} //items de la page actuelle du tableau data
+                            currentItems={currentItems} // <---- En vrai le data est là //items de la page actuelle du tableau data
                             handleEdit={handleEdit} //arrow function à exécuter au click du boutton modifier
                             handleDelete={handleDelete} //arrow function à exécuter au click du boutton supprimer
                             divAction={divAction}

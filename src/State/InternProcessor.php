@@ -5,6 +5,7 @@ namespace App\State;
 use JsonException;
 use App\Dto\InternDTO;
 use App\Entity\InfoForm;
+use App\Enum\InfoFormInternStatus;
 use App\Enum\InfoFormStatus;
 use App\Entity\InfoFormIntern;
 use App\Entity\InfoFormCompany;
@@ -17,6 +18,9 @@ use App\Entity\InfoFormInternCompany;
 use App\Repository\CompanyRepository;
 use App\Repository\InfoFormRepository;
 use App\Enum\InfoFormOrganizationStatus;
+use App\Repository\OrganizationRepository;
+use App\Repository\UserRepository;
+use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
 use App\Repository\InternMemberRepository;
@@ -42,7 +46,11 @@ readonly class InternProcessor implements ProcessorInterface
         private \App\Service\EmailService $emailService,
         private CompanyMemberRepository $companyMember,
         private NotificationService $notificationService,
-    ) {}
+        private EmailService             $emailService,
+        private OrganizationRepository   $organizationRepository,
+    )
+    {
+    }
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): InternDTO|null
     {
@@ -70,64 +78,63 @@ readonly class InternProcessor implements ProcessorInterface
 
         $infoForm = new InfoForm();
         $infoForm->setInternMember($internMember);
-        // $infoForm->setOrganization($organization);
-        // $infoForm->setTrainingSession($trainingSession);
+
+//        We should remove the hardcoded organization id if this app is going to be used for many organization (Training Center)
+        $organization = $this->organizationRepository->find(1);
+        $infoForm->setOrganization($organization);
+
+// Setting the training session by checking the only active session of a user.
+        $filterActiveTraining = function ($ts) {
+            return $ts->hasEnded() === false;
+        };
+
+        $trainingSession = $internMember->getTrainingSessions()->filter($filterActiveTraining)->first();
+
+        if (!$trainingSession) {
+            throw new NotFoundHttpException('Active training session not found for this user');
+        }
+
+        $infoForm->setTrainingSession($trainingSession);
+
         $infoForm->setStatus(InfoFormStatus::INITIALIZED);
+
+        $data->internFirstName = $internMember->getUser()?->getFirstName();
+        $data->internLastName = $internMember->getUser()?->getLastName();
+        $data->internEmail = $internMember->getUser()?->getEmail();
+        $data->trainingName = $trainingSession->getTraining()?->getName();
+        $data->offerNumber = $trainingSession->getOfferNumber();
+        $data->internshipStart = $trainingSession->getInternShipPeriodStart();
+        $data->internshipEnd = $trainingSession->getInternShipPeriodEnd();
 
 
         $this->entityManager->persist($infoForm);
 
         $infoFormIntern = new InfoFormIntern();
-        if ($data->infoFormInternDateStart !== null) {
-            $infoFormIntern->setDateStart($data->infoFormInternDateStart);
-        }
-        if ($data->infoFormInternDateEnd !== null) {
-            $infoFormIntern->setDateEnd($data->infoFormInternDateEnd);
-        }
-        if ($data->infoFormInternStatus !== null) {
-            $infoFormIntern->setStatus($data->infoFormInternStatus);
-        }
+
+        $infoFormIntern->setDateStart($data->internshipStart);
+        $infoFormIntern->setDateEnd($data->internshipEnd);
+        $infoFormIntern->setStatus(InfoFormInternStatus::INITIALIZED);
 
         $this->entityManager->persist($infoFormIntern);
         $infoForm->setInfoFormIntern($infoFormIntern);
 
         $infoFormOrganization = new InfoFormOrganization();
-        // if ($data->infoFormOrganizationStatus !== null) {
-        //     $infoFormOrganization->setStatus($data->infoFormOrganizationStatus);
-        // }
-        $infoFormOrganization->setStatus(InfoFormOrganizationStatus::INITIALIZED);
+
+//        WHY ? it should be initialized when the company validates its part no?
+//        $infoFormOrganization->setStatus(InfoFormOrganizationStatus::INITIALIZED);
 
         $this->entityManager->persist($infoFormOrganization);
         $infoForm->setInfoFormOrganization($infoFormOrganization);
 
+        $infoFormInternCompany = new InfoFormInternCompany();
 
-        if ($data->infoFormInternCompanyName !== null) {
-            $infoFormInternCompany = new InfoFormInternCompany();
-            $infoFormInternCompany->setCompanyName($data->infoFormInternCompanyName);
+        $infoFormIntern->setInfoFormInternCompany($infoFormInternCompany);
 
-            if ($data->infoFormInternCompanyAddress !== null) {
-                $infoFormInternCompany->setAddress($data->infoFormInternCompanyAddress);
-            }
+        $this->entityManager->persist($infoFormInternCompany);
 
-            if ($data->infoFormInternCompanyLegalRepresentativeFirstName !== null) {
-                $infoFormInternCompany->setLegalRepresentativeFirstName($data->infoFormInternCompanyLegalRepresentativeFirstName);
-            }
-
-            if ($data->infoFormInternCompanyLegalRepresentativeLastName !== null) {
-                $infoFormInternCompany->setLegalRepresentativeLastName($data->infoFormInternCompanyLegalRepresentativeLastName);
-            }
-
-            if ($data->infoFormInternCompanyLegalRepresentativeEmail !== null) {
-                $infoFormInternCompany->setEmail($data->infoFormInternCompanyLegalRepresentativeEmail);
-            }
-
-            $this->entityManager->persist($infoFormInternCompany);
-            $infoFormIntern->setInfoFormInternCompany($infoFormInternCompany);
-        }
-
-        // if ($data->infoFormCompanyStatus !== null) {
         $infoFormCompany = new InfoFormCompany();
-        $infoFormCompany->setStatus($data->infoFormCompanyStatus);
+//        WHY ? it should be initialized when the intern validates its part no?
+//        $infoFormCompany->setStatus(InfoFormCompanyStatus::INITIALIZED);
         $infoForm->setInfoFormCompany($infoFormCompany);
         $this->entityManager->persist($infoFormCompany);
         // }

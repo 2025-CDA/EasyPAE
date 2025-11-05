@@ -163,6 +163,7 @@ class UserDTO
 
     #[Groups([
         'read:user_info',
+        'read:user_basic',
         'write:user_info',
         'create:user_companyMember_add',
         'denorm-create:user_companyMember_add',
