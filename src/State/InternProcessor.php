@@ -2,15 +2,20 @@
 
 namespace App\State;
 
+use JsonException;
 use App\Dto\InternDTO;
 use App\Entity\InfoForm;
 use App\Enum\InfoFormInternStatus;
 use App\Enum\InfoFormStatus;
 use App\Entity\InfoFormIntern;
 use App\Entity\InfoFormCompany;
+use App\Repository\UserRepository;
 use ApiPlatform\Metadata\Operation;
+use Symfony\Component\Mime\Address;
 use App\Entity\InfoFormOrganization;
+use App\Service\NotificationService;
 use App\Entity\InfoFormInternCompany;
+use App\Repository\CompanyRepository;
 use App\Repository\InfoFormRepository;
 use App\Enum\InfoFormOrganizationStatus;
 use App\Repository\OrganizationRepository;
@@ -18,17 +23,14 @@ use App\Repository\UserRepository;
 use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
-use App\Repository\CompanyMemberRepository;
-use App\Repository\CompanyRepository;
 use App\Repository\InternMemberRepository;
+use App\Repository\CompanyMemberRepository;
 use App\Repository\InfoFormInternRepository;
-use JsonException;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
 
 readonly class InternProcessor implements ProcessorInterface
 {
@@ -39,6 +41,11 @@ readonly class InternProcessor implements ProcessorInterface
         private UserRepository           $userRepository,
         private EntityManagerInterface   $entityManager,
         private string                   $frontendUrl,
+        private MailerInterface          $mailer,
+        private \App\Repository\CompanyRepository $companyRepository,
+        private \App\Service\EmailService $emailService,
+        private CompanyMemberRepository $companyMember,
+        private NotificationService $notificationService,
         private EmailService             $emailService,
         private OrganizationRepository   $organizationRepository,
     )
@@ -282,7 +289,6 @@ readonly class InternProcessor implements ProcessorInterface
                     $this->frontendUrl . '/login'
                 );
             }
-
         } else {
             // CAS B - Email n'existe pas : envoyer un email au contact pour qu'il remplisse le formulaire entreprise
             // Le contact devra renseigner le SIRET dans le formulaire InfoFormCompany
@@ -324,6 +330,18 @@ readonly class InternProcessor implements ProcessorInterface
             }
         }
 
+        //Envoie de la NOTIFICATION sur easyPAE
+        $organization = $infoForm->getOrganization()->getOrganizationMembers()->first()->getUser();
+        $infoFormIntern = $infoForm->getInfoFormIntern();
+        $companyMember = $infoForm->getCompanyMembers()->first()->getUser();
+
+        if ($organization) {
+            $this->notificationService->sendToOrganizationWhenInfoFormInternDoneNotification($organization, $infoFormIntern);
+        }
+
+        if ($companyMember) {
+            $this->notificationService->sendToCompanyWhenInfoFormInternDoneNotification($companyMember, $infoFormIntern);
+        }
         $this->entityManager->flush();
 
         return $data;
