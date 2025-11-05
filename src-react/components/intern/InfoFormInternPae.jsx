@@ -4,17 +4,12 @@ import Input from ".././ui/Input";
 function InfoFormInternPae({ data, onChange }) {
     return (
         <Container className="flex flex-col w-full overflow-hidden gap-3 pl-5 border-hidden">
-            {" "}
-            {/* Masque les scrollbars horizontale et verticale */}
             <h1 className="text-primary font-semibold">Mes informations</h1>
-            {/* Labels avec w-20 pour responsive, écart uniforme */}
             <div className="flex flex-row w-full items-start pl-2">
                 {" "}
-                {/* Changé en flex-col sur mobile pour éviter overflow horizontal */}
                 <p className="font-semibold self-center whitespace-nowrap mb-">
                     Prénom :
                 </p>{" "}
-                {/* Ajusté pour mobile */}
                 <div className="flex-1 w-full ml-7">
                     <Input
                         id="firstNameIntern"
@@ -22,6 +17,7 @@ function InfoFormInternPae({ data, onChange }) {
                         type="text"
                         value={data.firstNameIntern}
                         onChange={onChange}
+                        disabled
                     />
                 </div>
             </div>
@@ -36,6 +32,7 @@ function InfoFormInternPae({ data, onChange }) {
                         type="text"
                         onChange={onChange}
                         value={data.lastNameIntern}
+                        disabled
                     />
                 </div>
             </div>
@@ -50,6 +47,7 @@ function InfoFormInternPae({ data, onChange }) {
                         type="email"
                         onChange={onChange}
                         value={data.mailIntern}
+                        disabled
                     />
                 </div>
             </div>

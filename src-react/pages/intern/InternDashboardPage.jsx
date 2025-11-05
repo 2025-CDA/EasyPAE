@@ -15,6 +15,7 @@ import Button from "../../components/ui/Button";
 function InternDashboardPage() {
     const [companyDetails, setCompanyDetails] = useState({});
     const [currentFormation, setCurrentFormation] = useState({});
+    const [finishedStep] = useState([]);
 
     const { fetchData } = useAxios();
     const { userData } = useAuthContext();
@@ -57,7 +58,29 @@ function InternDashboardPage() {
         },
     ];
 
-    const [finishedStep] = useState([]);
+    async function handleCreatePAE() {
+        const res = await fetchData("POST", "/api/intern/infoForm", {
+            internId: userData?.id,
+        });
+        console.log(res.data);
+        navigate("/paeApplication");
+    }
+
+    //  async function handleUpdateCompanyDetails() {
+    //      const res = await fetchData("POST", "/api/intern/infoForm", {
+    //          internId: userData?.id,
+    //      });
+    //      console.log(res.data);
+    //      navigate("/paeApplication");
+    //  }
+
+    //  async function handlePAEValidation() {
+    //      const res = await fetchData("POST", "/api/intern/infoForm", {
+    //          internId: userData?.id,
+    //      });
+    //      console.log(res.data);
+    //      navigate("/paeApplication");
+    //  }
 
     return (
         <MainLayout withSearchbar={false}>
@@ -75,7 +98,7 @@ function InternDashboardPage() {
                         currentStep={0}
                         finishedStep={finishedStep ? finishedStep : []}
                     />
-                    <Button onClick={() => navigate("/paeApplication")}>
+                    <Button onClick={handleCreatePAE}>
                         Inciter une demande de PEA
                     </Button>
                 </Container>
