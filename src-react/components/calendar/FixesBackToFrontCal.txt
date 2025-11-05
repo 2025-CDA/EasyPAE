@@ -1,6 +1,6 @@
 CalendarSimpleGET
 
-    const infoFormId = ........
+    const infoFormId = useParams();
     const [currentFormation, setCurrentFormation] = useState({});
 
     ****** Dans useEffect ajouter fonction :

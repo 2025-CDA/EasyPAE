@@ -12,6 +12,7 @@ import Container from "../../components/ui/Container";
 // import useAxios from "../hooks/useAxios";
 import useAxios from "../../hooks/useAxios";
 import { useParams } from "react-router";
+import formatDate from '../../components/calendar/formatDateFr'
 
 
 const steps = [
@@ -33,14 +34,48 @@ const breadcrumbContent = [
 ];
 
 
+// const breadcrumbContent = useState[];
+
+
 function FicheStagiaire({name, internNumber, email, courseName, courseNumber, trainerName, startDateInternship, endDateInternship, className, companyName, adresse, tutorEmail, tel, tutorName}) {
 
     // ----------------------------------   ESSAI RECUPERATION DATA STAGIAIRE  --------------------------------
 
     const { id } = useParams(); // ex: /fiches-stagiaires/:id
+    const { infoFormId } = useParams(); // ex: /fiches-stagiaires/:id
+
     const { data, loading, error } = useAxios(`/api/intern/infoForm/{infoFormId}/infoFormIntern/${id}`);
 
-    
+    const [ name, setName ] = useState('');
+    const [ internNumber, setinternNumber ] = useState('');
+    const [ email, setemail ] = useState('');
+    const [ courseName, setcourseName ] = useState('');
+    const [ courseNumber, setcourseNumber ] = useState(''); 
+    const [ trainerName, settrainerName ] = useState('');
+    const [ startDateInternship, setstartDateInternship ] = useState(''); 
+    const [ endDateInternship, setendDateInternship ] = useState(''); 
+
+ useEffect(() => {
+        const getData = async () => {
+            const res = await fetchData("GET", `intern/infoForm/${infoFormId}/infoFormIntern`);
+            setName(res.data.fullName);
+            console.log('test de nom user : ', res.data.fullName);
+            setinternNumber(res.data.internNumber);
+            console.log('test de num user : ', res.data.internNumber);
+            setemail(res.data.email);
+            console.log('test de mail user : ', res.data.email);
+            setcourseName()
+            console.log('test de courseName : ', res.data.courseName);
+
+            setcourseNumber()
+            settrainerName()
+            setstartDateInternship(formatDateFr)
+            setendDateInternship()
+
+            // etc... etc...
+        };
+        getData();
+    }, []);
 
 
     // -------------  FIN ESSAI RECUPERATION DATA STAGIAIRE  -------------------------------------------------------  // 
