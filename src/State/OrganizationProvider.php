@@ -148,8 +148,7 @@ readonly class OrganizationProvider implements ProviderInterface
 
         $dtoCollection = [];
 
-        foreach ($session->getInfoForms() as $infoForm) {
-            $internMember = $infoForm->getInternMember();
+        foreach ($session->getInternMembers() as $internMember) {
 
             if (!$internMember) {
                 continue;
@@ -167,8 +166,9 @@ readonly class OrganizationProvider implements ProviderInterface
                 $dto->internLogin = $user->getLogin();
             }
 
-            $dto->infoFormStatus = $infoForm->getStatus();
-            $dto->infoFormId= $infoForm->getId();
+//           TODO: change this later, we put first() only for the demo.
+            $dto->infoFormStatus = $internMember->getInfoForm()?->first()?->getStatus();
+            $dto->infoFormId= $internMember->getInfoForm()?->first()?->getId();
 
             $dtoCollection[] = $dto;
         }
