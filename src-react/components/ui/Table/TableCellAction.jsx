@@ -1,16 +1,14 @@
 import React from "react"
-import { useNavigate } from "react-router";
+
 
 function TableCellAction({ dataRow, keyAction, divAction, onEdit, onDelete}) {
-    const id = dataRow?.infoFormId;
-    const navigate = useNavigate();
+
 
  const divActionDefault = ( <div className="flex gap-3 justify-start">
       <button
         type="button"
         className="text-blue-600 hover:text-blue-800 font-semibold"
-        onClick={() => onEdit && navigate(`/interForm/${id}`)}
-        // onClick={() => onEdit && onEdit(keyAction)}
+        onClick={() => onEdit && onEdit(keyAction)}
       >
         Modifier
       </button>
