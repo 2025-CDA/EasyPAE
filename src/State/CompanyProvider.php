@@ -39,7 +39,7 @@ readonly class CompanyProvider implements ProviderInterface
         }
 
         $infoForm = $this->infoFormRepository->find($infoFormId);
-        $infoFormCompanyId = $infoForm->getInfoFormCompany()->getId() ?? null;
+        $infoFormCompanyId = $infoForm->getInfoFormCompany()?->getId();
 
         if (!$infoForm) {
             throw new NotFoundHttpException('Info form not found');

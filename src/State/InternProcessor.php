@@ -14,19 +14,15 @@ use ApiPlatform\Metadata\Operation;
 use App\Entity\InfoFormOrganization;
 use App\Service\NotificationService;
 use App\Entity\InfoFormInternCompany;
-use App\Repository\CompanyRepository;
 use App\Repository\InfoFormRepository;
 use App\Repository\OrganizationRepository;
 use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
 use App\Repository\InternMemberRepository;
-use App\Repository\CompanyMemberRepository;
 use App\Repository\InfoFormInternRepository;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 readonly class InternProcessor implements ProcessorInterface
 {
@@ -37,9 +33,6 @@ readonly class InternProcessor implements ProcessorInterface
         private UserRepository           $userRepository,
         private EntityManagerInterface   $entityManager,
         private string                   $frontendUrl,
-        private MailerInterface          $mailer,
-        private CompanyRepository $companyRepository,
-        private CompanyMemberRepository $companyMember,
         private NotificationService $notificationService,
         private EmailService             $emailService,
         private OrganizationRepository   $organizationRepository,
@@ -221,7 +214,6 @@ readonly class InternProcessor implements ProcessorInterface
 
     /**
      * @throws JsonException
-     * @throws TransportExceptionInterface
      */
     private function internInfoFormInfoFormInternInfoFormInternCompanyValidation(InternDTO $data, array $uriVariables): InternDTO
     {
@@ -301,8 +293,8 @@ readonly class InternProcessor implements ProcessorInterface
             // Email invitant le contact à compléter le formulaire entreprise (avec SIRET)
             $this->emailService->sendCompanyActivationNewCompanyEmail(
                 $companyEmail,
-                $infoFormInternCompany->getLegalRepresentativeFirstName() ?? '',
-                $infoFormInternCompany->getLegalRepresentativeLastName() ?? '',
+                $infoFormInternCompany?->getLegalRepresentativeFirstName() ?? '',
+                $infoFormInternCompany?->getLegalRepresentativeLastName() ?? '',
                 $companyName ?? 'Votre entreprise',
                 $infoForm->getInternMember()?->getUser()?->getFirstName() ?? '',
                 $infoForm->getInternMember()?->getUser()?->getLastName() ?? '',
@@ -317,26 +309,37 @@ readonly class InternProcessor implements ProcessorInterface
             $organizationMembers = $trainingSession->getOrganizationMembers();
             foreach ($organizationMembers as $orgMember) {
                 $this->emailService->sendOrganizationInternValidatedEmail(
-                    $orgMember->getUser()->getEmail(),
+                    $orgMember->getUser()?->getEmail(),
                     $infoForm->getInternMember()?->getUser()?->getFirstName() ?? '',
                     $infoForm->getInternMember()?->getUser()?->getLastName() ?? '',
-                    $infoFormInternCompany->getCompanyName()
+                    $infoFormInternCompany?->getCompanyName()
                 );
             }
         }
 
         //Envoie de la NOTIFICATION sur easyPAE
-        $organization = $infoForm->getOrganization()->getOrganizationMembers()->first()->getUser();
+//        TODO: Remove or move this later in the workflow because the company members doesn't always exist here.
+
+
+        $organization = $infoForm->getOrganization()?->getOrganizationMembers()->first()->getUser();
         $infoFormIntern = $infoForm->getInfoFormIntern();
-        $companyMember = $infoForm->getCompanyMembers()->first()->getUser();
+
+        $companyMember = $infoForm?->getCompanyMembers()?->first();
+
+        $companyMemberUser = null;
+
+        if ($companyMember !== false) {
+            $companyMemberUser = $companyMember?->getUser();
+        }
 
         if ($organization) {
             $this->notificationService->sendToOrganizationWhenInfoFormInternDoneNotification($organization, $infoFormIntern);
         }
 
-        if ($companyMember) {
-            $this->notificationService->sendToCompanyWhenInfoFormInternDoneNotification($companyMember, $infoFormIntern);
+        if ($companyMemberUser) {
+            $this->notificationService->sendToCompanyWhenInfoFormInternDoneNotification($companyMemberUser, $infoFormIntern);
         }
+
         $this->entityManager->flush();
 
         return $data;
