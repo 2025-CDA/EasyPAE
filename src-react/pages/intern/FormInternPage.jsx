@@ -25,7 +25,8 @@ function FormInternPage() {
         companyName: "",
         companyAddress: "",
         companyMail: "",
-        tutorName: "",
+        contactFirstName: "",
+        contactLastName: "",
     });
 
     const { userData } = useAuthContext();
@@ -40,15 +41,19 @@ function FormInternPage() {
             );
         getInternInitialData().then((res) => {
             console.log(res);
-            // setInternInfo({
-            //     firstNameIntern: res.data.internFirstName,
-            //     lastNameIntern: res.data.internLastName,
-            //     mailIntern: res.data.internEmail,
-            //     nameCourse: res.data.trainingName,
-            //     nbCourse: res.data.offerNumber,
-            //     startDateInternship: res.data.internshipStart,
-            //     endDateInternship: res.data.internshipEnd,
-            // });
+            setInternInfo({
+                firstNameIntern: res.data.internFirstName,
+                lastNameIntern: res.data.internLastName,
+                mailIntern: res.data.internEmail,
+                nameCourse: res.data.trainingName,
+                nbCourse: res.data.offerNumber,
+                startDateInternship: new Date(
+                    res.data.internshipStart
+                ).toLocaleDateString("fr-FR"),
+                endDateInternship: new Date(
+                    res.data.internshipEnd
+                ).toLocaleDateString("fr-FR"),
+            });
         });
     }, []);
 
@@ -63,17 +68,35 @@ function FormInternPage() {
     };
 
     async function handleUpdateCompanyDetails() {
-        //  const res = await fetchData("POST", "/api/intern/infoForm", {
-        //      internId: userData?.id,
-        //  });
-        //  console.log(res.data);
+        const res = await fetchData(
+            "PATCH",
+            `intern/infoForm/${infoFormId}/infoFormIntern/infoFormInternCompany`,
+            {
+                infoFormCompanyStatus: "validated",
+                infoFormInternCompanyName: companyInfo.companyName,
+                infoFormInternCompanyAddress: companyInfo.companyAddress,
+                infoFormInternCompanyLegalRepresentativeFirstName:
+                    companyInfo.contactFirstName,
+                infoFormInternCompanyLegalRepresentativeLastName:
+                    companyInfo.contactLastName,
+                infoFormInternCompanyLegalRepresentativeEmail:
+                    companyInfo.companyMail,
+            }
+        );
+        console.log(res.data);
     }
 
     async function handlePAEValidation() {
-        //  const res = await fetchData("POST", "/api/intern/infoForm", {
-        //      internId: userData?.id,
-        //  });
-        //  console.log(res.data);
+        const res = await fetchData(
+            "PATCH",
+            `intern/infoForm/${infoFormId}/infoFormIntern/validation`,
+            {
+                infoFormStatus: "completed_intern",
+                infoFormInternStatus: "validated",
+                infoFormCompanyStatus: "validated",
+            }
+        );
+        console.log(res.data);
     }
 
     return (
@@ -136,7 +159,7 @@ function FormInternPage() {
                         },
                     ]}
                     isHorizontal={true}
-                    handleValidateEvent={handleValidateEvent}
+                    handleValidateEvent={handlePAEValidation}
                     lastEventButtonTitle={false}
                 />
             </div>

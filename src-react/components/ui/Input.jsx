@@ -20,7 +20,10 @@ export default function Input({
     return (
         <div className="">
             <label htmlFor={id} className="">
-                {label} {required && <span className="text-red-500">*</span>}
+                {label}{" "}
+                {required && label != "" && (
+                    <span className="text-red-500">*</span>
+                )}
             </label>
             <div className="relative">
                 <input
