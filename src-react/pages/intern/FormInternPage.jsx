@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MainLayout from "../../components/layout/MainLayout";
 import Breadcrumb from "../../components/ui/Breadcrumb";
 import Stepper from "../../components/ui/stepper/Stepper";
@@ -7,14 +7,14 @@ import InfoFormCompanyPae from "../../components/intern/InfoFormCompanyPae";
 import Container from "../../components/ui/Container";
 import FicheRenseignStagaire from "../assistant/FicheRenseignStagiaire";
 import { useAuthContext } from "../../store/auth_context/authContext";
+import { useParams } from "react-router";
+import useAxios from "../../hooks/useAxios";
 
 function FormInternPage() {
-    const { userData } = useAuthContext();
-
     const [internInfo, setInternInfo] = useState({
-        firstNameIntern: userData?.firstName,
-        lastNameIntern: userData?.lastName,
-        mailIntern: userData?.email,
+        firstNameIntern: "",
+        lastNameIntern: "",
+        mailIntern: "",
         nameCourse: "",
         nbCourse: "",
         startDateInternship: "",
@@ -28,31 +28,58 @@ function FormInternPage() {
         tutorName: "",
     });
 
+    const { userData } = useAuthContext();
+    const { infoFormId } = useParams();
+    const { fetchData } = useAxios();
+
+    useEffect(() => {
+        const getInternInitialData = async () =>
+            await fetchData(
+                "GET",
+                `intern/infoForm/${infoFormId}/infoFormIntern`
+            );
+        getInternInitialData().then((res) => {
+            console.log(res);
+            // setInternInfo({
+            //     firstNameIntern: res.data.internFirstName,
+            //     lastNameIntern: res.data.internLastName,
+            //     mailIntern: res.data.internEmail,
+            //     nameCourse: res.data.trainingName,
+            //     nbCourse: res.data.offerNumber,
+            //     startDateInternship: res.data.internshipStart,
+            //     endDateInternship: res.data.internshipEnd,
+            // });
+        });
+    }, []);
+
     const handleInternStateChange = (e) => {
-        console.log(e);
         const { id, value } = e.target;
         setInternInfo((prev) => ({ ...prev, [id]: value }));
     };
 
-    const handleValidateEvent = () => {
-        // Ici, tu peux envoyer les données à une API, valider, ou naviguer
-        console.log("Données soumises :", { internInfo, companyInfo });
-
-        // Exemple : Validation simple (ajoute ta logique réelle)
-        if (!companyInfo.companyName || !companyInfo.companyAddress) {
-            alert("Veuillez remplir tous les champs obligatoires.");
-            return;
-        }
-
-        // Soumission réussie : par exemple, naviguer ou afficher un message
-        // Ou : navigate("/confirmation"); si tu utilises React Router
+    const handleCompanyStateChange = (e) => {
+        const { id, value } = e.target;
+        setCompanyInfo((prev) => ({ ...prev, [id]: value }));
     };
+
+    async function handleUpdateCompanyDetails() {
+        //  const res = await fetchData("POST", "/api/intern/infoForm", {
+        //      internId: userData?.id,
+        //  });
+        //  console.log(res.data);
+    }
+
+    async function handlePAEValidation() {
+        //  const res = await fetchData("POST", "/api/intern/infoForm", {
+        //      internId: userData?.id,
+        //  });
+        //  console.log(res.data);
+    }
 
     return (
         <MainLayout withSearchbar={false}>
             <div className="mx-10 overflow-hidden">
                 {" "}
-                {/* Ici : overflow-hidden pour masquer les scrollbars seulement sur cette page */}
                 <Breadcrumb
                     content={[
                         {
@@ -74,7 +101,6 @@ function FormInternPage() {
                     content={[
                         {
                             title: "Mes infos",
-
                             stepContent: (
                                 <Container>
                                     <InfoFormInternPae
@@ -86,17 +112,19 @@ function FormInternPage() {
                         },
                         {
                             title: "L'Entreprise",
+                            stepAction: handleUpdateCompanyDetails,
                             stepContent: (
                                 <Container>
                                     <InfoFormCompanyPae
                                         data={companyInfo}
-                                        onChange={setCompanyInfo}
+                                        onChange={handleCompanyStateChange}
                                     />{" "}
                                 </Container>
                             ),
                         },
                         {
                             title: "Valider",
+                            stepAction: handlePAEValidation,
                             stepContent: (
                                 <Container>
                                     <FicheRenseignStagaire

@@ -52,10 +52,11 @@ export default function AuthContextProvider({ children }) {
             const updatedData = {
                 ...res.data,
                 id: res.data["@id"].split("/")[3],
+                internId: decodedToken.intern_member_id,
+                organizationMemberId: decodedToken.organization_member_id,
             };
             setToken(token);
             setUserData(updatedData);
-            console.log("🚀 ~ getUser ~ updatedData:", updatedData);
             setLoadingUser(false);
         } else {
             setLoadingUser(false);

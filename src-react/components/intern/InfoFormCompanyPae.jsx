@@ -1,11 +1,8 @@
 import Container from "../../components/ui/Container";
 import Input from ".././ui/Input";
 
-function InfoFormCompanyPae({ data, onChange }) {  // Ajout des props data et onChange
-    // Fonction pour gérer les changements : met à jour l'état via onChange
-    const handleChange = (field, value) => {
-        onChange({ ...data, [field]: value });  // Met à jour le champ spécifique dans l'objet data
-    };
+function InfoFormCompanyPae({ data, onChange }) {
+    // Ajout des props data et onChange
 
     return (
         <Container className="flex flex-col w-full overflow-hidden gap-3 pl-5 border-hidden">
@@ -17,14 +14,12 @@ function InfoFormCompanyPae({ data, onChange }) {  // Ajout des props data et on
                 <div className="flex-1 w-full ml-7">
                     <Input
                         id="companyName"
-                        label={false}
+                        label=""
                         type="text"
                         placeholder="Nom de l'entreprise"
-                        required={false}
-                        withCopy={false}
-                        className=""
-                        value={data.companyName}  // Valeur contrôlée depuis data
-                        onChange={(e) => handleChange('companyName', e.target.value)}  // Met à jour via handleChange
+                        required
+                        value={data.companyName} // Valeur contrôlée depuis data
+                        onChange={onChange} // Met à jour via handleChange
                     />
                 </div>
             </div>
@@ -35,14 +30,12 @@ function InfoFormCompanyPae({ data, onChange }) {  // Ajout des props data et on
                 <div className="flex-1 w-full ml-11">
                     <Input
                         id="companyAddress"
-                        label={false}
+                        label=""
                         type="text"
                         placeholder="Entrez une adresse physique (ex. : 123 Rue de la Paix, 75001 Paris)"
-                        required={false}
-                        withCopy={false}
-                        className=""
-                        value={data.companyAddress}  // Valeur contrôlée
-                        onChange={(e) => handleChange('companyAddress', e.target.value)}  // Met à jour
+                        required
+                        value={data.companyAddress}
+                        onChange={onChange}
                     />
                 </div>
             </div>
@@ -53,14 +46,12 @@ function InfoFormCompanyPae({ data, onChange }) {  // Ajout des props data et on
                 <div className="flex-1 w-full ml-20">
                     <Input
                         id="companyMail"
-                        label={false}
+                        label=""
                         type="email"
-                        placeholder='exemple@exemple.fr'
-                        required={false}
-                        withCopy={false}
-                        className=""
-                        value={data.companyMail}  // Valeur contrôlée
-                        onChange={(e) => handleChange('companyMail', e.target.value)}  // Met à jour
+                        placeholder="exemple@exemple.fr"
+                        required
+                        value={data.companyMail}
+                        onChange={onchange} // Met à jour
                     />
                 </div>
             </div>
@@ -71,14 +62,12 @@ function InfoFormCompanyPae({ data, onChange }) {  // Ajout des props data et on
                 <div className="flex-1 w-full ml-13">
                     <Input
                         id="tutorName"
-                        label={false}
-                        type="text"  // Changé de "email" à "text" car c'est un nom
-                        placeholder='Nom du tuteur'
-                        required={false}
-                        withCopy={false}
-                        className=""
-                        value={data.tutorName}  // Valeur contrôlée
-                        onChange={(e) => handleChange('tutorName', e.target.value)}  // Met à jour
+                        label=""
+                        type="text" // Changé de "email" à "text" car c'est un nom
+                        placeholder="Nom du tuteur"
+                        required
+                        value={data.tutorName} // Valeur contrôlée
+                        onChange={onChange} // Met à jour
                     />
                 </div>
             </div>
