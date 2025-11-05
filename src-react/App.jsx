@@ -62,9 +62,8 @@ export default function App() {
                                 </>
                             )}
 
-                            {["organization"].some((role) =>
-                                [userData?.roles].includes(role)
-                            ) && (
+                            {!(userData?.roles.includes("intern") ||
+                                userData?.roles.includes("company")) && (
                                 <>
                                     <Route
                                         index
