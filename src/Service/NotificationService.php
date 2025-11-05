@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\InfoForm;
 use App\Entity\Notification;
 use App\Entity\InfoFormIntern;
+use App\Entity\InfoFormCompany;
 use App\Entity\TrainingSession;
 use App\Entity\UserNotification;
 use Doctrine\ORM\EntityManagerInterface;
@@ -261,4 +262,121 @@ public function sendToCompanyWhenInfoFormInternDoneNotification(User $user, Info
         $this->em->flush();
     }
 
+    public function sendToInternWhenInfoFormCompanyDoneNotification(User $user, InfoFormIntern $infoFormIntern, InfoForm $infoForm): void
+    {
+
+        $internshipDateStart = '';
+        $internshipDateEnd = '';
+        $companyName = $infoForm->getCompanyMembers()->first()->getCompany()->getName();
+
+        $ds = $infoFormIntern->getDateStart();
+        if ($ds instanceof \DateTimeInterface) {
+            $internshipDateStart = $ds->format('d-m-Y');
+        } elseif (is_string($ds) && $ds !== '') {
+            try {
+                $dt = new DateTime($ds);
+                $internshipDateStart = $dt->format('d-m-Y');
+            } catch (\Exception $e) {
+                $internshipDateStart = $ds;
+            }
+        }
+
+        $de = $infoFormIntern->getDateEnd();
+        if ($de instanceof \DateTimeInterface) {
+            $internshipDateEnd = $de->format('d-m-Y');
+        } elseif (is_string($de) && $de !== '') {
+            try {
+                $dt = new DateTime($de);
+                $internshipDateEnd = $dt->format('d-m-Y');
+            } catch (\Exception $e) {
+                $internshipDateEnd = $de;
+            }
+        }
+
+        $title = 'Volet entreprise validé';
+        $content = "{$companyName} a complété son volet pour le stage se déroulant sur la période du {$internshipDateStart} au {$internshipDateEnd}. 
+        En attente de la signature du formateur.";
+
+        $userNotification = new UserNotification();
+        $userNotification->setUser($user);
+
+        if (method_exists($userNotification, 'setTitle')) {
+            $userNotification->setTitle($title);
+        }
+        if (method_exists($userNotification, 'setContent')) {
+            $userNotification->setContent($content);
+        }
+        if (method_exists($userNotification, 'setCreatedAt')) {
+            $userNotification->setCreatedAt(new \DateTimeImmutable());
+        }
+        if (method_exists($userNotification, 'setIsRead')) {
+            $userNotification->setIsRead(false);
+        }
+        if (method_exists($userNotification, 'setIsSigned')) {
+            $userNotification->setIsSigned(false);
+        }
+
+        $this->em->persist($userNotification);
+        $this->em->flush();
+    }
+
+    public function sendToOrganizationWhenInfoFormCompanyDoneNotification(User $user, InfoFormIntern $infoFormIntern, InfoForm $infoForm): void
+    {
+
+        $internshipDateStart = '';
+        $internshipDateEnd = '';
+        $internFirstName = $infoFormIntern->getInfoForm()->getInternMember()->getUser()->getFirstName();
+        $internLastName = $infoFormIntern->getInfoForm()->getInternMember()->getUser()->getLastName();
+        $companyName = $infoForm->getCompanyMembers()->first()->getCompany()->getName();
+
+        $ds = $infoFormIntern->getDateStart();
+        if ($ds instanceof \DateTimeInterface) {
+            $internshipDateStart = $ds->format('d-m-Y');
+        } elseif (is_string($ds) && $ds !== '') {
+            try {
+                $dt = new DateTime($ds);
+                $internshipDateStart = $dt->format('d-m-Y');
+            } catch (\Exception $e) {
+                $internshipDateStart = $ds;
+            }
+        }
+
+        $de = $infoFormIntern->getDateEnd();
+        if ($de instanceof \DateTimeInterface) {
+            $internshipDateEnd = $de->format('d-m-Y');
+        } elseif (is_string($de) && $de !== '') {
+            try {
+                $dt = new DateTime($de);
+                $internshipDateEnd = $dt->format('d-m-Y');
+            } catch (\Exception $e) {
+                $internshipDateEnd = $de;
+            }
+        }
+
+        $title = 'Volet entreprise validé; Demande de signature';
+        $content = "{$companyName} a complété son volet pour le stage de {$internFirstName} {$internLastName} se déroulant sur la période du {$internshipDateStart} au {$internshipDateEnd}. 
+        En attente de votre signature.";
+
+        $userNotification = new UserNotification();
+        $userNotification->setUser($user);
+
+        if (method_exists($userNotification, 'setTitle')) {
+            $userNotification->setTitle($title);
+        }
+        if (method_exists($userNotification, 'setContent')) {
+            $userNotification->setContent($content);
+        }
+        if (method_exists($userNotification, 'setCreatedAt')) {
+            $userNotification->setCreatedAt(new \DateTimeImmutable());
+        }
+        if (method_exists($userNotification, 'setIsRead')) {
+            $userNotification->setIsRead(false);
+        }
+        if (method_exists($userNotification, 'setIsSigned')) {
+            $userNotification->setIsSigned(false);
+        }
+
+        $this->em->persist($userNotification);
+        $this->em->flush();
+    }
 }

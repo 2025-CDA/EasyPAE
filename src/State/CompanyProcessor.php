@@ -4,13 +4,14 @@ namespace App\State;
 
 use App\Dto\CompanyDTO;
 use App\Entity\TrainingSession;
-use App\Repository\InfoFormRepository;
-use App\Repository\InfoFormCompanyRepository;
 use ApiPlatform\Metadata\Operation;
-use ApiPlatform\State\ProcessorInterface;
+use App\Service\NotificationService;
+use App\Repository\InfoFormRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use ApiPlatform\State\ProcessorInterface;
+use App\Repository\InfoFormCompanyRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 readonly class CompanyProcessor implements ProcessorInterface
 {
@@ -19,9 +20,9 @@ readonly class CompanyProcessor implements ProcessorInterface
         private InfoFormCompanyRepository $infoFormCompanyRepository,
         private EntityManagerInterface $entityManager,
         private \App\Service\EmailService $emailService,
-    )
-    {
-    }
+        private NotificationService $notificationService,
+
+    ) {}
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): TrainingSession|CompanyDTO|null
     {
@@ -60,7 +61,7 @@ readonly class CompanyProcessor implements ProcessorInterface
 
         // EDIT route: save only InfoFormCompany data (no Company/User creation)
         // Company data (name, address, siret, phoneNumber) will be handled in VALIDATION route
-        
+
         if ($data->activity !== null) {
             $infoFormCompany->setActivity($data->activity);
         }
@@ -115,7 +116,7 @@ readonly class CompanyProcessor implements ProcessorInterface
         // Récupérer les données de l'email et du SIRET
         $companyEmail = $data->legalRepresentativeEmail ?? $infoForm->getInfoFormIntern()?->getInfoFormInternCompany()?->getEmail();
         $companySiret = $data->siret;
-        
+
         if (!$companySiret) {
             throw new BadRequestHttpException('Company SIRET is required for validation');
         }
@@ -126,11 +127,11 @@ readonly class CompanyProcessor implements ProcessorInterface
         if ($existingCompany) {
             // CAS B1 - SIRET existe : rattacher le User à la Company existante
             $existingUser = $this->entityManager->getRepository(\App\Entity\User::class)->findOneBy(['email' => $companyEmail]);
-            
+
             if ($existingUser) {
                 // CAS A : User existe déjà - vérifier s'il a déjà un CompanyMember
                 $existingCompanyMember = $existingUser->getCompanyMember();
-                
+
                 if ($existingCompanyMember) {
                     // CAS A : CompanyMember existe - simplement lier à ce dossier
                     $existingCompanyMember->addInfoForm($infoForm);
@@ -153,7 +154,7 @@ readonly class CompanyProcessor implements ProcessorInterface
                 // Mot de passe vide au départ - l'utilisateur le définira via le lien d'activation
                 $newUser->setPassword('');
                 $this->entityManager->persist($newUser);
-                
+
                 // Créer le CompanyMember et le rattacher à la Company existante
                 $newCompanyMember = new \App\Entity\CompanyMember();
                 $newCompanyMember->setUser($newUser);
@@ -162,7 +163,6 @@ readonly class CompanyProcessor implements ProcessorInterface
                 $newCompanyMember->addInfoForm($infoForm);
                 $this->entityManager->persist($newCompanyMember);
             }
-            
         } else {
             // CAS B2 - SIRET n'existe pas : créer une nouvelle Company
             $newCompany = new \App\Entity\Company();
@@ -171,13 +171,13 @@ readonly class CompanyProcessor implements ProcessorInterface
             $newCompany->setSiret($companySiret);
             $newCompany->setPhoneNumber($data->phoneNumber);
             $this->entityManager->persist($newCompany);
-            
+
             $existingUser = $this->entityManager->getRepository(\App\Entity\User::class)->findOneBy(['email' => $companyEmail]);
-            
+
             if ($existingUser) {
                 // User existe déjà - vérifier s'il a un CompanyMember
                 $existingCompanyMember = $existingUser->getCompanyMember();
-                
+
                 if ($existingCompanyMember) {
                     // CompanyMember existe - le rattacher à la nouvelle Company et à ce dossier
                     $existingCompanyMember->setCompany($newCompany);
@@ -201,7 +201,7 @@ readonly class CompanyProcessor implements ProcessorInterface
                 // Mot de passe vide au départ - l'utilisateur le définira via le lien d'activation
                 $newUser->setPassword('');
                 $this->entityManager->persist($newUser);
-                
+
                 // Créer le CompanyMember et le rattacher à la nouvelle Company
                 $newCompanyMember = new \App\Entity\CompanyMember();
                 $newCompanyMember->setUser($newUser);
@@ -283,6 +283,16 @@ readonly class CompanyProcessor implements ProcessorInterface
                     $companyName
                 );
             }
+        }
+
+        //Notification dans easyPAE
+        $organization = $infoForm->getOrganization()->getOrganizationMembers()->first()->getUser();
+
+        if ($intern) {
+            $this->notificationService->sendToInternWhenInfoFormCompanyDoneNotification($intern, $infoFormIntern, $infoForm);
+        }
+        if ($organization) {
+            $this->notificationService->sendToOrganizationWhenInfoFormCompanyDoneNotification($organization, $infoFormIntern, $infoForm);
         }
 
         return $data;
