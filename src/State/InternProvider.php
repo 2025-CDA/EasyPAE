@@ -4,9 +4,9 @@ namespace App\State;
 
 use App\Dto\InternDTO;
 use ApiPlatform\Metadata\Operation;
+use App\Entity\InfoFormInternCompany;
 use App\Repository\InfoFormRepository;
 use ApiPlatform\State\ProviderInterface;
-use App\Repository\InternMemberRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -14,9 +14,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 readonly class InternProvider implements ProviderInterface
 {
     public function __construct(
-        private InternMemberRepository $internMemberRepository,
-        private InfoFormRepository     $infoFormRepository,
-        private UserRepository         $userRepository,
+        private InfoFormRepository $infoFormRepository,
+        private UserRepository     $userRepository,
     )
     {
     }
@@ -28,6 +27,7 @@ readonly class InternProvider implements ProviderInterface
 
         return match ($operationName) {
             'intern_infoForm_infoFormId_infoFormIntern' => $this->getInfoFormInfoFormIntern($uriVariables),
+            'intern_infoForm_infoFormId_infoFormInternCompany' => $this->getUserInfoFormInternCompany($uriVariables),
             'intern_userId_infoForms' => $this->getUserInfoForms($uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
@@ -143,5 +143,41 @@ readonly class InternProvider implements ProviderInterface
         }
 
         return $dtos;
+    }
+
+    private function getUserInfoFormInternCompany(array $uriVariables): InternDTO
+    {
+
+
+        $infoFormId = $uriVariables['infoFormId'] ?? null;
+
+        if (!$infoFormId) {
+            throw new BadRequestHttpException('Missing required URI variable: infoFormId');
+        }
+
+        $infoForm = $this->infoFormRepository->find($infoFormId);
+        if (!$infoForm) {
+            throw new NotFoundHttpException('InfoForm not found');
+        }
+
+        $infoFormIntern = $infoForm->getInfoFormIntern();
+        if (!$infoFormIntern) {
+            throw new NotFoundHttpException('InfoFormIntern not found for this InfoForm');
+        }
+
+        $infoFormInternCompany = $infoForm->getInfoFormIntern()?->getInfoFormInternCompany();
+        if (!$infoFormInternCompany) {
+            throw new NotFoundHttpException('InfoFormIntern not found for this InfoForm');
+        }
+
+        $dto = new InternDTO();
+
+        $dto->infoFormInternCompanyName = $infoFormInternCompany->getCompanyName();
+        $dto->infoFormInternCompanyAddress = $infoFormInternCompany->getAddress();
+        $dto->infoFormInternCompanyLegalRepresentativeFirstName = $infoFormInternCompany->getLegalRepresentativeFirstName();
+        $dto->infoFormInternCompanyLegalRepresentativeLastName = $infoFormInternCompany->getLegalRepresentativeLastName();
+        $dto->infoFormInternCompanyLegalRepresentativeEmail = $infoFormInternCompany->getEmail();
+
+        return $dto;
     }
 }

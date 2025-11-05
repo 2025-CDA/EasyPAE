@@ -36,6 +36,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
             provider: InternProvider::class,
         ),
 
+        new Get(
+            uriTemplate: '/intern/infoForm/{infoFormId}/infoFormInternCompany',
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            uriVariables: ['infoFormId'],
+            normalizationContext: ['groups' => ['read:intern_infoForm_infoFormId_infoFormInternCompany']],
+            name: 'intern_infoForm_infoFormId_infoFormInternCompany',
+            provider: InternProvider::class,
+        ),
+
 
         new Post(
             uriTemplate: '/intern/infoForm',
@@ -174,18 +183,21 @@ class InternDTO
     #[Groups([
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
+        'read:intern_infoForm_infoFormId_infoFormInternCompany',
     ])]
     public ?string $infoFormInternCompanyName = null;
 
     #[Groups([
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
+        'read:intern_infoForm_infoFormId_infoFormInternCompany',
     ])]
     public ?string $infoFormInternCompanyAddress = null;
 
     #[Groups([
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
+        'read:intern_infoForm_infoFormId_infoFormInternCompany',
     ])]
     public ?string $infoFormInternCompanyLegalRepresentativeFirstName = null;
 
@@ -193,6 +205,7 @@ class InternDTO
     #[Groups([
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
+        'read:intern_infoForm_infoFormId_infoFormInternCompany',
     ])]
     public ?string $infoFormInternCompanyLegalRepresentativeLastName = null;
 
@@ -200,6 +213,7 @@ class InternDTO
     #[Groups([
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
+        'read:intern_infoForm_infoFormId_infoFormInternCompany',
     ])]
     public ?string $infoFormInternCompanyLegalRepresentativeEmail = null;
 
