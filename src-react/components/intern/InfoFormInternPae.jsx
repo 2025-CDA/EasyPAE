@@ -3,9 +3,9 @@ import Input from ".././ui/Input";
 
 function InfoFormInternPae({ data, onChange }) {
     return (
-        <Container className="flex flex-col w-full overflow-hidden gap-3 pl-5 border-hidden">
-            <h1 className="text-primary font-semibold">Mes informations</h1>
-            <div className="flex flex-row w-full items-start pl-2">
+        <Container className="flex flex-col w-full overflow-hidden gap-3 p-5 border-hidden">
+            <h2 className="text-primary font-semibold">Mes informations</h2>
+            <div className="flex flex-row w-full items-start ">
                 {" "}
                 <p className="font-semibold self-center whitespace-nowrap mb-">
                     Prénom :
@@ -21,7 +21,7 @@ function InfoFormInternPae({ data, onChange }) {
                     />
                 </div>
             </div>
-            <div className="flex flex-row w-full items-start pl-2">
+            <div className="flex flex-row w-full items-start">
                 <p className="font-semibold self-center whitespace-nowrap mb-2">
                     Nom :
                 </p>
@@ -36,7 +36,7 @@ function InfoFormInternPae({ data, onChange }) {
                     />
                 </div>
             </div>
-            <div className="flex flex-row w-full items-start pl-2">
+            <div className="flex flex-row w-full items-start">
                 <p className="font-semibold self-center whitespace-nowrap mb-2">
                     Email :
                 </p>
@@ -51,20 +51,20 @@ function InfoFormInternPae({ data, onChange }) {
                     />
                 </div>
             </div>
-            <div className="flex flex-row w-full items-start pl-2">
+            <div className="flex flex-row w-full items-start">
                 <p className=" font-semibold self-center whitespace-nowrap mb-2">
                     Formation :
                 </p>
                 <div className="flex w-full ml-4">
-                    <p className="text-secondary-text font-medium">
+                    <p className="text-secondary-text">
                         {data.nameCourse} N°{data.nbCourse}
                     </p>
                 </div>
             </div>
-            <h3 className="text-primary font-bold">Période en entreprise</h3>
+            <h4 className="text-primary font-bold">Période en entreprise</h4>
             <div className="flex  self-center flex-row w-full  items-start gap-4 pl-2">
-                <p className=" mb-2 font-semibold mr-2">Dates :</p>
-                <p className="text-secondary-text font-semibold">
+                <p className=" font-semibold mr-8">Dates :</p>
+                <p className="text-secondary-text">
                     Du {data.startDateInternship} au {data.endDateInternship}
                 </p>
             </div>

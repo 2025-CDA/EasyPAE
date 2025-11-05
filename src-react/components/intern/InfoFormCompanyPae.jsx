@@ -11,7 +11,7 @@ function InfoFormCompanyPae({ data, onChange }) {
                 <p className="font-semibold self-center whitespace-nowrap mb-2">
                     Nom de l'entreprise :
                 </p>
-                <div className="flex-1 w-full ml-7">
+                <div className="flex-1 w-full ml-5">
                     <Input
                         id="companyName"
                         label=""
@@ -27,7 +27,7 @@ function InfoFormCompanyPae({ data, onChange }) {
                 <p className="font-semibold self-center whitespace-nowrap mb-2">
                     Adresse physique :
                 </p>
-                <div className="flex-1 w-full ml-11">
+                <div className="flex-1 w-full ml-9">
                     <Input
                         id="companyAddress"
                         label=""
@@ -51,7 +51,7 @@ function InfoFormCompanyPae({ data, onChange }) {
                         placeholder="exemple@exemple.fr"
                         required
                         value={data.companyMail}
-                        onChange={onchange} // Met à jour
+                        onChange={onChange} // Met à jour
                     />
                 </div>
             </div>
@@ -61,12 +61,28 @@ function InfoFormCompanyPae({ data, onChange }) {
                 </p>
                 <div className="flex-1 w-full ml-13">
                     <Input
-                        id="tutorName"
+                        id="contactLastName"
                         label=""
                         type="text" // Changé de "email" à "text" car c'est un nom
-                        placeholder="Nom du tuteur"
+                        placeholder="Nom du contact"
                         required
-                        value={data.tutorName} // Valeur contrôlée
+                        value={data.contactLastName} // Valeur contrôlée
+                        onChange={onChange} // Met à jour
+                    />
+                </div>
+            </div>
+            <div className="flex flex-row w-full items-start pl-2">
+                <p className="font-semibold self-center whitespace-nowrap mb-2">
+                    Prénom du contact :
+                </p>
+                <div className="flex-1 w-full ml-7">
+                    <Input
+                        id="contactFirstName"
+                        label=""
+                        type="text" // Changé de "email" à "text" car c'est un nom
+                        placeholder="Prénom du contact"
+                        required
+                        value={data.contactFirstName} // Valeur contrôlée
                         onChange={onChange} // Met à jour
                     />
                 </div>
