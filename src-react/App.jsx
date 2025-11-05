@@ -13,6 +13,7 @@ import InternDashboardPage from "./pages/intern/InternDashboardPage";
 import FicheStagiaire from './pages/intern/FicheStagiaire';
 import InternListPage from "./components/intern_list/InternListPage";
 import FormInternPage from "./pages/intern/FormInternPage";
+import CalendarPage from "./pages/CalendarPage";
 
 export default function App() {
     const { token, userData, getUser, loadingUser } = useAuthContext();
@@ -80,7 +81,7 @@ export default function App() {
                                     ></Route>
                                     <Route
                                         path="/paeCalendar"
-                                        element={App}
+                                        element={<CalendarPage />}
                                     ></Route>
                                     <Route
                                         path="/interForm/:id"
