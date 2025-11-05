@@ -4,32 +4,46 @@ import Label from "../ui/Label";
 import Container from "../ui/Container";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
+import { toast } from "react-toastify";
+import useAxios from "../../hooks/useAxios";
+import { useParams } from "react-router";
+
 
 function FormAddIntern({ visibilityAddForm, onAddIntern }) {
+    const { fetchData } = useAxios();
     const [formData, setFormData] = useState({
-        last_name: "",
-        first_name: "",
-        email: "",
-        intern_member_id: "",
-        status: "",
+        internFirstName: "",
+        internLastName: "",
+        internEmail: "",
+        internLogin: "",
     });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
+    const {id} = useParams();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (onAddIntern) {
-            onAddIntern(formData);
-            setFormData({
-                first_name: "",
-                intern_member_id: "",
-                status: "Aucune demande",
-            }); // reset
-        }
-    };
+        const handleChange = (e) => {
+            
+            setFormData({ ...formData, [e.target.id]: e.target.value });
+        };
+    
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            console.log("test", formData);
+            try {
+                const res = await fetchData(
+                    "POST",
+                    `organization/session/${id}/intern`,
+                    formData
+                );
+                console.log("🚀 ~ handleSubmit ~ res:", res)
+                if (res.success == true) {
+                    toast.success("Stagiaire ajouté avec succès !");
+                } else {
+                    toast.error("Erreur dans l'ajout du stagiaire");
+                }
+            } catch (err) {
+                console.log("🚀 ~ handleSubmit ~ err:", err);
+            }
+        };
 
     return (
         <Container
@@ -50,40 +64,39 @@ function FormAddIntern({ visibilityAddForm, onAddIntern }) {
                     color={"primary-text"}
                 />
 
-                <Input
+                <Input id="internLastName"
                     type="text"
                     placeholder="Nom"
                     label="Nom"
                     required
-                    name="last_name"
-                    value={formData.last_name}
+                    name="internLastName"
                     onChange={handleChange}
                 />
                 <Input
+                    id="internFirstName"
                     type="text"
                     placeholder="Prénom"
                     label="Prénom"
                     required
-                    name="first_name"
-                    value={formData.first_name}
+                    name="internFirstName"
                     onChange={handleChange}
                 />
                 <Input
+                    id="internEmail"
                     type="text"
                     placeholder="Email"
                     label="Email"
                     required
-                    name="email"
-                    value={formData.email}
+                    name="internEmail"
                     onChange={handleChange}
                 />
                 <Input
+                    id="internLogin"
                     type="text"
                     placeholder="ID"
                     label="ID"
                     required
-                    name="intern_member_id"
-                    value={formData.intern_member_id}
+                    name="internLogin"
                     onChange={handleChange}
                 />
                 <div className="space-y-3 w-full ">
