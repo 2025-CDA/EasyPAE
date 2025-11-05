@@ -11,22 +11,18 @@ use App\Entity\InfoFormIntern;
 use App\Entity\InfoFormCompany;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\Operation;
-use Symfony\Component\Mime\Address;
 use App\Entity\InfoFormOrganization;
 use App\Service\NotificationService;
 use App\Entity\InfoFormInternCompany;
 use App\Repository\CompanyRepository;
 use App\Repository\InfoFormRepository;
-use App\Enum\InfoFormOrganizationStatus;
 use App\Repository\OrganizationRepository;
-use App\Repository\UserRepository;
 use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\State\ProcessorInterface;
 use App\Repository\InternMemberRepository;
 use App\Repository\CompanyMemberRepository;
 use App\Repository\InfoFormInternRepository;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -42,8 +38,7 @@ readonly class InternProcessor implements ProcessorInterface
         private EntityManagerInterface   $entityManager,
         private string                   $frontendUrl,
         private MailerInterface          $mailer,
-        private \App\Repository\CompanyRepository $companyRepository,
-        private \App\Service\EmailService $emailService,
+        private CompanyRepository $companyRepository,
         private CompanyMemberRepository $companyMember,
         private NotificationService $notificationService,
         private EmailService             $emailService,
