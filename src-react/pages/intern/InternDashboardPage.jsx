@@ -59,28 +59,13 @@ function InternDashboardPage() {
     ];
 
     async function handleCreatePAE() {
-        const res = await fetchData("POST", "/api/intern/infoForm", {
-            internId: userData?.id,
+        console.log(userData);
+        const res = await fetchData("POST", "intern/infoForm", {
+            internId: userData?.internId,
         });
-        console.log(res.data);
-        navigate("/paeApplication");
+        navigate(`/paeApplication/${res.data.infoFormId}`);
     }
 
-    //  async function handleUpdateCompanyDetails() {
-    //      const res = await fetchData("POST", "/api/intern/infoForm", {
-    //          internId: userData?.id,
-    //      });
-    //      console.log(res.data);
-    //      navigate("/paeApplication");
-    //  }
-
-    //  async function handlePAEValidation() {
-    //      const res = await fetchData("POST", "/api/intern/infoForm", {
-    //          internId: userData?.id,
-    //      });
-    //      console.log(res.data);
-    //      navigate("/paeApplication");
-    //  }
 
     return (
         <MainLayout withSearchbar={false}>

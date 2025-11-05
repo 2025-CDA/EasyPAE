@@ -10,7 +10,7 @@ import HelpPage from "./pages/help/HelpPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import { ToastContainer } from "react-toastify";
 import InternDashboardPage from "./pages/intern/InternDashboardPage";
-import FicheStagiaire from './pages/intern/FicheStagiaire';
+import FicheStagiaire from "./pages/intern/FicheStagiaire";
 import InternListPage from "./components/intern_list/InternListPage";
 import FormInternPage from "./pages/intern/FormInternPage";
 
@@ -48,11 +48,7 @@ export default function App() {
                                         element={<InternDashboardPage />}
                                     />
                                     <Route
-                                        path="/:infoFormId"
-                                        element={<InternDashboardPage />}
-                                    />
-                                    <Route
-                                        path="/paeApplication"
+                                        path="/paeApplication/:infoFormId"
                                         element={<FormInternPage />}
                                     />
                                     <Route
@@ -62,8 +58,10 @@ export default function App() {
                                 </>
                             )}
 
-                            {!(userData?.roles.includes("intern") ||
-                                userData?.roles.includes("company")) && (
+                            {!(
+                                userData?.roles.includes("intern") ||
+                                userData?.roles.includes("company")
+                            ) && (
                                 <>
                                     <Route
                                         index

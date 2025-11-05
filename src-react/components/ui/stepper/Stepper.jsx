@@ -10,21 +10,25 @@ function Stepper({
             title: "test1",
             description: "lorem ipsum2",
             stepContent: <h1>Test1</h1>,
+            stepAction: null,
         },
         {
             title: "test2",
             description: "lorem ipsum2",
             stepContent: <h1>Test2</h1>,
+            stepAction: null,
         },
         {
             title: "test3",
             description: "lorem ipsum3",
             stepContent: <h1>Test3</h1>,
+            stepAction: null,
         },
         {
             title: "test3",
             description: "lorem ipsum3",
             stepContent: <h1>Test3</h1>,
+            stepAction: null,
         },
     ],
     withBack = true,
@@ -50,6 +54,7 @@ function Stepper({
             setValidated(true);
             handleValidateEvent();
         }
+        content[step].stepAction && content[step].stepAction();
     };
 
     const handlePrevious = () => {
