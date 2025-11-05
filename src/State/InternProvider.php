@@ -36,34 +36,27 @@ readonly class InternProvider implements ProviderInterface
 
     private function getInfoFormInfoFormIntern(array $uriVariables): InternDTO
     {
-        $infoFormInternId = $uriVariables['infoFormId'] ?? null;
+        $infoFormId = $uriVariables['infoFormId'] ?? null;
 
-        if (!$infoFormInternId) {
+        if (!$infoFormId) {
             throw new BadRequestHttpException('Info form intern ID is required');
         }
 
-        $internMember = $this->internMemberRepository->find((int)$infoFormInternId);
-
-        if (!$internMember) {
-            throw new NotFoundHttpException('Intern member not found');
-        }
-
-        $infoForm = $this->infoFormRepository->findOneBy([
-            'internMember' => $internMember
-        ]);
+        $infoForm = $this->infoFormRepository->find($infoFormId);
 
         if (!$infoForm) {
             throw new NotFoundHttpException('Info form not found for this intern');
         }
 
         $dto = new InternDTO();
-        $dto->infoFormInternId = $internMember->getId();
+        $dto->infoFormInternId = $infoForm->getInfoFormIntern()?->getId();
 
-        if ($user = $internMember->getUser()) {
-            $dto->internFirstName = $user->getFirstName();
-            $dto->internLastName = $user->getLastName();
-            $dto->internEmail = $user->getEmail();
-        }
+        $user = $infoForm->getInternMember()?->getUser();
+
+        $dto->internFirstName = $user?->getFirstName();
+        $dto->internLastName = $user?->getLastName();
+        $dto->internEmail = $user?->getEmail();
+
 
         $trainingSession = $infoForm->getTrainingSession();
         if ($trainingSession) {
@@ -103,13 +96,13 @@ readonly class InternProvider implements ProviderInterface
         $dtos = [];
         foreach ($infoForms as $infoForm) {
             $dto = new InternDTO();
-            
+
             // Identifiant du DTO (requis pour API Platform)
             $dto->infoFormId = $infoForm->getId();
-            
+
             // 1. Status de l'infoForm
             $dto->infoFormStatus = $infoForm->getStatus();
-            
+
             // 2. Dates de début et fin de l'info_form_intern
             $infoFormIntern = $infoForm->getInfoFormIntern();
             if ($infoFormIntern) {
@@ -130,13 +123,13 @@ readonly class InternProvider implements ProviderInterface
             $companyMembers = $infoForm->getCompanyMembers();
             if ($companyMembers->count() > 0) {
                 $companyMember = $companyMembers->first();
-                
+
                 // Avatar du user de l'entreprise
                 $companyUser = $companyMember->getUser();
                 if ($companyUser) {
                     $dto->companyUserAvatar = $companyUser->getAvatar();
                 }
-                
+
                 // Informations de la company
                 $company = $companyMember->getCompany();
                 if ($company) {
