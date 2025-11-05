@@ -12,9 +12,9 @@ function FormInternPage() {
     const { userData } = useAuthContext();
 
     const [internInfo, setInternInfo] = useState({
-        firstNameIntern: "",
-        lastNameIntern: "",
-        mailIntern: "",
+        firstNameIntern: userData?.firstName,
+        lastNameIntern: userData?.lastName,
+        mailIntern: userData?.email,
         nameCourse: "",
         nbCourse: "",
         startDateInternship: "",

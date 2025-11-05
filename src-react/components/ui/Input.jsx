@@ -13,6 +13,7 @@ export default function Input({
     className,
     value,
     onChange,
+    disabled,
     props,
 }) {
     const [showPassword, setShowPassword] = useState(false);
@@ -37,6 +38,7 @@ export default function Input({
                     placeholder={placeholder}
                     onChange={onChange}
                     required={required}
+                    disabled={disabled}
                     value={value}
                     {...props}
                 />
