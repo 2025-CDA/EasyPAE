@@ -70,7 +70,10 @@ final class JWTCreatedListener
         $payload['lastName'] = $user->getLastName();        // Nom
         $payload['fullName'] = $user->getFirstName() . ' ' . $user->getLastName(); // Nom complet
         $payload['isFirstConnection'] = $user->isFirstConnection(); // Première connexion ?
-        
+        $payload['intern_member_id'] = $user->getInternMember()?->getId();
+        $payload['company_member_id'] = $user->getCompanyMember()?->getId();
+        $payload['organization_member_id'] = $user->getOrganizationMember()?->getId();
+
         // RÔLES : Ajout explicite des rôles de l'utilisateur pour la gestion des permissions
         // Important pour que React sache si l'utilisateur est admin, organisme, stagiaire, etc.
         $payload['roles'] = $user->getRoles();
