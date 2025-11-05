@@ -288,6 +288,8 @@ readonly class OrganizationProcessor implements ProcessorInterface
         if ($intern) {
             $this->notificationService->sendInfoFormValidatedInternNotification($intern, $infoForm, $infoFormIntern);
         }
+
+        // envoyer notifications (stockées en base) a l'organisme si présent
         if ($companyMember) {
             $this->notificationService->sendInfoFormValidatedCompanyNotification($companyMember, $infoForm, $infoFormIntern);
         }
