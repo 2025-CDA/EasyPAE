@@ -2,6 +2,7 @@
 
 namespace App\State;
 
+use App\Enum\InfoFormCompanyStatus;
 use JsonException;
 use App\Dto\InternDTO;
 use App\Entity\InfoForm;
@@ -230,18 +231,18 @@ readonly class InternProcessor implements ProcessorInterface
 
         // 1. Mettre à jour les statuts selon le workflow
         // Changement automatique du statut InfoForm à COMPLETED_INTERN
-        $infoForm->setStatus(\App\Enum\InfoFormStatus::COMPLETED_INTERN_VALIDATION);
+        $infoForm->setStatus(InfoFormStatus::COMPLETED_INTERN_VALIDATION);
 
         // Changement automatique du statut InfoFormIntern à VALIDATED
         $infoFormIntern = $infoForm->getInfoFormIntern();
         if ($infoFormIntern) {
-            $infoFormIntern->setStatus(\App\Enum\InfoFormInternStatus::VALIDATED);
+            $infoFormIntern->setStatus(InfoFormInternStatus::VALIDATED);
         }
 
         // 2. Changement automatique : passer le statut company à PENDING
         $infoFormCompany = $infoForm->getInfoFormCompany();
         if ($infoFormCompany) {
-            $infoFormCompany->setStatus(\App\Enum\InfoFormCompanyStatus::PENDING);
+            $infoFormCompany->setStatus(InfoFormCompanyStatus::PENDING);
         }
 
         $infoFormInternCompany = $infoFormIntern?->getInfoFormInternCompany();

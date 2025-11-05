@@ -128,7 +128,6 @@ class InternDTO
     #[Groups([
         'read:intern_userId_infoForms',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
-        'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
     ])]
     public ?InfoFormStatus $infoFormStatus = null;
 
@@ -158,7 +157,6 @@ class InternDTO
 
     #[Groups([
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
-        'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
     ])]
     public ?InfoFormInternStatus $infoFormInternStatus = null;
 
@@ -171,7 +169,6 @@ class InternDTO
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_edit',
         'update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
-        'denorm-update:intern_infoForm_infoFormId_infoFormIntern_infoFormInternCompany_validation',
     ])]
     public ?InfoFormCompanyStatus $infoFormCompanyStatus = null;
 
