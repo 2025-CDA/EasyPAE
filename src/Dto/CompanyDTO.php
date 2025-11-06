@@ -237,24 +237,40 @@ class CompanyDTO
     ])]
     public ?InfoFormOrganizationStatus $infoFormOrganizationStatus = null;
 
-    // Nouvelles propriétés pour la liste des infoForms
+        // Nouvelles propriétés pour la liste des infoForms
     #[Groups([
+        'read:company_companyId_infoForms',
         'read:companyMember_companyMemberId_infoForms',
     ])]
     public ?array $infoForms = null;
 
     #[Groups([
+        'read:company_companyId_infoForms',
         'read:companyMember_companyMemberId_infoForms',
     ])]
     public ?int $companyMemberId = null;
 
     #[Groups([
-        'read:companyMember_companyMemberId_infoForms',
-    ])]
-    public ?InfoFormStatus $status = null;
-
-    #[Groups([
+        'read:company_companyId_infoForms',
         'read:companyMember_companyMemberId_infoForms',
     ])]
     public ?InfoFormCompanyStatus $companyStatus = null;
+
+    #[Groups([
+        'read:company_companyId_infoForms',
+        'read:companyMember_companyMemberId_infoForms',
+    ])]
+    public ?string $internFirstName = null;
+
+    #[Groups([
+        'read:company_companyId_infoForms',
+        'read:companyMember_companyMemberId_infoForms',
+    ])]
+    public ?string $internLastName = null;
+
+    #[Groups([
+        'read:company_companyId_infoForms',
+        'read:companyMember_companyMemberId_infoForms',
+    ])]
+    public ?string $internEmail = null;
 }

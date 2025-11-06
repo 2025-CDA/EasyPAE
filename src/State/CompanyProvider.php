@@ -106,11 +106,22 @@ readonly class CompanyProvider implements ProviderInterface
             $dto = new CompanyDTO();
             $dto->infoFormId = $infoForm->getId();
             $dto->companyMemberId = $companyMember->getId();
-            $dto->infoFormStatus = $infoForm->getStatus();
         
+            // Récupérer le status de info_form_company uniquement
             $infoFormCompany = $infoForm->getInfoFormCompany();
             if ($infoFormCompany) {
-                $dto->infoFormCompanyStatus = $infoFormCompany->getStatus();
+                $dto->companyStatus = $infoFormCompany->getStatus();
+            }
+            
+            // Récupérer les informations du stagiaire
+            $internMember = $infoForm->getInternMember();
+            if ($internMember) {
+                $user = $internMember->getUser();
+                if ($user) {
+                    $dto->internFirstName = $user->getFirstName();
+                    $dto->internLastName = $user->getLastName();
+                    $dto->internEmail = $user->getEmail();
+                }
             }
             
             $infoFormsData[] = $dto;
