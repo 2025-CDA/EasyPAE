@@ -28,7 +28,9 @@ function TableRow({
                             (col) => col.key !== "action"
                         )}
                         classNameTdataBody={classNameTdataBody}
-                        onClick={() => navigate(`/internForm/${row.infoFormId}`)}
+                        onClick={() =>
+                            navigate(`/internForm/${row.infoFormId}`)
+                        }
                     />
 
                     {/* Ensuite, si une colonne "action" existe, on affiche la cellule des boutons */}

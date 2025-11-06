@@ -8,11 +8,12 @@ import AppTable from "../../components/ui/Table/AppTable";
 import FormAddIntern from "../../components/intern_list/FormAddIntern";
 import { Edit } from "lucide-react";
 import { useAuthContext } from "../../store/auth_context/authContext";
-
+import { useNavigate } from "react-router";
 export default function PAECompanyListPage() {
     // Constante concernant les données des stagiaires dans le tableau
     const [files, setFiles] = useState([]);
     const { userData } = useAuthContext();
+    const navigate = useNavigate();
 
     const { fetchData } = useAxios();
 
@@ -78,6 +79,9 @@ export default function PAECompanyListPage() {
                         classNameAppTable={"w-full w-2/3"}
                         divAction={divAction}
                         divButtonHeaderClassName={"hidden"}
+                        onRowClick={() =>
+                            navigate(`/internForm/${row.infoFormId}`)
+                        }
                     />
                 </div>
             </div>

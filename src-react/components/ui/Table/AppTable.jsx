@@ -94,7 +94,8 @@ function AppTable({
     placeholderTextSearchBar, // Pour changer le text du placeholder de la searchBar ex : {"Chercher formateur"}
     classNameTdataBody, // {"bg-red-100 px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-800"}
     classNameTdataHead, //{"bg-red-100 px-6 py-4 whitespace-nowrap text-sm font-medium text-red-800 dark:text-neutral-800"}
-    classNameTdataAction, //{"bg-red-100 px-6 py-4 whitespace-nowrap text-sm font-medium text-red-800 dark:text-neutral-800"}
+    classNameTdataAction,
+    //{"bg-red-100 px-6 py-4 whitespace-nowrap text-sm font-medium text-red-800 dark:text-neutral-800"}
 }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(numberItemsPerPage); //Le nombre d'item par page appliqué par défaut dans la props à trois et à modifier si besoin dans le composant parent
@@ -115,7 +116,7 @@ function AppTable({
 
     // const handleEdit = (id) => console.log(`Modifier l'élément ID : ${id}`)
     // const handleDelete = (id) => console.log(`Supprimer l'élément ID : ${id}`)
-    
+
     //Vous pouvez changer ici la logique qui sera appliquée dans vos bouttons d'action
     const editDisplay = (id) => console.log(`Modifier l'élément ID : ${id}`);
     const handleDelete = (id) => console.log(`Supprimer l'élément ID : ${id}`);
