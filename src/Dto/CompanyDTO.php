@@ -25,6 +25,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
             provider: CompanyProvider::class,
         ),
 
+        new Get(
+            uriTemplate: '/company/companyMember/{companyMemberId}/infoForms',
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            uriVariables: ['companyMemberId'],
+            normalizationContext: ['groups' => ['read:companyMember_companyMemberId_infoForms']],
+            name: 'companyMember_companyMemberId_infoForms',
+            provider: CompanyProvider::class,
+        ),
+
 
 //        new Post(
 //            uriTemplate: '/intern/infoForm',
@@ -65,6 +74,7 @@ class CompanyDTO
     #[ApiProperty(identifier: true)]
     #[Groups([
         'read:company_infoForm_infoFormId_infoFormCompany',
+        'read:companyMember_companyMemberId_infoForms',
         'update:company_infoForm_infoFormId_infoFormCompany_edit',
         'update:update:company_infoForm_infoFormId_infoFormCompany_validation',
 
@@ -210,12 +220,14 @@ class CompanyDTO
     #[Groups([
         'update:company_infoForm_infoFormId_infoFormCompany_validation',
         'denorm-update:company_infoForm_infoFormId_infoFormCompany_validation',
+        'read:companyMember_companyMemberId_infoForms'
     ])]
     public ?InfoFormStatus $infoFormStatus = null;
 
     #[Groups([
         'update:company_infoForm_infoFormId_infoFormCompany_validation',
         'denorm-update:company_infoForm_infoFormId_infoFormCompany_validation',
+        'read:companyMember_companyMemberId_infoForms'
     ])]
     public ?InfoFormCompanyStatus $infoFormCompanyStatus = null;
 
@@ -224,4 +236,25 @@ class CompanyDTO
         'denorm-update:company_infoForm_infoFormId_infoFormCompany_validation',
     ])]
     public ?InfoFormOrganizationStatus $infoFormOrganizationStatus = null;
+
+    // Nouvelles propriétés pour la liste des infoForms
+    #[Groups([
+        'read:companyMember_companyMemberId_infoForms',
+    ])]
+    public ?array $infoForms = null;
+
+    #[Groups([
+        'read:companyMember_companyMemberId_infoForms',
+    ])]
+    public ?int $companyMemberId = null;
+
+    #[Groups([
+        'read:companyMember_companyMemberId_infoForms',
+    ])]
+    public ?InfoFormStatus $status = null;
+
+    #[Groups([
+        'read:companyMember_companyMemberId_infoForms',
+    ])]
+    public ?InfoFormCompanyStatus $companyStatus = null;
 }
