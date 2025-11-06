@@ -103,13 +103,23 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
             provider: UserProvider::class,
         ),
         new Patch(
-            uriTemplate: '/notifications/user/{userId}/sign/{notificationId}',
+            uriTemplate: '/notifications/user/{userId}/read/{notificationId}',
             formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
             uriVariables: ['userId', 'notificationId'],
             normalizationContext: ['groups' => ['read:notification_status']],
             read: false,
             deserialize: false,
             name: 'mark_notification_as_read',
+            processor: UserProcessor::class,
+        ),
+        new Patch(
+            uriTemplate: '/notifications/user/{userId}/sign/{notificationId}',
+            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            uriVariables: ['userId', 'notificationId'],
+            normalizationContext: ['groups' => ['read:notification_status']],
+            read: false,
+            deserialize: false,
+            name: 'mark_notification_as_signed',
             processor: UserProcessor::class,
         ),
         new Patch(
@@ -274,6 +284,14 @@ class UserDTO
         'read:notification_status',
     ])]
     public ?bool $isRead = null;
+
+    #[Groups([
+        'read:user_notifications',
+        'read:user_notification_detail',
+        'read:notification_status',
+        
+    ])]
+    public ?bool $isSigned = null;
 
     #[Groups([
         'read:user_notifications',
