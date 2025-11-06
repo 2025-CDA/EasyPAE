@@ -66,7 +66,7 @@ export default function App() {
                                         element={<PAECompanyListPage />}
                                     />
                                     <Route
-                                        path="/:infoFormId"
+                                        path="/internForm/:infoFormId"
                                         element={<InternDashboardPage />}
                                     />
                                     <Route
