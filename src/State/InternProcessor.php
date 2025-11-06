@@ -294,12 +294,13 @@ readonly class InternProcessor implements ProcessorInterface
             // Email invitant le contact à compléter le formulaire entreprise (avec SIRET)
             $this->emailService->sendCompanyActivationNewCompanyEmail(
                 $companyEmail,
+                $infoFormId ?? '',
                 $infoFormInternCompany?->getLegalRepresentativeFirstName() ?? '',
                 $infoFormInternCompany?->getLegalRepresentativeLastName() ?? '',
-                $companyName ?? 'Votre entreprise',
-                $infoForm->getInternMember()?->getUser()?->getFirstName() ?? '',
-                $infoForm->getInternMember()?->getUser()?->getLastName() ?? '',
-                $activationLink
+                $companyEmail ?? '',
+                $companyName ?? '',
+                $infoFormInternCompany?->getAddress() ?? '',
+                $activationLink,
             );
         }
 
