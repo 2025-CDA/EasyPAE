@@ -12,6 +12,7 @@ import Avatar from "../../components/ui/Avatar.jsx";
 import logo from "../../assets/Logo-light.png";
 import { useAuthContext } from "../../store/auth_context/authContext.js";
 import { useNavigate } from "react-router";
+import { rolesTranslation } from "../../helpers/roles.js";
 
 export default function DesktopSidebar({
     avatarColor = "#ffe561",
@@ -19,7 +20,7 @@ export default function DesktopSidebar({
     role = "Stagiaire",
     avatarUrl,
 }) {
-    const { signOut } = useAuthContext();
+    const { signOut, userData } = useAuthContext();
     const navigate = useNavigate();
     // ------------------------------------ Gérer l'affichache de la Sidbar etendu ou compact ------------------------------------
     const [collapsed, setCollapsed] = useState(false);
@@ -46,7 +47,7 @@ export default function DesktopSidebar({
                     <>
                         <div className=" text-lg">{userName}</div>
                         <div className="text-gray-300 text-xs font-light">
-                            {role}
+                            {rolesTranslation[userData?.roles[0]]}
                         </div>
                     </>
                 )}
@@ -127,19 +128,18 @@ function SidebarItem({ icon, label, collapsed, onClick }) {
         <div
             onClick={onClick}
             className={`flex items-center gap-6 px-4 py-2 hover:bg-blue-700 rounded-lg cursor-pointer w-full ${
-                collapsed ? 'relative group' : ''
+                collapsed ? "relative group" : ""
             }`}
         >
             <span>{icon}</span>
             {!collapsed && <span>{label}</span>}
-            
+
             {/* Apparaît au hover quand collapsed = true */}
             {collapsed && (
                 <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                     {label}
                 </div>
             )}
-            
         </div>
     );
 }

@@ -1,12 +1,21 @@
-import { useState } from 'react';
-import './Calendar.css';
-import Button from '../ui/Button';
-import { ChevronUp, Calendar, ChevronDown} from 'lucide-react';
-
+import { useState } from "react";
+import "./Calendar.css";
+import Button from "../ui/Button";
+import { ChevronUp, Calendar, ChevronDown } from "lucide-react";
 
 const MONTHS_FR = [
-    "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
-    "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre",
 ];
 const DAYS_FR = ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"];
 
@@ -23,7 +32,10 @@ function getFirstDayOfWeek(month, year) {
 function getCalendarRows(month, year) {
     const daysInMonth = getDaysInMonth(month, year);
     const firstDay = getFirstDayOfWeek(month, year);
-    const daysInPrevMonth = getDaysInMonth((month - 1 + 12) % 12, month === 0 ? year - 1 : year);
+    const daysInPrevMonth = getDaysInMonth(
+        (month - 1 + 12) % 12,
+        month === 0 ? year - 1 : year
+    );
 
     let days = [];
     // Jours du mois précédent
@@ -32,7 +44,7 @@ function getCalendarRows(month, year) {
             day: daysInPrevMonth - i,
             currentMonth: false,
             key: `prev-${daysInPrevMonth - i}`,
-            date: new Date(year, month - 1, daysInPrevMonth - i)
+            date: new Date(year, month - 1, daysInPrevMonth - i),
         });
     }
     // Jours du mois courant
@@ -41,17 +53,18 @@ function getCalendarRows(month, year) {
             day: i,
             currentMonth: true,
             key: `curr-${i}`,
-            date: new Date(year, month, i)
+            date: new Date(year, month, i),
         });
     }
     // Jours du mois suivant pour compléter la grille
     let nextDay = 1;
-    while (days.length < 42) { // 6 semaines * 7 jours
+    while (days.length < 42) {
+        // 6 semaines * 7 jours
         days.push({
             day: nextDay,
             currentMonth: false,
             key: `next-${nextDay}`,
-            date: new Date(year, month + 1, nextDay)
+            date: new Date(year, month + 1, nextDay),
         });
         nextDay++;
     }
@@ -63,7 +76,12 @@ function getCalendarRows(month, year) {
     return weeks;
 }
 
-function CalendarSimple({ dates, shrinkable = false, className, justToday = false }) {
+function CalendarSimple({
+    dates,
+    shrinkable = false,
+    className,
+    justToday = false,
+}) {
     // Supporte la prop dates (objet contenant periodStart et periodEnd)
     // Si dates est fourni, on l'utilise, sinon on prend periodStart/periodEnd des props (pour compatibilité)
     let periodStart = null;
@@ -78,8 +96,10 @@ function CalendarSimple({ dates, shrinkable = false, className, justToday = fals
     }
     const [opened, setOpened] = useState(!shrinkable);
     // Immutable Date, convertir en JS Date
-    const startDate = periodStart && periodStart.toDate ? periodStart.toDate() : periodStart;
-    const endDate = periodEnd && periodEnd.toDate ? periodEnd.toDate() : periodEnd;
+    const startDate =
+        periodStart && periodStart.toDate ? periodStart.toDate() : periodStart;
+    const endDate =
+        periodEnd && periodEnd.toDate ? periodEnd.toDate() : periodEnd;
 
     // Date du jour
     const today = new Date();
@@ -130,8 +150,16 @@ function CalendarSimple({ dates, shrinkable = false, className, justToday = fals
         }
         // On ignore l'heure
         const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        const s = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-        const e = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+        const s = new Date(
+            startDate.getFullYear(),
+            startDate.getMonth(),
+            startDate.getDate()
+        );
+        const e = new Date(
+            endDate.getFullYear(),
+            endDate.getMonth(),
+            endDate.getDate()
+        );
         return d >= s && d <= e;
     }
 
@@ -139,7 +167,11 @@ function CalendarSimple({ dates, shrinkable = false, className, justToday = fals
     let jValue = null;
     if (startDate) {
         const todayDate = new Date(todayY, todayM, todayD);
-        const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+        const start = new Date(
+            startDate.getFullYear(),
+            startDate.getMonth(),
+            startDate.getDate()
+        );
         const diff = Math.floor((start - todayDate) / (1000 * 60 * 60 * 24));
         if (diff > 0) {
             jValue = `J - ${diff}`;
@@ -154,30 +186,60 @@ function CalendarSimple({ dates, shrinkable = false, className, justToday = fals
     return (
         <div className={`${className}`}>
             {shrinkable && (
-                <div className={`w-full pl-2 pr-2 mb-3 flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden`}>
+                <div
+                    className={`w-full pl-2 pr-2 mb-3 flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden`}
+                >
                     {/* Affichage du J- / J+ */}
                     {jValue && (
                         <div className="mt-2 pb-5 text-center text-s font-bold text-primary-text">
-                            {jValue} {jValue.startsWith("J - ") ? "avant le début de stage" : "depuis le début de stage"}
-                            <div className='py-1 flex items-center gap-1 justify-center text-xs '>
+                            {jValue}{" "}
+                            {jValue.startsWith("J - ")
+                                ? "avant le début de stage"
+                                : "depuis le début de stage"}
+                            <div className="py-1 flex items-center gap-1 justify-center text-xs ">
                                 {/* ------------------------------------------ régler le style de calendar et date du jour -------------------------------------- */}
-                                <Calendar width={12}/>
-                                {`${today.getDate().toString().padStart(2, "0")}/${(today.getMonth() + 1).toString().padStart(2, "0")}/${today.getFullYear()}`}
+                                <Calendar width={12} />
+                                {`${today
+                                    .getDate()
+                                    .toString()
+                                    .padStart(2, "0")}/${(today.getMonth() + 1)
+                                    .toString()
+                                    .padStart(2, "0")}/${today.getFullYear()}`}
                             </div>
                             {/* Affichage de la période PAE */}
                             {startDate && endDate && (
                                 <div className="pb-3 text-center text-xs font-normal text-primary-text">
                                     Période PAE du :{" "}
-                                    {`${startDate.getDate().toString().padStart(2, "0")}/${(startDate.getMonth() + 1).toString().padStart(2, "0")}/${startDate.getFullYear()}`}
-                                    {" "}au{" "}
-                                    {`${endDate.getDate().toString().padStart(2, "0")}/${(endDate.getMonth() + 1).toString().padStart(2, "0")}/${endDate.getFullYear()}`}
+                                    {`${startDate
+                                        .getDate()
+                                        .toString()
+                                        .padStart(2, "0")}/${(
+                                        startDate.getMonth() + 1
+                                    )
+                                        .toString()
+                                        .padStart(
+                                            2,
+                                            "0"
+                                        )}/${startDate.getFullYear()}`}{" "}
+                                    au{" "}
+                                    {`${endDate
+                                        .getDate()
+                                        .toString()
+                                        .padStart(2, "0")}/${(
+                                        endDate.getMonth() + 1
+                                    )
+                                        .toString()
+                                        .padStart(
+                                            2,
+                                            "0"
+                                        )}/${endDate.getFullYear()}`}
                                 </div>
                             )}
                             {/* Période PAE du : {periodStart} au {periodEnd} */}
                             {shrinkable && (
                                 <Button
-                                    shape='circle'
-                                    onClick={() => setOpened(o => !o)}
+                                    shape="circle"
+                                    onClick={() => setOpened((o) => !o)}
                                     icon={<ChevronDown />}
                                 />
                             )}
@@ -186,46 +248,73 @@ function CalendarSimple({ dates, shrinkable = false, className, justToday = fals
                     )}
                 </div>
             )}
-            <div className={`w-full pl-2 pr-2 flex flex-col bg-white rounded-xl overflow-hidden${opened ? '' : ' hidden'} ${justToday ? '' : 'border border-gray-200'}`}>
+            <div
+                className={`w-full pl-2 pr-2 flex flex-col bg-white rounded-xl overflow-hidden${
+                    opened ? "" : " hidden"
+                } ${justToday ? "" : "border border-gray-200"}`}
+            >
                 {/* Affichage du J- / J+ */}
                 {jValue && (
                     <div className="mt-2 pb-5 text-center font-bold text-primary-text">
-                        {!shrinkable && !justToday &&
+                        {!shrinkable && !justToday && (
                             <>
-                                <p className='text-3xl ' >{jValue}</p>
-                                <p className='text-s ' >{jValue.startsWith("J - ") ? "avant le début de stage" : "depuis le début de stage"}</p>
+                                <p className="text-3xl ">{jValue}</p>
+                                <p className="text-s ">
+                                    {jValue.startsWith("J - ")
+                                        ? "avant le début de stage"
+                                        : "depuis le début de stage"}
+                                </p>
                             </>
-                        }
+                        )}
                         {shrinkable && (
                             <>
-                                {jValue} {jValue.startsWith("J - ") ? "avant le début de stage" : "depuis le début de stage"}
+                                {jValue}{" "}
+                                {jValue.startsWith("J - ")
+                                    ? "avant le début de stage"
+                                    : "depuis le début de stage"}
                                 <Button
-                                    className={'ml-2'}
-                                    shape='circle'
-                                    onClick={() => setOpened(o => !o)}
+                                    className={"ml-2"}
+                                    shape="circle"
+                                    onClick={() => setOpened((o) => !o)}
                                     icon={<ChevronUp />}
                                 />
                             </>
                         )}
                     </div>
                 )}
-                <div className={` flex flex-col bg-white rounded-xl overflow-hidden ${justToday ? '' : 'shadow-lg border border-gray-200'}`}>
+                <div
+                    className={` flex flex-col bg-white rounded-xl overflow-hidden ${
+                        justToday ? "" : "shadow-lg border border-gray-200"
+                    }`}
+                >
                     <div className="p-3 space-y-0.5">
-
                         {/* ---------- */}
                         {/* Mois/Année */}
                         {/* ---------- */}
 
                         <div className="grid grid-cols-5 items-center gap-x-3 mx-1.5 pb-3">
-
                             {/* Précédent */}
                             <div className="col-span-1">
                                 <button
                                     type="button"
                                     className="size-8 flex justify-center items-center text-primary-text hover:bg-gray-100 rounded-full disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100"
                                     aria-label="Précédent"
-                                    onClick={handlePrev}>
-                                    <svg className="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                                    onClick={handlePrev}
+                                >
+                                    <svg
+                                        className="shrink-0 size-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="1"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <path d="m15 18-6-6 6-6" />
+                                    </svg>
                                 </button>
                             </div>
 
@@ -234,17 +323,23 @@ function CalendarSimple({ dates, shrinkable = false, className, justToday = fals
                                 <select
                                     value={month}
                                     onChange={handleMonthChange}
-                                    className="rounded py-1 text-primary-text no-arrow text-sm bg-white">
+                                    className="rounded py-1 text-primary-text no-arrow text-sm bg-white"
+                                >
                                     {MONTHS_FR.map((m, idx) => (
-                                        <option value={idx} key={m}>{m}</option>
+                                        <option value={idx} key={m}>
+                                            {m}
+                                        </option>
                                     ))}
                                 </select>
                                 <select
                                     value={year}
                                     onChange={handleYearChange}
-                                    className="rounded py-1 text-primary-text no-arrow text-sm bg-white">
+                                    className="rounded py-1 text-primary-text no-arrow text-sm bg-white"
+                                >
                                     {years.map((y) => (
-                                        <option value={y} key={y}>{y}</option>
+                                        <option value={y} key={y}>
+                                            {y}
+                                        </option>
                                     ))}
                                 </select>
                             </div>
@@ -255,8 +350,21 @@ function CalendarSimple({ dates, shrinkable = false, className, justToday = fals
                                     type="button"
                                     className="size-8 flex justify-center items-center text-primary-text hover:bg-gray-100 rounded-full disabled:opacity-50 disabled:pointer-events-none focus:outline-hidden focus:bg-gray-100"
                                     aria-label="Suivant"
-                                    onClick={handleNext}>
-                                    <svg className="shrink-0 size-4" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                                    onClick={handleNext}
+                                >
+                                    <svg
+                                        className="shrink-0 size-4"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="1"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <path d="m9 18 6-6-6-6" />
+                                    </svg>
                                 </button>
                             </div>
                         </div>
@@ -266,7 +374,10 @@ function CalendarSimple({ dates, shrinkable = false, className, justToday = fals
                         {/* ------------------- */}
                         <div className="flex w-full pb-1.5">
                             {DAYS_FR.map((d) => (
-                                <span key={d} className="m-px w-[14.2857%] block text-center text-xs text-gray-500">
+                                <span
+                                    key={d}
+                                    className="m-px w-[14.2857%] block text-center text-xs text-gray-500"
+                                >
                                     {d}
                                 </span>
                             ))}
@@ -277,66 +388,121 @@ function CalendarSimple({ dates, shrinkable = false, className, justToday = fals
                         {/* ------------------- */}
                         {weeks.map((week, i) => (
                             <div className="flex w-full" key={i}>
-                                {week.map(({ day, currentMonth, key, date }, dayIdx) => {
-                                    // Détection du premier et dernier jour de la période
-                                    const isStart = startDate && date.getFullYear() === startDate.getFullYear() && date.getMonth() === startDate.getMonth() && date.getDate() === startDate.getDate();
-                                    const isEnd = endDate && date.getFullYear() === endDate.getFullYear() && date.getMonth() === endDate.getMonth() && date.getDate() === endDate.getDate();
-                                    const inPeriod = isInInternshipPeriod(date);
+                                {week.map(
+                                    (
+                                        { day, currentMonth, key, date },
+                                        dayIdx
+                                    ) => {
+                                        // Détection du premier et dernier jour de la période
+                                        const isStart =
+                                            startDate &&
+                                            date.getFullYear() ===
+                                                startDate.getFullYear() &&
+                                            date.getMonth() ===
+                                                startDate.getMonth() &&
+                                            date.getDate() ===
+                                                startDate.getDate();
+                                        const isEnd =
+                                            endDate &&
+                                            date.getFullYear() ===
+                                                endDate.getFullYear() &&
+                                            date.getMonth() ===
+                                                endDate.getMonth() &&
+                                            date.getDate() ===
+                                                endDate.getDate();
+                                        const inPeriod =
+                                            isInInternshipPeriod(date);
 
-                                    // Détection du premier et dernier jour de la semaine
-                                    const isFirstOfWeek = dayIdx === 0;
-                                    const isLastOfWeek = dayIdx === 6;
+                                        // Détection du premier et dernier jour de la semaine
+                                        const isFirstOfWeek = dayIdx === 0;
+                                        const isLastOfWeek = dayIdx === 6;
 
-                                    // Détection du jour courant
-                                    const isToday = date.getFullYear() === todayY && date.getMonth() === todayM && date.getDate() === todayD;
+                                        // Détection du jour courant
+                                        const isToday =
+                                            date.getFullYear() === todayY &&
+                                            date.getMonth() === todayM &&
+                                            date.getDate() === todayD;
 
-                                    // Classes pour arrondir le fond logo
-                                    let logoBgClass = "absolute z-0 w-full h-10 bg-logo ";
-                                    // N'afficher le bg-logo que si le jour est dans la période ET dans le mois courant
-                                    if (inPeriod && currentMonth && !isStart && !isEnd) {
-                                        if (isFirstOfWeek) {
-                                            logoBgClass += "translate-x-1/4 rounded-l-full";
+                                        // Classes pour arrondir le fond logo
+                                        let logoBgClass =
+                                            "absolute z-0 w-full h-10 bg-logo ";
+                                        // N'afficher le bg-logo que si le jour est dans la période ET dans le mois courant
+                                        if (
+                                            inPeriod &&
+                                            currentMonth &&
+                                            !isStart &&
+                                            !isEnd
+                                        ) {
+                                            if (isFirstOfWeek) {
+                                                logoBgClass +=
+                                                    "translate-x-1/4 rounded-l-full";
+                                            }
+                                            if (isLastOfWeek) {
+                                                logoBgClass +=
+                                                    "-translate-x-1/4 rounded-r-full";
+                                            }
                                         }
-                                        if (isLastOfWeek) {
-                                            logoBgClass += "-translate-x-1/4 rounded-r-full";
+                                        if (isStart && currentMonth) {
+                                            logoBgClass +=
+                                                "translate-x-1/4 rounded-l-full";
                                         }
-                                    }
-                                    if (isStart && currentMonth) {
-                                        logoBgClass += "translate-x-1/4 rounded-l-full";
-                                    }
-                                    if (isEnd && currentMonth) {
-                                        logoBgClass += "-translate-x-1/4 rounded-r-full";
-                                    }
+                                        if (isEnd && currentMonth) {
+                                            logoBgClass +=
+                                                "-translate-x-1/4 rounded-r-full";
+                                        }
 
-                                    // Classes pour le bouton principal
-                                    let btnClass = `size-10 flex justify-center items-center border-2 border-none text-xs rounded-full z-10
-                                        ${currentMonth ? "text-primary-text hover:border-primary hover:border-3 hover:border-solid" : "text-secondary-text"}
-                                        ${currentMonth ? "" : "disabled:opacity-50 disabled:pointer-events-none"}
-                                        ${isStart ? "bg-primary text-white" : ""}
+                                        // Classes pour le bouton principal
+                                        let btnClass = `size-10 flex justify-center items-center border-2 border-none text-xs rounded-full z-10
+                                        ${
+                                            currentMonth
+                                                ? "text-primary-text hover:border-primary hover:border-3 hover:border-solid"
+                                                : "text-secondary-text"
+                                        }
+                                        ${
+                                            currentMonth
+                                                ? ""
+                                                : "disabled:opacity-50 disabled:pointer-events-none"
+                                        }
+                                        ${
+                                            isStart
+                                                ? "bg-primary text-white"
+                                                : ""
+                                        }
                                         ${isEnd ? "bg-primary text-white" : ""}
-                                        ${isToday ? "border-3 border-primary border-solid" : ""}
+                                        ${
+                                            isToday
+                                                ? "border-3 border-primary border-solid"
+                                                : ""
+                                        }
                                     `;
-                                    if (isStart && isFirstOfWeek) {
-                                        btnClass += " rounded-l-full";
-                                    }
-                                    if (isEnd && isLastOfWeek) {
-                                        btnClass += " rounded-r-full";
-                                    }
+                                        if (isStart && isFirstOfWeek) {
+                                            btnClass += " rounded-l-full";
+                                        }
+                                        if (isEnd && isLastOfWeek) {
+                                            btnClass += " rounded-r-full";
+                                        }
 
-                                    return (
-                                        <div key={key} className="w-[14.2857%] relative flex justify-center items-center">
-                                            {inPeriod && currentMonth && (
-                                                <div className={logoBgClass} />
-                                            )}
-                                            <button
-                                                type="button"
-                                                className={btnClass}
-                                                disabled={!currentMonth}>
-                                                {day}
-                                            </button>
-                                        </div>
-                                    );
-                                })}
+                                        return (
+                                            <div
+                                                key={key}
+                                                className="w-[14.2857%] relative flex justify-center items-center"
+                                            >
+                                                {inPeriod && currentMonth && (
+                                                    <div
+                                                        className={logoBgClass}
+                                                    />
+                                                )}
+                                                <button
+                                                    type="button"
+                                                    className={btnClass}
+                                                    disabled={!currentMonth}
+                                                >
+                                                    {day}
+                                                </button>
+                                            </div>
+                                        );
+                                    }
+                                )}
                             </div>
                         ))}
                     </div>
