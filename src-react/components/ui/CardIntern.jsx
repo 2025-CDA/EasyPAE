@@ -32,7 +32,7 @@ function CardIntern({
                 <div className="flex items-center w-full">
                     <Avatar
                         size="sm"
-                        url={Test || avatarUrl}
+                        url={avatarUrl || noAvatar}
                         className="outline-hidden mr-2"
                     />
                     <h3>
