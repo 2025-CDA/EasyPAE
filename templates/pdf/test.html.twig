@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice #{{ invoice.id }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .details {
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Invoice #{{ invoice.id }}</h1>
+</div>
+<div class="details">
+    <p><strong>Date:</strong> {{ invoice.createdAt|date('Y-m-d') }}</p>
+    <p><strong>Amount:</strong> {{ invoice.amount }}</p>
+</div>
+</body>
+</html>

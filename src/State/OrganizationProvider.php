@@ -30,6 +30,7 @@ readonly class OrganizationProvider implements ProviderInterface
             'organization_session_sessionId_interns' => $this->getOrganizationSessionSessionIdInterns($uriVariables),
             'organization_session_sessionId' => $this->getOrganizationSessionSessionId($uriVariables),
             'organization_training_names' => $this->getAllTrainingNames(),
+            'organization_infoForm_infoFormId_pdf' => $this->getInfoFormPdf($uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
     }
@@ -226,5 +227,9 @@ readonly class OrganizationProvider implements ProviderInterface
             $result[] = ['id' => $id, 'name' => $name];
         }
         return $result;
+    }
+
+    private function getInfoFormPdf(array $uriVariables)
+    {
     }
 }

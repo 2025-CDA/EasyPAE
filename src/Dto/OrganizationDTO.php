@@ -59,6 +59,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
             provider: OrganizationProvider::class,
         ),
 
+        new Get(
+            uriTemplate: '/organization/infoForm/{infoFormId}/pdf',
+//            formats: ['jsonld' => ['application/ld+json'], 'json' => ['application/json']],
+            uriVariables: ['infoFormId'],
+//            normalizationContext: ['groups' => ['read:organization_infoForm_infoFormId_pdf']],
+            output: false,
+            name: 'organization_infoForm_infoFormId_pdf',
+            provider: OrganizationProvider::class,
+        ),
+
 
         new Post(
             uriTemplate: '/organization/session',
