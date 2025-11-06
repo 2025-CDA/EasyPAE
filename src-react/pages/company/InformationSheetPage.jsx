@@ -6,11 +6,17 @@ import Stepper from "../../components/ui/stepper/Stepper";
 import { TrainerForm } from "./information_sheet/TrainerForm";
 import { LegalRepresentativeForm } from "./information_sheet/LegalRepresentativeForm";
 import CompanyForm from "./information_sheet/CompanyForm";
+import useAxios from "../../hooks/useAxios";
+import { useNavigate, useParams } from "react-router";
+import { toast } from "react-toastify";
 
 export default function InformationSheetPage() {
+    const { fetchData } = useAxios();
+    const { infoFormId } = useParams();
+    const navigate = useNavigate();
     const [formState, setFormState] = useState({
         company: {
-            companyName: "",
+            companyName: "WER",
             companyAddress: "",
             companyActivities: "",
             companyPhone: "",
@@ -24,7 +30,7 @@ export default function InformationSheetPage() {
             legalRepEmail: "",
         },
         trainer: {
-            isTrainerSame: false,
+            // isTrainerSame: false,
             trainerName: "",
             trainerLastName: "",
             trainerEmail: "",
@@ -33,13 +39,15 @@ export default function InformationSheetPage() {
     });
 
     function updateSection(section, key, value) {
-        setFormState((prev) => ({
-            ...prev,
-            [section]: {
-                ...prev[section],
-                [key]: value,
-            },
-        }));
+        setFormState((prev) => {
+            return {
+                ...prev,
+                [section]: {
+                    ...prev[section],
+                    [key]: value,
+                },
+            };
+        });
     }
 
     function CompanyDetails() {
@@ -70,6 +78,37 @@ export default function InformationSheetPage() {
                 </div>
             </form>
         );
+    }
+
+    async function submitCompanyDetails() {
+        try {
+            const res = await fetchData(
+                "PATCH",
+                `company/infoForm/${infoFormId}/infoFormCompany`,
+                {
+                    name: formState.company.companyName,
+                    address: formState.company.companyAddress,
+                    activity: formState.company.companyActivities,
+                    phoneNumber: formState.company.companyPhone,
+                    email: formState.company.companyEmail,
+                    fax: formState.company.companyFax,
+                    siret: formState.company.companyNumber,
+                    legalRepresentativeFirstName:
+                        formState.legalRep.legalRepName,
+                    legalRepresentativeLastName:
+                        formState.legalRep.legalRepLastName,
+                    legalRepresentativeEmail: formState.legalRep.legalRepEmail,
+                    tutorFirstName: formState.trainer.trainerName,
+                    tutorLastName: formState.trainer.trainerLastName,
+                    tutorEmail: formState.trainer.trainerEmail,
+                    tutorPhoneNumber: formState.trainer.trainerPhone,
+                }
+            );
+            navigate("/");
+            toast.success("Fiche de renseignement mise à jour");
+        } catch (error) {
+            toast.error(error.message);
+        }
     }
 
     return (
@@ -104,25 +143,11 @@ export default function InformationSheetPage() {
                                     "Informations sur l’entreprise,  l’identité du responsable légale et du tuteur de stage.",
                                 stepContent: <CompanyDetails></CompanyDetails>,
                             },
-                            {
-                                title: "Horaires",
-                                description:
-                                    "Horaires et conditions d’accueil.",
-                                stepContent: <h1>Test2</h1>,
-                            },
-                            {
-                                title: "Modalités",
-                                description:
-                                    "Objectifs du stages et activités confiéesau stagiaire",
-                                stepContent: <h1>Test3</h1>,
-                            },
-                            {
-                                title: "Récapitulatif et validation",
-
-                                stepContent: <h1>Test4</h1>,
-                            },
                         ]}
                         withBack
+                        handleValidateEvent={submitCompanyDetails}
+                        lastEventButtonTitle={"Soumettre"}
+                        withNavbar={false}
                     ></Stepper>
                 </Container>
             </div>

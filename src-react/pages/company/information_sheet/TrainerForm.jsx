@@ -6,7 +6,7 @@ export function TrainerForm({ trainerDetails, handleTrainerDetailsChange }) {
     return (
         <Container className={"flex flex-col p-5 gap-5"}>
             <h3 className="text-primary font-semibold">Tuteur/tutrice</h3>
-            <Checkbox
+            {/* <Checkbox
                 label={"Le tuteur est identique au responsable légal"}
                 checked={trainerDetails.isTrainerSame}
                 onChange={(e) =>
@@ -15,7 +15,7 @@ export function TrainerForm({ trainerDetails, handleTrainerDetailsChange }) {
                         e.target.checked
                     )
                 }
-            />
+            /> */}
             <Input
                 label="Nom"
                 placeholder="Nom"

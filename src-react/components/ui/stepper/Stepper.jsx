@@ -37,6 +37,7 @@ function Stepper({
     handleValidateEvent, // par example pour navigate apres validation
     isHorizontal = false,
     className,
+    withNavbar = true,
 }) {
     const [step, setStep] = useState(0);
     const [finishedSteps, setFinishedSteps] = useState([]);
@@ -69,14 +70,16 @@ function Stepper({
         <Container
             className={`flex flex-col justify-center items-center p-4 ${className}`}
         >
-            <StepperNavbar
-                content={content}
-                currentStep={step}
-                nextStep={step + 1}
-                finishedStep={finishedSteps}
-                validated={validated}
-                isHorizontal={isHorizontal}
-            />
+            {withNavbar && (
+                <StepperNavbar
+                    content={content}
+                    currentStep={step}
+                    nextStep={step + 1}
+                    finishedStep={finishedSteps}
+                    validated={validated}
+                    isHorizontal={isHorizontal}
+                />
+            )}
 
             <StepContent content={content[step].stepContent} />
 

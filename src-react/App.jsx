@@ -14,6 +14,7 @@ import FicheStagiaire from "./pages/intern/FicheStagiaire";
 import InternListPage from "./components/intern_list/InternListPage";
 import FormInternPage from "./pages/intern/FormInternPage";
 import InformationSheetPage from "./pages/company/InformationSheetPage";
+import PAECompanyListPage from "./pages/company/PAECompanyListPage";
 import PAECompanyListPage from "./pages/intern/PAECompanyListPage";
 import CalendarPage from "./pages/CalendarPage";
 
