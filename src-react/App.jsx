@@ -99,7 +99,7 @@ export default function App() {
                                         element={<CalendarPage />}
                                     ></Route>
                                     <Route
-                                        path="/interForm/:id"
+                                        path="/internForm/:id"
                                         element={<FicheStagiaire />}
                                     ></Route>
                                     {[userData?.roles].includes(
