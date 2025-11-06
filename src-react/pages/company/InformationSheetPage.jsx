@@ -7,7 +7,7 @@ import { TrainerForm } from "./information_sheet/TrainerForm";
 import { LegalRepresentativeForm } from "./information_sheet/LegalRepresentativeForm";
 import CompanyForm from "./information_sheet/CompanyForm";
 
-function InformationSheet() {
+export default function InformationSheetPage() {
     const [formState, setFormState] = useState({
         company: {
             companyName: "",
@@ -129,5 +129,3 @@ function InformationSheet() {
         </MainLayout>
     );
 }
-
-export default InformationSheet;
