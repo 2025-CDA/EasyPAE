@@ -160,10 +160,6 @@
 </head>
 <body>
 
-<div class="breadcrumb">
-    Dashboard > AmelExit > <strong>Fiche de renseignement</strong>
-</div>
-
 <div class="header">
     <h1>STAGIAIRE : {{ infoFormIntern.firstName }} {{ infoFormIntern.lastName }}</h1>
 </div>
@@ -200,8 +196,8 @@
     <div class="form-group">
         <div class="form-label">Dates :</div>
         <div class="form-value">
-            Du {{ infoFormIntern.internshipStart|date('d/m/Y') }}
-            au {{ infoFormIntern.internshipEnd|date('d/m/Y') }}
+            Du {{ infoFormIntern.dateStart|date('d/m/Y') }}
+            au {{ infoFormIntern.dateEnd|date('d/m/Y') }}
         </div>
     </div>
 </div>
@@ -212,7 +208,7 @@
 
     <div class="form-group">
         <div class="form-label">Nom de l'entreprise :</div>
-        <div class="form-value">{{ infoFormCompany.organization.name }}</div>
+        <div class="form-value">{{ infoFormCompany.name }}</div>
     </div>
 
     <div class="form-group">
@@ -227,18 +223,19 @@
 
     <div class="form-group">
         <div class="form-label">Nom du contact :</div>
-        <div class="form-value">{{ infoFormCompany.contactName }}</div>
+        <div
+            class="form-value">{{ infoFormCompany.legalRepresentativeFirstName }}  {{ infoFormCompany.legalRepresentativeLastName }}</div>
     </div>
 
     <div class="section-subtitle">Activité</div>
     <div class="form-group">
         <div class="form-label">Secteur d'activité :</div>
-        <div class="form-value">{{ infoFormCompany.activitySector }}</div>
+        <div class="form-value">{{ infoFormCompany.activity }}</div>
     </div>
 
     <div class="form-group">
         <div class="form-label">Téléphone :</div>
-        <div class="form-value">{{ infoFormCompany.phone }}</div>
+        <div class="form-value">{{ infoFormCompany.tutorPhoneNumber }}</div>
     </div>
 
     <div class="form-group">
@@ -253,7 +250,8 @@
 
     <div class="form-group">
         <div class="form-label">N° SIRET :</div>
-        <div class="form-value">{{ infoFormCompany.siret }}</div>
+        {#        I DONT KNOW IF THIS WORKS #}
+        <div class="form-value">{{ infoForm.companyMembers.first.company.siret }}</div>
     </div>
 </div>
 
@@ -263,7 +261,7 @@
 
     <div class="form-group">
         <div class="form-label">Nom :</div>
-        <div class="form-value">{{ infoFormCompany.legalRepresentativeName }}</div>
+        <div class="form-value">{{ infoFormCompany.legalRepresentativeLastName }}</div>
     </div>
 
     <div class="form-group">
@@ -281,16 +279,16 @@
 <div class="section">
     <div class="section-title">Tuteur/tutrice</div>
 
-    <div class="form-group">
-        <div class="form-label">
-            <input type="checkbox" class="checkbox" {% if infoFormCompany.isTutorResponsible %}checked{% endif %}>
-            Le tuteur est désigné co-responsable légal
-        </div>
-    </div>
+    {#    <div class="form-group"> #}
+    {#        <div class="form-label"> #}
+    {#            <input type="checkbox" class="checkbox" {% if infoFormCompany.isTutorResponsible %}checked{% endif %}> #}
+    {#            Le tuteur est désigné co-responsable légal #}
+    {#        </div> #}
+    {#    </div> #}
 
     <div class="form-group">
         <div class="form-label">Nom :</div>
-        <div class="form-value">{{ infoFormCompany.tutorName }}</div>
+        <div class="form-value">{{ infoFormCompany.tutorLastName }}</div>
     </div>
 
     <div class="form-group">
@@ -305,7 +303,7 @@
 
     <div class="form-group">
         <div class="form-label">Téléphone :</div>
-        <div class="form-value">{{ infoFormCompany.tutorPhone }}</div>
+        <div class="form-value">{{ infoFormCompany.tutorPhoneNumber }}</div>
     </div>
 </div>
 

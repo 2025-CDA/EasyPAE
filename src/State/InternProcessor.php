@@ -34,7 +34,7 @@ readonly class InternProcessor implements ProcessorInterface
         private UserRepository           $userRepository,
         private EntityManagerInterface   $entityManager,
         private string                   $frontendUrl,
-        private NotificationService $notificationService,
+        private NotificationService      $notificationService,
         private EmailService             $emailService,
         private OrganizationRepository   $organizationRepository,
     )
@@ -300,6 +300,8 @@ readonly class InternProcessor implements ProcessorInterface
                 $companyEmail ?? '',
                 $companyName ?? '',
                 $infoFormInternCompany?->getAddress() ?? '',
+                $infoForm->getInternMember()?->getUser()?->getFirstName() ?? '',
+                $infoForm->getInternMember()?->getUser()?->getLastName() ?? '',
                 $activationLink,
             );
         }

@@ -196,7 +196,18 @@ class EmailService
     #endregion
 
     #region Company - Activation Email (New Company)
-    public function sendCompanyActivationNewCompanyEmail(string $to, int $infoFormId, string $firstName, string $lastName, string $tutorEmail, string $companyName, string $companyAddress, string $activationLink): void
+    public function sendCompanyActivationNewCompanyEmail(
+        string $to,
+        int $infoFormId,
+        string $firstName,
+        string $lastName,
+        string $tutorEmail,
+        string $companyName,
+        string $companyAddress,
+        string $internFirstName,
+        string $internLastName,
+        string $activationLink
+    ): void
     {
         $email = (new TemplatedEmail())
             ->from('noreply@easypae.com')
