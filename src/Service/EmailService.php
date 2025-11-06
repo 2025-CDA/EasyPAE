@@ -10,7 +10,9 @@ class EmailService
 
     public function __construct(
         private MailerInterface $mailer
-    ) {}
+    )
+    {
+    }
 
     #region Registration Email - utilisé par RegistrationController
     public function sendRegistrationEmail($user, string $updatePasswordLink): void
@@ -198,7 +200,7 @@ class EmailService
     #region Company - Activation Email (New Company)
     public function sendCompanyActivationNewCompanyEmail(
         string $to,
-        int $infoFormId,
+        int    $infoFormId,
         string $firstName,
         string $lastName,
         string $tutorEmail,
@@ -222,6 +224,8 @@ class EmailService
                 'tutorEmail' => $tutorEmail,
                 'companyName' => $companyName,
                 'companyAddress' => $companyAddress,
+                'internFirstName' => $internFirstName,
+                'internLastName' => $internLastName,
                 'activationLink' => $activationLink,
             ]);
 
