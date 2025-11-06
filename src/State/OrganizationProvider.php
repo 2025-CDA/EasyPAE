@@ -5,22 +5,34 @@ namespace App\State;
 use App\Dto\OrganizationDTO;
 use App\Enum\InfoFormStatus;
 use ApiPlatform\Metadata\Operation;
+use App\Repository\InfoFormRepository;
 use App\Repository\TrainingRepository;
 use ApiPlatform\State\ProviderInterface;
 use App\Repository\TrainingSessionRepository;
 use App\Repository\OrganizationMemberRepository;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 readonly class OrganizationProvider implements ProviderInterface
 {
     public function __construct(
         private TrainingSessionRepository    $trainingSessionRepository,
         private OrganizationMemberRepository $organizationMemberRepository,
-        private TrainingRepository $trainingRepository,
-    ) {}
+        private TrainingRepository           $trainingRepository,
+        private Environment                  $twig,
+        private InfoFormRepository           $infoFormRepository,
+    )
+    {
+    }
 
-    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): array|null|object
     {
         $operationName = $operation->getName();
 
@@ -30,6 +42,7 @@ readonly class OrganizationProvider implements ProviderInterface
             'organization_session_sessionId_interns' => $this->getOrganizationSessionSessionIdInterns($uriVariables),
             'organization_session_sessionId' => $this->getOrganizationSessionSessionId($uriVariables),
             'organization_training_names' => $this->getAllTrainingNames(),
+            'organization_infoForm_infoFormId_pdf' => $this->getInfoFormPdf($uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
     }
@@ -233,5 +246,58 @@ readonly class OrganizationProvider implements ProviderInterface
             $result[] = ['id' => $id, 'name' => $name];
         }
         return $result;
+    }
+
+    /**
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws LoaderError
+     */
+    private function getInfoFormPdf(array $uriVariables): Response
+    {
+
+        $id = $uriVariables['infoFormId'] ?? null;
+
+        $infoForm = $this->infoFormRepository->find($id);
+
+        if (!$infoForm) {
+            throw new NotFoundHttpException('InfoForm not found');
+        }
+
+        $infoFormIntern = $infoForm->getInfoFormIntern();
+        $infoFormCompany = $infoForm->getInfoFormCompany();
+
+
+        $html = $this->twig->render('pdf/test.html.twig', [
+            'infoForm' => $infoForm,
+            'infoFormIntern' => $infoFormIntern,
+            'infoFormCompany' => $infoFormCompany,
+        ]);
+
+        // Configure and generate PDF
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+        $options->set('isHtml5ParserEnabled', true);
+
+        $dompdf = new Dompdf($options);
+
+        try {
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+        } catch (\Exception $e) {
+            throw new \RuntimeException('PDF generation failed: ' . $e->getMessage());
+        }
+
+
+        // Return Response directly
+        return new Response(
+            $dompdf->output(),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="invoice-' . $infoForm->getId() . '.pdf"',
+            ]
+        );
     }
 }

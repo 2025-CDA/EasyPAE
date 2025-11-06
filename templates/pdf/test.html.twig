@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Fiche de renseignement - InfoForm #{{ infoForm.id }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #007bff;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .breadcrumb {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 30px;
+        }
+
+        .breadcrumb a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .section-title {
+            color: #007bff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #007bff;
+        }
+
+        .section-subtitle {
+            color: #666;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-label {
+            width: 35%;
+            font-weight: bold;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .form-value {
+            width: 65%;
+            color: #666;
+            font-size: 13px;
+            padding-left: 15px;
+            border-left: 1px solid #ddd;
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .col {
+            flex: 1;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 1px solid #999;
+            border-radius: 3px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            color: #333;
+        }
+
+        table td {
+            background-color: #fff;
+        }
+
+        .divider {
+            border-top: 1px solid #ddd;
+            margin: 30px 0;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="breadcrumb">
+    Dashboard > AmelExit > <strong>Fiche de renseignement</strong>
+</div>
+
+<div class="header">
+    <h1>STAGIAIRE : {{ infoFormIntern.firstName }} {{ infoFormIntern.lastName }}</h1>
+</div>
+
+<!-- INFORMATIONS PERSONNELLES -->
+<div class="section">
+    <div class="section-title">Informations personnelles</div>
+
+    <div class="form-group">
+        <div class="form-label">Prénom :</div>
+        <div class="form-value">{{ infoFormIntern.firstName }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Nom :</div>
+        <div class="form-value">{{ infoFormIntern.lastName }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Email :</div>
+        <div class="form-value">{{ infoFormIntern.email }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Formation :</div>
+        <div class="form-value">{{ infoForm.trainingSession.training.name }}</div>
+    </div>
+</div>
+
+<!-- PÉRIODE EN ENTREPRISE -->
+<div class="section">
+    <div class="section-title">Période en entreprise</div>
+
+    <div class="form-group">
+        <div class="form-label">Dates :</div>
+        <div class="form-value">
+            Du {{ infoFormIntern.internshipStart|date('d/m/Y') }}
+            au {{ infoFormIntern.internshipEnd|date('d/m/Y') }}
+        </div>
+    </div>
+</div>
+
+<!-- L'ENTREPRISE D'ACCUEIL -->
+<div class="section">
+    <div class="section-title">L'entreprise d'accueil</div>
+
+    <div class="form-group">
+        <div class="form-label">Nom de l'entreprise :</div>
+        <div class="form-value">{{ infoFormCompany.organization.name }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Adresse physique :</div>
+        <div class="form-value">{{ infoFormCompany.address }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Mail contact :</div>
+        <div class="form-value">{{ infoFormCompany.email }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Nom du contact :</div>
+        <div class="form-value">{{ infoFormCompany.contactName }}</div>
+    </div>
+
+    <div class="section-subtitle">Activité</div>
+    <div class="form-group">
+        <div class="form-label">Secteur d'activité :</div>
+        <div class="form-value">{{ infoFormCompany.activitySector }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Téléphone :</div>
+        <div class="form-value">{{ infoFormCompany.phone }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Mail :</div>
+        <div class="form-value">{{ infoFormCompany.email }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Fax :</div>
+        <div class="form-value">{{ infoFormCompany.fax }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">N° SIRET :</div>
+        <div class="form-value">{{ infoFormCompany.siret }}</div>
+    </div>
+</div>
+
+<!-- RESPONSABLE LÉGAL(E) -->
+<div class="section">
+    <div class="section-title">Responsable légal(e)</div>
+
+    <div class="form-group">
+        <div class="form-label">Nom :</div>
+        <div class="form-value">{{ infoFormCompany.legalRepresentativeName }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Prénom :</div>
+        <div class="form-value">{{ infoFormCompany.legalRepresentativeFirstName }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Mail :</div>
+        <div class="form-value">{{ infoFormCompany.legalRepresentativeEmail }}</div>
+    </div>
+</div>
+
+<!-- TUTEUR/TUTRICE -->
+<div class="section">
+    <div class="section-title">Tuteur/tutrice</div>
+
+    <div class="form-group">
+        <div class="form-label">
+            <input type="checkbox" class="checkbox" {% if infoFormCompany.isTutorResponsible %}checked{% endif %}>
+            Le tuteur est désigné co-responsable légal
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Nom :</div>
+        <div class="form-value">{{ infoFormCompany.tutorName }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Prénom :</div>
+        <div class="form-value">{{ infoFormCompany.tutorFirstName }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Mail :</div>
+        <div class="form-value">{{ infoFormCompany.tutorEmail }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-label">Téléphone :</div>
+        <div class="form-value">{{ infoFormCompany.tutorPhone }}</div>
+    </div>
+</div>
+
+<div class="divider"></div>
+
+<p style="text-align: center; color: #999; font-size: 11px; margin-top: 40px;">
+    Générée le {{ "now"|date('d/m/Y à H:i') }} - InfoForm #{{ infoForm.id }}
+</p>
+
+</body>
+</html>
