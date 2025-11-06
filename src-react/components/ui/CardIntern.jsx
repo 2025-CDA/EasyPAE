@@ -1,8 +1,9 @@
-import React from "react";
-import Container from "../../components/ui/Container";
-import Test from "../../assets/profile.jpg";
-import Avatar from "./Avatar";
-import Button from "./Button";
+import React from 'react'
+import Container from '../../components/ui/Container'
+import noAvatar from '../../assets/profile.jpg'
+import Avatar from './Avatar'
+import Button from './Button'
+
 
 function CardIntern({
     name,

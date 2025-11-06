@@ -29,7 +29,7 @@ class EmailService
         $this->mailer->send($email);
     }
     #endregion
-    
+
     #region Reset Password Email - utilisé par SecurityController
     public function sendResetPasswordEmail($user, string $resetPasswordLink): void
     {
@@ -196,7 +196,7 @@ class EmailService
     #endregion
 
     #region Company - Activation Email (New Company)
-    public function sendCompanyActivationNewCompanyEmail(string $to, string $firstName, string $lastName, string $companyName, string $internFirstName, string $internLastName, string $activationLink): void
+    public function sendCompanyActivationNewCompanyEmail(string $to, int $infoFormId, string $firstName, string $lastName, string $tutorEmail, string $companyName, string $companyAddress, string $activationLink): void
     {
         $email = (new TemplatedEmail())
             ->from('noreply@easypae.com')
@@ -205,11 +205,12 @@ class EmailService
             ->htmlTemplate('emails/company_activation_new_company.html.twig')
             ->context([
                 'subject' => 'Bienvenue sur EasyPAE - Un stagiaire souhaite vous rejoindre',
+                'infoFormId' => $infoFormId,
                 'firstName' => $firstName,
                 'lastName' => $lastName,
+                'tutorEmail' => $tutorEmail,
                 'companyName' => $companyName,
-                'internFirstName' => $internFirstName,
-                'internLastName' => $internLastName,
+                'companyAddress' => $companyAddress,
                 'activationLink' => $activationLink,
             ]);
 
