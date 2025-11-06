@@ -284,9 +284,17 @@ readonly class InternProcessor implements ProcessorInterface
 
             // Génération d'un lien d'activation/inscription pour le formulaire entreprise
             $registrationData = [
-                'email' => $companyEmail,
                 'infoFormId' => $infoFormId,
+                'firstName' => $infoFormInternCompany?->getLegalRepresentativeFirstName() ?? '',
+                'lastName' => $infoFormInternCompany?->getLegalRepresentativeLastName() ?? '',
+                'tutorEmail' => $companyEmail ?? '',
+                'companyName' => $companyName,
+                'companyAddress' => $infoFormInternCompany?->getAddress() ?? '',
+                'internFirstName' => $infoForm->getInternMember()?->getUser()?->getFirstName() ?? '',
+                'internLastName' => $infoForm->getInternMember()?->getUser()?->getLastName() ?? '',
                 'expires' => time() + 86400  // 24h
+                
+
             ];
             $token = base64_encode(json_encode($registrationData, JSON_THROW_ON_ERROR));
             $activationLink = $this->frontendUrl . '/company/register/' . $token;
