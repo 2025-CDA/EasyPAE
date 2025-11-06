@@ -11,11 +11,14 @@ import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useAuthContext } from "../../store/auth_context/authContext";
 import Button from "../../components/ui/Button";
+import { CircleAlert, CircleCheck } from "lucide-react";
 
 function InternDashboardPage() {
     const [companyDetails, setCompanyDetails] = useState({});
+    const [internDetails, setInternDetails] = useState({});
     const [currentFormation, setCurrentFormation] = useState({});
-    const [finishedStep] = useState([]);
+
+    const [finishedStep] = useState();
 
     const { fetchData } = useAxios();
     const { userData } = useAuthContext();
@@ -23,11 +26,13 @@ function InternDashboardPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const getData = async () => {
+        const getCompanyData = async () => {
             const res = await fetchData(
                 "GET",
-                `resume-card/${infoFormId}/company`
+                // `resume-card/${infoFormId}/company`
+                `intern/infoForm/${infoFormId}/infoFormInternCompany`
             );
+
             setCompanyDetails(res.data);
         };
 
@@ -36,9 +41,14 @@ function InternDashboardPage() {
                 "GET",
                 `intern/infoForm/${infoFormId}/infoFormIntern`
             );
-            setCurrentFormation(res.data);
+            const dates = {
+                periodStart: new Date(res.data.internshipStart),
+                periodEnd: new Date(res.data.internshipEnd),
+            };
+            setCurrentFormation(dates);
+            setInternDetails(res.data);
         };
-        infoFormId && getData();
+        infoFormId && getCompanyData();
         infoFormId && getDataDates();
     }, []);
 
@@ -59,13 +69,11 @@ function InternDashboardPage() {
     ];
 
     async function handleCreatePAE() {
-        console.log(userData);
         const res = await fetchData("POST", "intern/infoForm", {
             internId: userData?.internId,
         });
         navigate(`/paeApplication/${res.data.infoFormId}`);
     }
-
 
     return (
         <MainLayout withSearchbar={false}>
@@ -75,17 +83,19 @@ function InternDashboardPage() {
                 <Container
                     className={` ${
                         infoFormId ? "col-span-2" : "col-span-3"
-                    } flex flex-col gap-4 font-semibold justify-center`}
+                    } flex flex-col gap-4 font-semibold justify-center p-5`}
                 >
                     <h4 className="mb-5">Statuts de la demande </h4>
                     <StepperNavbar
                         content={steps}
-                        currentStep={0}
-                        finishedStep={finishedStep ? finishedStep : []}
+                        currentStep={infoFormId ? 1 : 0}
+                        finishedStep={infoFormId ? [0] : []}
                     />
-                    <Button onClick={handleCreatePAE}>
-                        Inciter une demande de PEA
-                    </Button>
+                    {!infoFormId && (
+                        <Button onClick={handleCreatePAE}>
+                            Inciter une demande de PEA
+                        </Button>
+                    )}
                 </Container>
 
                 {infoFormId && (
@@ -93,25 +103,40 @@ function InternDashboardPage() {
                         {" "}
                         <CardCompany
                             avatar={companyDetails.companyUserAvatar}
-                            tutorEmail={companyDetails.companyContactEmail}
-                            companyName={companyDetails.companyName}
-                            adresse={companyDetails.companyAddress}
+                            tutorEmail={
+                                companyDetails.infoFormInternCompanyLegalRepresentativeEmail
+                            }
+                            companyName={
+                                companyDetails.infoFormInternCompanyName
+                            }
+                            adresse={
+                                companyDetails.infoFormInternCompanyAddress
+                            }
                             tel={companyDetails.companyPhoneNumber}
-                            tutorName={companyDetails.tutorName}
+                            tutorName={
+                                companyDetails.infoFormInternCompanyLegalRepresentativeFirstName
+                            }
                         />
                         <div className="col-span-2">
                             <Container>
-                                <TimeLine />
+                                <TimeLine
+                                    content={[
+                                        {
+                                            date: "1 Aug, 2023",
+                                            icon: (
+                                                <CircleCheck className="text-green-500"></CircleCheck>
+                                            ),
+                                            title: "Demande de PAE effectuée",
+                                            description:
+                                                "La partie “Stagiaire” de la fiche de renseignement a bien été complétée.",
+                                            avatarUrl: userData?.avatar,
+                                            userName: userData.firstName,
+                                        },
+                                    ]}
+                                />
                             </Container>
                         </div>
-                        <CalendarSimpleGET
-                            dates={{
-                                periodStart: new Date(
-                                    currentFormation.internshipStartDate
-                                ),
-                                periodEnd: currentFormation.internshipEndDate,
-                            }}
-                        />
+                        <CalendarSimpleGET dates={currentFormation} />
                     </>
                 )}
             </div>

@@ -7,8 +7,9 @@ import InfoFormCompanyPae from "../../components/intern/InfoFormCompanyPae";
 import Container from "../../components/ui/Container";
 import FicheRenseignStagaire from "../assistant/FicheRenseignStagiaire";
 import { useAuthContext } from "../../store/auth_context/authContext";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import useAxios from "../../hooks/useAxios";
+import { toast } from "react-toastify";
 
 function FormInternPage() {
     const [internInfo, setInternInfo] = useState({
@@ -32,6 +33,7 @@ function FormInternPage() {
     const { userData } = useAuthContext();
     const { infoFormId } = useParams();
     const { fetchData } = useAxios();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getInternInitialData = async () =>
@@ -68,35 +70,38 @@ function FormInternPage() {
     };
 
     async function handleUpdateCompanyDetails() {
-        const res = await fetchData(
-            "PATCH",
-            `intern/infoForm/${infoFormId}/infoFormIntern/infoFormInternCompany`,
-            {
-                infoFormCompanyStatus: "validated",
-                infoFormInternCompanyName: companyInfo.companyName,
-                infoFormInternCompanyAddress: companyInfo.companyAddress,
-                infoFormInternCompanyLegalRepresentativeFirstName:
-                    companyInfo.contactFirstName,
-                infoFormInternCompanyLegalRepresentativeLastName:
-                    companyInfo.contactLastName,
-                infoFormInternCompanyLegalRepresentativeEmail:
-                    companyInfo.companyMail,
-            }
-        );
-        console.log(res.data);
+        try {
+            await fetchData(
+                "PATCH",
+                `intern/infoForm/${infoFormId}/infoFormIntern/infoFormInternCompany`,
+                {
+                    infoFormInternCompanyName: companyInfo.companyName,
+                    infoFormInternCompanyAddress: companyInfo.companyAddress,
+                    infoFormInternCompanyLegalRepresentativeFirstName:
+                        companyInfo.contactFirstName,
+                    infoFormInternCompanyLegalRepresentativeLastName:
+                        companyInfo.contactLastName,
+                    infoFormInternCompanyLegalRepresentativeEmail:
+                        companyInfo.companyMail,
+                }
+            );
+            toast.success("Company details was added successfully!");
+        } catch (error) {
+            toast.error(error);
+        }
     }
 
     async function handlePAEValidation() {
-        const res = await fetchData(
-            "PATCH",
-            `intern/infoForm/${infoFormId}/infoFormIntern/validation`,
-            {
-                infoFormStatus: "completed_intern",
-                infoFormInternStatus: "validated",
-                infoFormCompanyStatus: "validated",
-            }
-        );
-        console.log(res.data);
+        try {
+            const res = await fetchData(
+                "PATCH",
+                `intern/infoForm/${infoFormId}/infoFormIntern/validation`
+            );
+            navigate(`/${infoFormId}`);
+            toast.success("Your request was validated");
+        } catch (error) {
+            toast.error(error);
+        }
     }
 
     return (

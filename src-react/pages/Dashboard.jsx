@@ -127,7 +127,7 @@ export default function Dashboard({
                         } flex flex-col`}
                     >
                         <div
-                            className={`grid grid-cols-1  gap-6 ${
+                            className={`grid grid-cols-1 gap-6 ${
                                 calendarDiv
                                     ? "md:grid-cols-2"
                                     : "md:grid-cols-3"
