@@ -122,16 +122,16 @@ readonly class UserProvider implements ProviderInterface
             throw new NotFoundHttpException('User not found');
         }
 
-        $userNotifications = $this->userNotificationRepository->findBy(['user' => $user]);
+        $userNotificationsEntities = $this->userNotificationRepository->findBy(['user' => $user]);
         $notifications = [];
 
-        foreach ($userNotifications as $userNotification) {
-            $notification = $userNotification->getNotification();
-            if ($notification) {
+        foreach ($userNotificationsEntities as $userNotification) {
+            if ($userNotification) {
                 $notifications[] = [
-                    'id' => $notification->getId(),
-                    'title' => $notification->getTitle(),
+                    'id' => $userNotification->getId(),
+                    'title' => $userNotification->getTitle(),
                     'isRead' => $userNotification->isRead(),
+                    'isSigned'=> $userNotification->isSigned(),
                 ];
             }
         }
@@ -159,20 +159,19 @@ readonly class UserProvider implements ProviderInterface
 
         $userNotification = $this->userNotificationRepository->findOneBy([
             'user' => $user,
-            'notification' => $notificationId
+            'id' => $notificationId
         ]);
 
         if (!$userNotification) {
             throw new NotFoundHttpException('Notification not found for this user');
         }
 
-        $notification = $userNotification->getNotification();
-
         $dto = new UserDTO();
         $dto->id = 'user_' . $userId . '_notification_' . $notificationId . '_detail';
-        $dto->title = $notification?->getTitle();
-        $dto->content = $notification?->getContent();
+        $dto->title = $userNotification->getTitle();
+        $dto->content = $userNotification->getContent();
         $dto->isRead = $userNotification->isRead();
+        $dto->isSigned = $userNotification->isSigned();
 
         return $dto;
     }

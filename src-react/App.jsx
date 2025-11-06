@@ -95,7 +95,7 @@ export default function App() {
                                     ></Route>
                                     <Route
                                         path="/paeCalendar"
-                                        element={App}
+                                        element={<CalendarPage />}
                                     ></Route>
                                     <Route
                                         path="/interForm/:id"

@@ -239,7 +239,7 @@ function CalendarSimplePUT({ multi = null, single = null, onSaveSingle = null, o
             )}
             <div className='pb-5 pt-5 flex bg-white border border-gray-200 shadow-lg rounded-xl overflow-hidden justify-center align-center mt-8 mb-8' >
                 {/* Affichage du J- / J+ */}
-                {jValue && (
+                {jValue && jValue !== "" && (
                     <div className="flex mt-2 pb-5 font-bold text-primary-text gap-2 items-center ">
                         <p className='text-3xl ' >{jValue}</p>
                         <p className='text-s' >{jValue.startsWith("J - ") ? "avant le début de stage" : "depuis le début de stage"}</p>
@@ -423,7 +423,7 @@ function CalendarSimplePUT({ multi = null, single = null, onSaveSingle = null, o
                 <div className='flex w-full'>
                     <Container className={'mt-5 flex-1 h-30 flex justify-center gap-5 items-center border-gray-200'}>
                         <p className='text-secondary-text text-xs font-semibold'> PAE validées </p>
-                        <CircleProgress statusPae='25%'/>
+                        <CircleProgress statusPae={selectedFormation?.statusPae || "0%"} />
                         {/* TODO: envoyer dynamiquement la moyenne en % des validations de PAE sur SelectedFormation */}
                         <Button className={'px-4 text-xs'}>Liste Stagiaires</Button>
                         {/* TODO: envoyer dynamiquement à la page de liste stagiaires de la SelectedFormation */}
