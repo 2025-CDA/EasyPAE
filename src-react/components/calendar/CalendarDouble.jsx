@@ -166,6 +166,8 @@ function CalendarDouble({ multi, onSaveMulti }) {
             // J+N depuis le début de la période
             jValue = `J + ${Math.abs(diff)}`;
         }
+    } else {
+        jValue = ""; // Toujours une string pour éviter l'erreur .startsWith sur null
     }
 
     // --------------------------
@@ -370,11 +372,13 @@ function CalendarDouble({ multi, onSaveMulti }) {
             <div className='flex w-[95%] m-auto justify-evenly'>
                 <Container className={'mt-5 w-115 h-30 justify-center gap-5 items-center border-gray-200'}>
                     <p className='text-4xl font-bold' >{jValue}</p>
-                    <p className='text-s font-semibold' >{jValue.startsWith("J - ") ? "avant le début de stage" : "depuis le début de stage"}</p>
+                    {jValue && jValue !== "" && (
+                        <p className='text-s font-semibold' >{jValue.startsWith("J - ") ? "avant le début de stage" : "depuis le début de stage"}</p>
+                    )}
                 </Container>
                 <Container className={'mt-5 ml-5 w-115 h-30 justify-center gap-5 items-center border-gray-200'}>
                     <p className='text-secondary-text font-semibold'> PAE validées </p>
-                    <CircleProgress statusPae='25%'/>
+                    <CircleProgress statusPae={selectedFormation?.statusPae || "0%"} />
                     {/* TODO: envoyer dynamiquement la moyenne en % des validations de PAE sur SelectedFormation */}
                     <Button className={'px-4'}>Liste Stagiaires</Button>
                     {/* TODO: envoyer dynamiquement à la page de liste stagiaires de la SelectedFormation */}

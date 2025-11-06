@@ -48,12 +48,14 @@ export default function AuthContextProvider({ children }) {
         const token = tokenManager.getToken();
         if (token) {
             const decodedToken = tokenManager.decodeToken(token);
+            console.log("🚀 ~ getUser ~ decodedToken:", decodedToken);
             const res = await fetchData("GET", `user/${decodedToken.id}`);
             const updatedData = {
                 ...res.data,
                 id: res.data["@id"].split("/")[3],
                 internId: decodedToken.intern_member_id,
                 organizationMemberId: decodedToken.organization_member_id,
+                companyMemberId: decodedToken.company_member_id,
             };
             setToken(token);
             setUserData(updatedData);

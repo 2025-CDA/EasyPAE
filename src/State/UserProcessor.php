@@ -46,6 +46,7 @@ readonly class UserProcessor implements ProcessorInterface
             'update_user_info' => $this->updateUserInfo($data, $uriVariables),
             'update_user_preferences' => $this->updateUserPreferences($data, $uriVariables),
             'mark_notification_as_read' => $this->markNotificationAsRead($data ?? new UserDTO(), $uriVariables),
+            'mark_notification_as_signed' => $this->markNotificationAsSigned($data ?? new UserDTO(), $uriVariables),
             'upload_user_avatar' => $this->uploadUserAvatar($uriVariables),
             'user_companyMember' => $this->createCompanyMemberAndCompany($data),
             'user_password_change' => $this->changeUserPassword($data, $uriVariables),
@@ -150,7 +151,7 @@ readonly class UserProcessor implements ProcessorInterface
 
         $userNotification = $this->userNotificationRepository->findOneBy([
             'user' => $user,
-            'notification' => $notificationId
+            'id' => $notificationId
         ]);
 
         if (!$userNotification) {
@@ -165,6 +166,46 @@ readonly class UserProcessor implements ProcessorInterface
         $dto = new UserDTO();
         $dto->id = 'user_' . $userId . '_notification_' . $notificationId . '_read';
         $dto->isRead = true;
+        $dto->message = 'Notification marked as read';
+
+        return $dto;
+    }
+
+
+    private function markNotificationAsSigned(UserDTO $data, array $uriVariables): UserDTO|null
+    {
+        $userId = $uriVariables['userId'] ?? null;
+        $notificationId = $uriVariables['notificationId'] ?? null;
+
+        if (!$userId || !$notificationId) {
+            throw new BadRequestHttpException('User ID and Notification ID are required');
+        }
+
+        $user = $this->userRepository->find($userId);
+        if (!$user) {
+            throw new NotFoundHttpException('User not found');
+        }
+
+        $userNotification = $this->userNotificationRepository->findOneBy([
+            'user' => $user,
+            'id' => $notificationId
+        ]);
+
+        if (!$userNotification) {
+            throw new NotFoundHttpException('Notification not found for this user');
+        }
+
+        $userNotification->setIsRead(true);
+        $userNotification->setIsSigned(true);
+
+        $this->entityManager->persist($userNotification);
+        $this->entityManager->flush();
+
+        $dto = new UserDTO();
+        $dto->id = 'user_' . $userId . '_notification_' . $notificationId . '_signed';
+        $dto->isSigned = true;
+        $dto->isRead = true;
+        $dto->message = 'Notification marked as signed and read';
 
         return $dto;
     }

@@ -6,7 +6,7 @@ import CardCompany from "../../components/ui/CardCompany";
 import CardIntern from "../../components/ui/CardIntern";
 import Stepper from "../../components/ui/stepper/Stepper";
 import CalendarSimpleGET from "../../components/calendar/CalendarSimpleGET";
-import BusinessMan from '../../assets/Business-man.png';
+import BusinessMan from "../../assets/Business-man.png";
 import Container from "../../components/ui/container";
 import { useParams } from "react-router";
 import useAxios from "../../hooks/useAxios";
@@ -139,9 +139,15 @@ function FicheStagiaire({className}) {
                             className={className}
                             showButton={false}
                         />
-                        <Container className={" flex flex-col gap-4 p-4 font-semibold" }>
-                           <h2>Statut de la demande</h2>
-                            <StepperNavbar content={steps} currentStep={1} finishedStep={finishedStep}/>
+                        <Container
+                            className={" flex flex-col gap-4 p-4 font-semibold"}
+                        >
+                            <h2>Statut de la demande</h2>
+                            <StepperNavbar
+                                content={steps}
+                                currentStep={1}
+                                finishedStep={finishedStep}
+                            />
                         </Container>
                     </div>
 
@@ -161,16 +167,16 @@ function FicheStagiaire({className}) {
 
       
                     </div>
-                </Container >
-                    <img src={BusinessMan} alt="Business-man.png" className="w-[300px] scale-x-[-1] self-end mr-10 hidden md:block" />
-                    {/* <img className='w-1/5 transform -scale-x-100' src={BusinessMan} alt="" /> */}
+                </Container>
+                <img
+                    src={BusinessMan}
+                    alt="Business-man.png"
+                    className="w-[300px] scale-x-[-1] self-end mr-10 hidden md:block"
+                />
+                {/* <img className='w-1/5 transform -scale-x-100' src={BusinessMan} alt="" /> */}
             </Container>
         </MainLayout>
     );
 }
 
 export default FicheStagiaire;
-
-
-
-

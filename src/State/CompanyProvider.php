@@ -7,6 +7,8 @@ use ApiPlatform\Metadata\Operation;
 use App\Repository\InfoFormRepository;
 use ApiPlatform\State\ProviderInterface;
 use App\Repository\InfoFormCompanyRepository;
+use App\Repository\CompanyRepository;
+use App\Repository\CompanyMemberRepository;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -16,16 +18,20 @@ readonly class CompanyProvider implements ProviderInterface
     public function __construct(
         private InfoFormRepository        $infoFormRepository,
         private InfoFormCompanyRepository $infoFormCompanyRepository,
+        private CompanyRepository         $companyRepository,
+        private CompanyMemberRepository   $companyMemberRepository,
     )
     {
     }
 
-    public function provide(Operation $operation, array $uriVariables = [], array $context = []): CompanyDTO
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): CompanyDTO|array
     {
         $operationName = $operation->getName();
 
         return match ($operationName) {
             'company_infoForm_infoFormId_infoFormCompany' => $this->getCompanyInfoFormInfoFormCompany($uriVariables),
+            'company_companyId_infoForms' => $this->getCompanyInfoForms($uriVariables),
+            'companyMember_companyMemberId_infoForms' => $this->getCompanyMemberInfoForms($uriVariables),
             default => throw new BadRequestHttpException('Operation not supported')
         };
     }
@@ -75,5 +81,52 @@ readonly class CompanyProvider implements ProviderInterface
         $dto->tutorPhoneNumber = $infoFormCompany->getTutorPhoneNumber();
 
         return $dto;
+    }
+
+
+    private function getCompanyMemberInfoForms(array $uriVariables): array
+    {
+        $companyMemberId = $uriVariables['companyMemberId'] ?? null;
+
+        if (!$companyMemberId) {
+            throw new BadRequestHttpException('Company Member ID is required');
+        }
+
+        $companyMember = $this->companyMemberRepository->find((int)$companyMemberId);
+
+        if (!$companyMember) {
+            throw new NotFoundHttpException('Company member not found');
+        }
+
+        $infoForms = $companyMember->getInfoForms();
+        
+        $infoFormsData = [];
+
+        foreach ($infoForms as $infoForm) {
+            $dto = new CompanyDTO();
+            $dto->infoFormId = $infoForm->getId();
+            $dto->companyMemberId = $companyMember->getId();
+        
+            // Récupérer le status de info_form_company uniquement
+            $infoFormCompany = $infoForm->getInfoFormCompany();
+            if ($infoFormCompany) {
+                $dto->companyStatus = $infoFormCompany->getStatus();
+            }
+            
+            // Récupérer les informations du stagiaire
+            $internMember = $infoForm->getInternMember();
+            if ($internMember) {
+                $user = $internMember->getUser();
+                if ($user) {
+                    $dto->internFirstName = $user->getFirstName();
+                    $dto->internLastName = $user->getLastName();
+                    $dto->internEmail = $user->getEmail();
+                }
+            }
+            
+            $infoFormsData[] = $dto;
+        }
+
+        return $infoFormsData;
     }
 }

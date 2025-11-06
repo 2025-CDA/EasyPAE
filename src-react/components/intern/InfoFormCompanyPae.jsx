@@ -7,11 +7,11 @@ function InfoFormCompanyPae({ data, onChange }) {
     return (
         <Container className="flex flex-col w-full overflow-hidden gap-3 pl-5 border-hidden">
             <h1 className="text-primary font-semibold">L'entreprise accueil</h1>
-            <div className="flex flex-row w-full items-start pl-2">
-                <p className="font-semibold self-center whitespace-nowrap mb-2">
+            <div className="flex md:flex-row flex-col w-full items-start pl-2">
+                <p className="font-semibold whitespace-nowrap mb-2">
                     Nom de l'entreprise :
                 </p>
-                <div className="flex-1 w-full ml-5">
+                <div className="flex-1 w-full md:ml-5">
                     <Input
                         id="companyName"
                         label=""
@@ -23,11 +23,11 @@ function InfoFormCompanyPae({ data, onChange }) {
                     />
                 </div>
             </div>
-            <div className="flex flex-row w-full items-start pl-2">
-                <p className="font-semibold self-center whitespace-nowrap mb-2">
+            <div className="flex md:flex-row flex-col w-full items-start pl-2">
+                <p className="font-semibold  whitespace-nowrap mb-2">
                     Adresse physique :
                 </p>
-                <div className="flex-1 w-full ml-9">
+                <div className="flex-1 w-full md:ml-9">
                     <Input
                         id="companyAddress"
                         label=""
@@ -39,11 +39,11 @@ function InfoFormCompanyPae({ data, onChange }) {
                     />
                 </div>
             </div>
-            <div className="flex flex-row w-full items-start pl-2">
-                <p className="font-semibold self-center whitespace-nowrap mb-2">
+            <div className="flex md:flex-row flex-col w-full items-start pl-2">
+                <p className="font-semibold  whitespace-nowrap mb-2">
                     Mail contact :
                 </p>
-                <div className="flex-1 w-full ml-20">
+                <div className="flex-1 w-full md:ml-20">
                     <Input
                         id="companyMail"
                         label=""
@@ -55,11 +55,11 @@ function InfoFormCompanyPae({ data, onChange }) {
                     />
                 </div>
             </div>
-            <div className="flex flex-row w-full items-start pl-2">
-                <p className="font-semibold self-center whitespace-nowrap mb-2">
+            <div className="flex md:flex-row flex-col w-full items-start pl-2">
+                <p className="font-semibold  whitespace-nowrap mb-2">
                     Nom du contact :
                 </p>
-                <div className="flex-1 w-full ml-13">
+                <div className="flex-1 w-full md:ml-13">
                     <Input
                         id="contactLastName"
                         label=""
@@ -71,11 +71,11 @@ function InfoFormCompanyPae({ data, onChange }) {
                     />
                 </div>
             </div>
-            <div className="flex flex-row w-full items-start pl-2">
-                <p className="font-semibold self-center whitespace-nowrap mb-2">
+            <div className="flex md:flex-row flex-col w-full items-start pl-2">
+                <p className="font-semibold  whitespace-nowrap mb-2">
                     Prénom du contact :
                 </p>
-                <div className="flex-1 w-full ml-7">
+                <div className="flex-1 w-full md:ml-7">
                     <Input
                         id="contactFirstName"
                         label=""

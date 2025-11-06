@@ -166,9 +166,16 @@ readonly class OrganizationProvider implements ProviderInterface
                 $dto->internLogin = $user->getLogin();
             }
 
-//           TODO: change this later, we put first() only for the demo.
-            $dto->infoFormStatus = $internMember->getInfoForm()?->first()?->getStatus();
-            $dto->infoFormId= $internMember->getInfoForm()?->first()?->getId();
+            // Récupérer le premier infoForm s'il existe
+            $infoForms = $internMember->getInfoForm();
+            if ($infoForms && !$infoForms->isEmpty()) {
+                $firstInfoForm = $infoForms->first();
+                $dto->infoFormStatus = $firstInfoForm->getStatus();
+                $dto->infoFormId = $firstInfoForm->getId();
+            } else {
+                $dto->infoFormStatus = null;
+                $dto->infoFormId = null;
+            }
 
             $dtoCollection[] = $dto;
         }

@@ -13,6 +13,9 @@ import InternDashboardPage from "./pages/intern/InternDashboardPage";
 import FicheStagiaire from "./pages/intern/FicheStagiaire";
 import InternListPage from "./components/intern_list/InternListPage";
 import FormInternPage from "./pages/intern/FormInternPage";
+import InformationSheetPage from "./pages/company/InformationSheetPage";
+import PAECompanyListPage from "./pages/intern/PAECompanyListPage";
+import CalendarPage from "./pages/CalendarPage";
 
 export default function App() {
     const { token, userData, getUser, loadingUser } = useAuthContext();
@@ -40,20 +43,35 @@ export default function App() {
                     )}
                     {token && (
                         <Routes>
-                            {(userData?.roles.includes("intern") ||
-                                userData?.roles.includes("company")) && (
+                            {userData?.roles.includes("intern") && (
                                 <>
                                     <Route
                                         path="/"
                                         element={<InternDashboardPage />}
                                     />
                                     <Route
+                                        path="/:infoFormId"
+                                        element={<InternDashboardPage />}
+                                    />
+                                    <Route
                                         path="/paeApplication/:infoFormId"
                                         element={<FormInternPage />}
                                     />
+                                </>
+                            )}
+                            {userData?.roles.includes("company") && (
+                                <>
                                     <Route
-                                        path="/informationSheet"
-                                        element={App}
+                                        path="/"
+                                        element={<PAECompanyListPage />}
+                                    />
+                                    <Route
+                                        path="/:infoFormId"
+                                        element={<InternDashboardPage />}
+                                    />
+                                    <Route
+                                        path="/informationSheet/:infoFormId"
+                                        element={<InformationSheetPage />}
                                     />
                                 </>
                             )}
@@ -78,7 +96,7 @@ export default function App() {
                                     ></Route>
                                     <Route
                                         path="/paeCalendar"
-                                        element={App}
+                                        element={<CalendarPage />}
                                     ></Route>
                                     <Route
                                         path="/interForm/:id"

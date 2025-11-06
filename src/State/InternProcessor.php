@@ -274,7 +274,7 @@ readonly class InternProcessor implements ProcessorInterface
                     $companyMember->getCompany()?->getName() ?? $companyName,
                     $infoForm->getInternMember()?->getUser()?->getFirstName() ?? '',
                     $infoForm->getInternMember()?->getUser()?->getLastName() ?? '',
-                    $this->frontendUrl . '/login'
+                    $this->frontendUrl . '/'
                 );
             }
         } else {

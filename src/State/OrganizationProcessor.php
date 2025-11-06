@@ -150,6 +150,9 @@ readonly class OrganizationProcessor implements ProcessorInterface
             throw new BadRequestHttpException('This intern is already part of the session.');
         }
 
+        // Ajouter l'InternMember à la session de formation
+        $session->addInternMember($internMember);
+
         $this->entityManager->flush();
 
         // Générer un lien d'activation avec JWT
