@@ -15,6 +15,7 @@ import InternListPage from "./components/intern_list/InternListPage";
 import FormInternPage from "./pages/intern/FormInternPage";
 import InformationSheetPage from "./pages/company/InformationSheetPage";
 import PAECompanyListPage from "./pages/intern/PAECompanyListPage";
+import CalendarPage from "./pages/CalendarPage";
 
 export default function App() {
     const { token, userData, getUser, loadingUser } = useAuthContext();
