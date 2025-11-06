@@ -2,316 +2,327 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Fiche de renseignement - InfoForm #{{ infoForm.id }}</title>
+    <title>Fiche de renseignement - {{ infoFormIntern.firstName }} {{ infoFormIntern.lastName }}</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --primary-blue: #3B82F6;
+            --text-dark: #1F2937;
+            --text-medium: #4B5563;
+            --text-light: #9CA3AF;
+            --border-color: #E5E7EB;
+            --background-light: #F9FAFB;
+            --background-white: #FFFFFF;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            color: #333;
-            line-height: 1.4;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-medium);
+            margin: 0;
+            padding: 1.5rem; /* Reduced padding */
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 20px;
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
-        .header h1 {
-            color: #007bff;
-            font-size: 28px;
-            margin-bottom: 5px;
+        /* --- HEADER & BREADCRUMBS --- */
+        .page-header {
+            margin-bottom: 1.5rem; /* Reduced margin */
         }
 
-        .header p {
-            color: #666;
-            font-size: 12px;
+        .page-header h1 {
+            font-size: 2rem;
+            color: var(--text-dark);
+            font-weight: 700;
+            margin: 0;
         }
 
-        .breadcrumb {
-            font-size: 11px;
-            color: #999;
-            margin-bottom: 30px;
+        /* --- CARD STYLES --- */
+        .card {
+            background-color: var(--background-white);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem; /* Reduced padding */
+            margin-bottom: 1.25rem; /* Reduced margin */
         }
 
-        .breadcrumb a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .section {
-            margin-bottom: 30px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            background-color: #f9f9f9;
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem; /* Reduced margin */
         }
 
         .section-title {
-            color: #007bff;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #007bff;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 1.25rem; /* Reduced margin */
+            margin-top: 1.5rem; /* Reduced margin */
+        }
+        .section-title:first-child {
+            margin-top: 0;
         }
 
-        .section-subtitle {
-            color: #666;
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: 15px;
-            margin-bottom: 10px;
+        /* --- FIELD STYLES --- */
+        .field-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem; /* Reduced margin */
         }
 
-        .form-group {
-            margin-bottom: 12px;
+        .field-group label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .field-group .value-container {
             display: flex;
             align-items: center;
+            gap: 1rem;
         }
 
-        .form-label {
-            width: 35%;
-            font-weight: bold;
-            color: #333;
-            font-size: 13px;
+        .field-group .value {
+            color: var(--text-medium);
         }
 
-        .form-value {
-            width: 65%;
-            color: #666;
-            font-size: 13px;
-            padding-left: 15px;
-            border-left: 1px solid #ddd;
+        .copy-icon {
+            color: var(--text-light);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .copy-icon:hover {
+            color: var(--text-medium);
         }
 
-        .row {
+        /* Field styles for boxed inputs */
+        .field-group-boxed {
+            margin-bottom: 1rem;
+        }
+
+        .field-group-boxed label {
+            display: block;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .field-group-boxed .value-box {
             display: flex;
-            gap: 20px;
-        }
-
-        .col {
-            flex: 1;
-        }
-
-        .checkbox-group {
-            display: flex;
-            gap: 20px;
-        }
-
-        .checkbox-item {
-            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 8px;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            background-color: var(--background-light);
         }
 
-        .checkbox {
-            width: 18px;
-            height: 18px;
-            border: 1px solid #999;
-            border-radius: 3px;
+        /* --- LAYOUT GRID --- */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem; /* Reduced gap */
+            align-items: start;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
+        .grid-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem; /* Reduced gap */
         }
 
-        table th, table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-            font-size: 12px;
-        }
-
-        table th {
-            background-color: #f0f0f0;
-            font-weight: bold;
-            color: #333;
-        }
-
-        table td {
-            background-color: #fff;
-        }
-
-        .divider {
-            border-top: 1px solid #ddd;
-            margin: 30px 0;
-        }
-
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
-            }
-
-            .section {
-                page-break-inside: avoid;
-            }
-        }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>STAGIAIRE : {{ infoFormIntern.firstName }} {{ infoFormIntern.lastName }}</h1>
-</div>
+<div class="container">
 
-<!-- INFORMATIONS PERSONNELLES -->
-<div class="section">
-    <div class="section-title">Informations personnelles</div>
+    <header class="page-header">
+        <h1>Fiches de renseignement</h1>
+    </header>
 
-    <div class="form-group">
-        <div class="form-label">Prénom :</div>
-        <div class="form-value">{{ infoFormIntern.firstName }}</div>
-    </div>
+    <!-- ======== CARD 1: STAGIAIRE (Full Width) ======== -->
+    <div class="card">
+        <h2 class="card-title">STAGIAIRE : {{ infoFormIntern.firstName }} {{ infoFormIntern.lastName }}</h2>
 
-    <div class="form-group">
-        <div class="form-label">Nom :</div>
-        <div class="form-value">{{ infoFormIntern.lastName }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">Email :</div>
-        <div class="form-value">{{ infoFormIntern.email }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">Formation :</div>
-        <div class="form-value">{{ infoForm.trainingSession.training.name }}</div>
-    </div>
-</div>
-
-<!-- PÉRIODE EN ENTREPRISE -->
-<div class="section">
-    <div class="section-title">Période en entreprise</div>
-
-    <div class="form-group">
-        <div class="form-label">Dates :</div>
-        <div class="form-value">
-            Du {{ infoFormIntern.dateStart|date('d/m/Y') }}
-            au {{ infoFormIntern.dateEnd|date('d/m/Y') }}
+        <!-- Personal Info Section -->
+        <div class="section">
+            <h3 class="section-title">Informations personnelles</h3>
+            <div class="field-group">
+                <label>Prénom :</label>
+                <div class="value-container">
+                    <span class="value">{{ infoFormIntern.firstName }}</span>
+                    {% include 'partials/_copy_icon.svg' %}
+                </div>
+            </div>
+            <div class="field-group">
+                <label>Nom :</label>
+                <div class="value-container">
+                    <span class="value">{{ infoFormIntern.lastName }}</span>
+                    {% include 'partials/_copy_icon.svg' %}
+                </div>
+            </div>
+            <div class="field-group">
+                <label>Email :</label>
+                <div class="value-container">
+                    <span class="value">{{ infoFormIntern.email }}</span>
+                    {% include 'partials/_copy_icon.svg' %}
+                </div>
+            </div>
+            <div class="field-group">
+                <label>Formation :</label>
+                <div class="value-container">
+                    <span class="value">{{ infoForm.trainingSession.training.name }}</span>
+                    {% include 'partials/_copy_icon.svg' %}
+                </div>
+            </div>
         </div>
+
+        <!-- Internship Period Section -->
+        <div class="section">
+            <h3 class="section-title">Période en entreprise</h3>
+            <div class="field-group">
+                <label>Dates</label>
+                <div class="value-container">
+                    <span class="value">Du {{ infoFormIntern.dateStart|date('d F Y') }} au {{ infoFormIntern.dateEnd|date('d F Y') }}</span>
+                    {% include 'partials/_copy_icon.svg' %}
+                </div>
+            </div>
+        </div>
+
+        <!-- "L'entreprise d'accueil" section has been removed from this card -->
+
+    </div>
+
+    <!-- ======== LAYOUT GRID: Company Details & Contacts ======== -->
+    <div class="layout-grid">
+
+        <!-- Left Column -->
+        <div class="grid-column">
+            <!-- ======== CARD 2: L'ENTREPRISE ======== -->
+            <div class="card">
+                <h3 class="section-title">L'entreprise</h3>
+                <div class="field-group-boxed">
+                    <label>Nom de l'entreprise</label>
+                    <div class="value-box">
+                        <span>{{ infoFormCompany.name }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+                <div class="field-group-boxed">
+                    <label>Adresse de l'entreprise</label>
+                    <div class="value-box">
+                        <span>{{ infoFormCompany.address }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+                <div class="field-group-boxed">
+                    <label>Activité</label>
+                    <div class="value-box">
+                        <span>{{ infoFormCompany.activity }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+                <div class="field-group-boxed">
+                    <label>Téléphone</label>
+                    <div class="value-box">
+                        <span>{{ infoFormCompany.tutorPhoneNumber }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+                <div class="field-group-boxed">
+                    <label>Mail</label>
+                    <div class="value-box">
+                        <span>{{ infoFormCompany.email }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+                <div class="field-group-boxed">
+                    <label>Fax</label>
+                    <div class="value-box">
+                        <span>{{ infoFormCompany.fax | default('N/A') }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+                <div class="field-group-boxed">
+                    <label>N° SIRET</label>
+                    <div class="value-box">
+                        <span>{{ infoForm.companyMembers.first.company.siret }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="grid-column">
+            <!-- ======== CARD 3: RESPONSABLE LEGAL ======== -->
+            <div class="card">
+                <h3 class="section-title">Responsable légal(e)</h3>
+                <div class="field-group-boxed">
+                    <label>Nom</label>
+                    <div class="value-box">
+                        <span>{{ infoFormCompany.legalRepresentativeLastName }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+                <div class="field-group-boxed">
+                    <label>Prénom</label>
+                    <div class="value-box">
+                        <span>{{ infoFormCompany.legalRepresentativeFirstName }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+                <div class="field-group-boxed">
+                    <label>Mail</label>
+                    <div class="value-box">
+                        <span>{{ infoFormCompany.legalRepresentativeEmail }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======== CARD 4: TUTEUR/TRICE ======== -->
+            <div class="card">
+                <h3 class="section-title">Tuteur/tutrice</h3>
+                <div class="field-group-boxed">
+                    <label>Nom</label>
+                    <div class="value-box">
+                        <span>{{ infoFormCompany.tutorLastName }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+                <div class="field-group-boxed">
+                    <label>Prénom</label>
+                    <div class="value-box">
+                        <span>{{ infoFormCompany.tutorFirstName }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+                <div class="field-group-boxed">
+                    <label>Mail</label>
+                    <div class="value-box">
+                        <span>{{ infoFormCompany.tutorEmail }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+                <div class="field-group-boxed">
+                    <label>Téléphone</label>
+                    <div class="value-box">
+                        <span>{{ infoFormCompany.tutorPhoneNumber }}</span>
+                        {% include 'partials/_copy_icon.svg' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
-
-<!-- L'ENTREPRISE D'ACCUEIL -->
-<div class="section">
-    <div class="section-title">L'entreprise d'accueil</div>
-
-    <div class="form-group">
-        <div class="form-label">Nom de l'entreprise :</div>
-        <div class="form-value">{{ infoFormCompany.name }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">Adresse physique :</div>
-        <div class="form-value">{{ infoFormCompany.address }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">Mail contact :</div>
-        <div class="form-value">{{ infoFormCompany.email }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">Nom du contact :</div>
-        <div
-            class="form-value">{{ infoFormCompany.legalRepresentativeFirstName }}  {{ infoFormCompany.legalRepresentativeLastName }}</div>
-    </div>
-
-    <div class="section-subtitle">Activité</div>
-    <div class="form-group">
-        <div class="form-label">Secteur d'activité :</div>
-        <div class="form-value">{{ infoFormCompany.activity }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">Téléphone :</div>
-        <div class="form-value">{{ infoFormCompany.tutorPhoneNumber }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">Mail :</div>
-        <div class="form-value">{{ infoFormCompany.email }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">Fax :</div>
-        <div class="form-value">{{ infoFormCompany.fax }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">N° SIRET :</div>
-        {#        I DONT KNOW IF THIS WORKS #}
-        <div class="form-value">{{ infoForm.companyMembers.first.company.siret }}</div>
-    </div>
-</div>
-
-<!-- RESPONSABLE LÉGAL(E) -->
-<div class="section">
-    <div class="section-title">Responsable légal(e)</div>
-
-    <div class="form-group">
-        <div class="form-label">Nom :</div>
-        <div class="form-value">{{ infoFormCompany.legalRepresentativeLastName }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">Prénom :</div>
-        <div class="form-value">{{ infoFormCompany.legalRepresentativeFirstName }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">Mail :</div>
-        <div class="form-value">{{ infoFormCompany.legalRepresentativeEmail }}</div>
-    </div>
-</div>
-
-<!-- TUTEUR/TUTRICE -->
-<div class="section">
-    <div class="section-title">Tuteur/tutrice</div>
-
-    {#    <div class="form-group"> #}
-    {#        <div class="form-label"> #}
-    {#            <input type="checkbox" class="checkbox" {% if infoFormCompany.isTutorResponsible %}checked{% endif %}> #}
-    {#            Le tuteur est désigné co-responsable légal #}
-    {#        </div> #}
-    {#    </div> #}
-
-    <div class="form-group">
-        <div class="form-label">Nom :</div>
-        <div class="form-value">{{ infoFormCompany.tutorLastName }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">Prénom :</div>
-        <div class="form-value">{{ infoFormCompany.tutorFirstName }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">Mail :</div>
-        <div class="form-value">{{ infoFormCompany.tutorEmail }}</div>
-    </div>
-
-    <div class="form-group">
-        <div class="form-label">Téléphone :</div>
-        <div class="form-value">{{ infoFormCompany.tutorPhoneNumber }}</div>
-    </div>
-</div>
-
-<div class="divider"></div>
-
-<p style="text-align: center; color: #999; font-size: 11px; margin-top: 40px;">
-    Générée le {{ "now"|date('d/m/Y à H:i') }} - InfoForm #{{ infoForm.id }}
-</p>
 
 </body>
 </html>
