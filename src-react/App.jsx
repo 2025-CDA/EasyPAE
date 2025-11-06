@@ -13,7 +13,7 @@ import InternDashboardPage from "./pages/intern/InternDashboardPage";
 import FicheStagiaire from "./pages/intern/FicheStagiaire";
 import InternListPage from "./components/intern_list/InternListPage";
 import FormInternPage from "./pages/intern/FormInternPage";
-import CalendarPage from "./pages/CalendarPage";
+import InformationSheetPage from "./pages/company/InformationSheetPage";
 
 export default function App() {
     const { token, userData, getUser, loadingUser } = useAuthContext();
@@ -41,8 +41,7 @@ export default function App() {
                     )}
                     {token && (
                         <Routes>
-                            {(userData?.roles.includes("intern") ||
-                                userData?.roles.includes("company")) && (
+                            {userData?.roles.includes("intern") && (
                                 <>
                                     <Route
                                         path="/"
@@ -56,9 +55,22 @@ export default function App() {
                                         path="/paeApplication/:infoFormId"
                                         element={<FormInternPage />}
                                     />
+                                </>
+                            )}
+                            {userData?.roles.includes("company") && (
+                                <>
                                     <Route
-                                        path="/informationSheet"
-                                        element={App}
+                                        path="/"
+                                        element={<InternDashboardPage />}
+                                    />
+                                    <Route
+                                        path="/:infoFormId"
+                                        element={<InternDashboardPage />}
+                                    />
+
+                                    <Route
+                                        path="/informationSheet/:infoFormId"
+                                        element={<InformationSheetPage />}
                                     />
                                 </>
                             )}
