@@ -4,4 +4,5 @@ export const rolesTranslation = {
     ROLE_tutor: "Tuteur",
     ROLE_monique: "Assistante",
     ROLE_director: "Direction",
+    ROLE_STAGIAIRE: "Stagiaire",
 };

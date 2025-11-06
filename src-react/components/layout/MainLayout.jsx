@@ -26,7 +26,9 @@ function MainLayout({
             <DesktopSidebar
                 avatarColor={avatarColor}
                 userName={userData?.firstName + " " + userData?.lastName}
-                role={rolesTranslation[userData?.roles[0]]}
+                role={
+                    rolesTranslation[userData?.roles[0]] ?? userData?.roles[0]
+                }
                 avatarUrl={avatarUrl}
             ></DesktopSidebar>
             <div className="flex flex-col justify-center items-center w-full">
