@@ -58,19 +58,19 @@ function CalendarPage() {
 
     useEffect(() => {
         getData();
-    }, [getData]);
+    }, []);
 
     // Fonction pour sauvegarder les dates modifiées (PATCH)
     async function handleSaveMulti(id, newPeriodStart, newPeriodEnd) {
+        // Ajoutage d'une journée pour fixer pb de dates en bdd
+        const addOneDay = (date) => date ? new Date(date.getTime() + 24 * 60 * 60 * 1000) : null;
         const toBackendFormat = (date) =>
             date ? date.toISOString() : null;
 
         const body = {
-            internshipStart: toBackendFormat(newPeriodStart),
-            internshipEnd: toBackendFormat(newPeriodEnd),
+            internshipStart: toBackendFormat(addOneDay(newPeriodStart)),
+            internshipEnd: toBackendFormat(addOneDay(newPeriodEnd)),
         };
-
-        console.log("PATCH body:", body);
 
         const res = await fetchData(
             "PATCH",
