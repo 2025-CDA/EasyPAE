@@ -64,7 +64,10 @@ export default function PAECompanyListPage() {
     return (
         <MainLayout>
             <div className="p-4">
-                <HeaderInternList />
+                {/* <HeaderInternList /> */}
+                <h2 className="text-2xl font-bold my-4">
+                    List des PAE de votre Entreprise{" "}
+                </h2>
 
                 <div className="flex flex-row items-start gap-4">
                     <AppTable
