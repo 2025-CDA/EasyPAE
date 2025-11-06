@@ -27,7 +27,7 @@ function InternDashboardPage() {
     const navigate = useNavigate();
 
     const role = userData.roles[1];
-
+    console.log(role);
     useEffect(() => {
         const getCompanyData = async () => {
             const res = await fetchData(
@@ -42,10 +42,11 @@ function InternDashboardPage() {
             const res = await fetchData(
                 "GET",
                 // `resume-card/${infoFormId}/company`
-                `/api/resume-card/${infoFormId}/intern`
+                `resume-card/${infoFormId}/intern`
             );
 
             setInternDetails(res.data);
+            console.log("🚀 ~ getInternData ~ res.data:", res.data);
         };
 
         infoFormId && getCompanyData();
@@ -94,7 +95,7 @@ function InternDashboardPage() {
         // const res = await fetchData("POST", "intern/infoForm", {
         //     internId: userData?.internId,
         // });
-        navigate(`/paeApplication/${res.data.infoFormId}`);
+        // navigate(`/paeApplication/${res.data.infoFormId}`);
     }
 
     return (
@@ -170,7 +171,7 @@ function InternDashboardPage() {
                         </Container>
                     )}
                 </div>
-               {infoFormId && <CalendarSimpleGET dates={currentFormation} />}
+                {infoFormId && <CalendarSimpleGET dates={currentFormation} />}
 
                 {infoFormId && role === "company" && (
                     <>

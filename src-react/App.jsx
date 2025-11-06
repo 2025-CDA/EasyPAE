@@ -14,6 +14,7 @@ import FicheStagiaire from "./pages/intern/FicheStagiaire";
 import InternListPage from "./components/intern_list/InternListPage";
 import FormInternPage from "./pages/intern/FormInternPage";
 import InformationSheetPage from "./pages/company/InformationSheetPage";
+import PAECompanyListPage from "./pages/intern/PAECompanyListPage";
 
 export default function App() {
     const { token, userData, getUser, loadingUser } = useAuthContext();
@@ -61,13 +62,12 @@ export default function App() {
                                 <>
                                     <Route
                                         path="/"
-                                        element={<InternDashboardPage />}
+                                        element={<PAECompanyListPage />}
                                     />
                                     <Route
                                         path="/:infoFormId"
                                         element={<InternDashboardPage />}
                                     />
-
                                     <Route
                                         path="/informationSheet/:infoFormId"
                                         element={<InformationSheetPage />}
