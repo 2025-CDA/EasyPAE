@@ -14,7 +14,7 @@ function HelpPage() {
                 Ici vous retrouverez toutes les réponses à vos interrogations.
             </h6>
 
-            <div className="flex w-full m-5 ">
+            <div className="flex w-full md:m-5 ">
                 <SearchBar className={"w-[90%] md:w-[80%]"} />
             </div>
 

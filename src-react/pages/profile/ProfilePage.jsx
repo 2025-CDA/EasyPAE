@@ -9,14 +9,13 @@ import UpdateMdp from "../../components/profile/UpdateMdp";
 import Preferences from "../../components/profile/Preferences";
 import Avatar from "../../components/ui/Avatar";
 import Button from "../../components/ui/Button";
-import { User, Lock, Heart } from "lucide-react";
+import { User, Lock, Heart, DoorClosed, LogOut } from "lucide-react";
 import useAxios from "../../hooks/useAxios";
 import { useAuthContext } from "../../store/auth_context/authContext";
-
-
+import { useNavigate } from "react-router";
 
 function ProfilePage() {
-    const { token, userData, getUser, loadingUser } = useAuthContext();
+    const { token, userData, getUser, loadingUser, signOut } = useAuthContext();
     const { fetchData } = useAxios();
 
     const [userInfo, setUserInfo] = useState(userData || {});
@@ -35,7 +34,6 @@ function ProfilePage() {
         "Mon compte / Plus d'informations",
     ];
 
-      
     return (
         <MainLayout withSearchbar={false} withHeader={false}>
             <div className="hidden md:flex min-h-screen">
@@ -80,9 +78,8 @@ function ProfilePage() {
                                 <p className="text-secondary-text">
                                     Personnalisez votre interface
                                 </p>
-                                
                             </Container>
-                            <Container 
+                            <Container
                                 className={`flex flex-col bg-[#f1eeee] cursor-pointer ${
                                     activeBox === 2
                                         ? "border-2 border-blue-600"
@@ -101,8 +98,8 @@ function ProfilePage() {
                         <div className="mr-5 flex-1 min-w-0">
                             {activeBox === 0 && (
                                 <div className="h-full w-full">
-                                    <ModifPictureProfile  />
-                                    <EditerProfile data={userInfo}/>
+                                    <ModifPictureProfile />
+                                    <EditerProfile data={userInfo} />
                                     <UpdateMdp />
                                 </div>
                             )}
@@ -140,6 +137,7 @@ function ProfilePage() {
                             <h4 className="mt-15 font-semibold ml-[12.5%]">
                                 Informations personnelles
                             </h4>
+
                             <Button
                                 onClick={() => setMobileView(1)}
                                 className="w-[75%] bg-[#f2f2f2] border border-[#e0e0e0] px-4 py-2 text-primary-text ml-[12.5%] mt-2 mb-2"
@@ -226,6 +224,23 @@ function ProfilePage() {
                                     <span>{">"}</span>
                                 </div>
                             </Button>
+
+                            <Button
+                                onClick={() => signOut()}
+                                className="w-[75%] bg-red-400 border border-[#e0e0e0] px-4 py-2 text-primary-text ml-[12.5%] mt-20 mb-2"
+                                color=""
+                                icon={null}
+                            >
+                                <div className="flex w-full items-center justify-between">
+                                    <span className="flex items-center gap-4">
+                                        <LogOut className="inline-block" />
+                                        <span className="font-semibold">
+                                            Logout
+                                        </span>
+                                    </span>
+                                    <span>{">"}</span>
+                                </div>
+                            </Button>
                         </div>
                     </>
                 )}
@@ -295,6 +310,23 @@ function ProfilePage() {
                             </h4>
                         </div>
                         <AProposPAEeasy />
+                    </>
+                )}
+                {mobileView === 5 && (
+                    <>
+                        <div className="flex items-center mb-20">
+                            <Button
+                                onClick={() => setMobileView(0)}
+                                color=""
+                                className={"text-primary-text"}
+                            >
+                                {"<"}
+                            </Button>
+                            <h4 className="font-semibold m-auto">
+                                Plus d'infos
+                            </h4>
+                        </div>
+                        <Confidentialite />
                     </>
                 )}
                 {mobileView === 5 && (

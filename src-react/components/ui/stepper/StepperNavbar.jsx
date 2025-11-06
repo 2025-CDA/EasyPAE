@@ -10,9 +10,9 @@ function StepperNavbar({
 }) {
     return (
         <ul
-            className={`md:max-w-[80%] w-full flex  justify-center md:items-center ${
+            className={`md:max-w-[90%] w-full flex  justify-center md:items-center ${
                 !isHorizontal && "flex-col"
-            } md:flex-row gap-2`}
+            } md:flex-row gap-2 self-center`}
         >
             {content.map((step, i) => (
                 <StepItem
@@ -88,7 +88,9 @@ function StepItem({
                 <span className="block text-sm font-medium text-gray-800">
                     {title}
                 </span>
-                <p className="text-sm text-gray-500">{description}</p>
+                <p className="text-sm text-gray-500 md:min-h-20">
+                    {description}
+                </p>
             </div>
         </li>
     );

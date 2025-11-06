@@ -49,6 +49,10 @@ export default function App() {
                                         element={<InternDashboardPage />}
                                     />
                                     <Route
+                                        path="/:infoFormId"
+                                        element={<InternDashboardPage />}
+                                    />
+                                    <Route
                                         path="/paeApplication/:infoFormId"
                                         element={<FormInternPage />}
                                     />

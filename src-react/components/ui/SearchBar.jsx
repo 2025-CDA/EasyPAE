@@ -37,14 +37,13 @@ function SearchBar({ className }) {
 
     // ---------------------- Return ----------------------
     return (
-        <div className={`w-full relative ${className}`}>
-            <div className="flex">
+        <div className={`flex justify-center w-full relative`}>
+            <div className={`flex ${className}`}>
                 <div className="relative flex-grow">
                     <Input
                         type="text"
                         role="combobox"
                         label=""
-                        withCopy={false}
                         aria-expanded={open}
                         aria-controls="search-results"
                         aria-autocomplete="list"

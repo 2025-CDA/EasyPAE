@@ -47,7 +47,7 @@ function CardFormation({
     if (isEmpty) {
         return (
             <Button
-                className="flex flex-col border-gray-200 rounded-x border shadow-2xs aspect-square cursor-pointer transition h-full w-full hover:shadow-lg"
+                className="flex flex-col border-gray-200 rounded-x border shadow-2xs cursor-pointer transition w-full hover:shadow-lg p-5 "
                 color="white"
                 // }}
                 onClick={onClick}
