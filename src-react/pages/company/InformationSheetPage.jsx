@@ -16,7 +16,7 @@ export default function InformationSheetPage() {
     const navigate = useNavigate();
     const [formState, setFormState] = useState({
         company: {
-            companyName: "WER",
+            companyName: "",
             companyAddress: "",
             companyActivities: "",
             companyPhone: "",

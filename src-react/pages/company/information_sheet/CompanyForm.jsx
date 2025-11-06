@@ -13,7 +13,7 @@ export default function CompanyForm({
                 label="Nom de l’entreprise"
                 placeholder="Nom de l’entreprise"
                 required
-                // value={companyDetails.companyName}
+                value={companyDetails.companyName}
                 onChange={(e) =>
                     handleCompanyDetailsChange("companyName", e.target.value)
                 }

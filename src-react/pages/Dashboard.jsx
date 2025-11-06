@@ -9,6 +9,7 @@ import useAxios from "../hooks/useAxios";
 import { useEffect } from "react";
 import { useAuthContext } from "../store/auth_context/authContext";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 export default function Dashboard({
     selectDiv = true, // props pour gérer l'affichage du select dans le header
@@ -31,6 +32,7 @@ export default function Dashboard({
 
     const { fetchData } = useAxios();
     const { userData } = useAuthContext();
+    const navigate = useNavigate();
 
     // ------------------ Filtrer les formations en fonction de la sélection-------------------------
     useEffect(() => {
@@ -307,7 +309,9 @@ export default function Dashboard({
                             >
                                 <CalendarSimpleGet justToday={true} />
                                 <div className="border-t border-gray-200 py-3 flex items-center justify-center">
-                                    <Button>
+                                    <Button
+                                        onClick={() => navigate(`/paeCalendar`)}
+                                    >
                                         Accéder aux calendriers des formations
                                     </Button>
                                 </div>
