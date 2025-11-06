@@ -19,25 +19,25 @@ function CardIntern({
     onEdit, // Handler callback (optionnel)
     buttonLabel, // Label custom
     extra, // Slot pour info(s) additionnelle(s)
-    showButton = true, // Par défaut le bouton s’affiche
+    showButton = false, // Par défaut le bouton s’affiche
 }) {
     return (
         <Container
             className={`flex flex-col font-medium w-full  lg:flex-row gap-6   ${className}`}
         >
             {/* -------------------------------Div donner de stagiare  -------------------------*/}
-            <div className="w-full lg:w-2/3 flex flex-col">
+            <div className="w-full flex flex-col">
                 {/* ----Header avec avatar et nom---- */}
-                <div className="flex items-center">
+                <div className="flex items-center w-full">
                     <Avatar
                         size="sm"
                         url={Test || avatarUrl}
                         className="outline-hidden mr-2"
                     />
-                    <h1>
+                    <h3>
                         {name}
                         {role && <span className="text-gray-600">{role}</span>}
-                    </h1>
+                    </h3>
                 </div>
                 {/* ------Détails du stagiaire-------- */}
                 <div className="flex flex-col gap-2 mb-3">
@@ -58,8 +58,8 @@ function CardIntern({
             </div>
 
             {/* ------------------ Div Bouton d'édition------------------------- */}
-            <div className="lg:w-1/3 flex flex-col items-center justify-center gap-2">
-                {showButton && (
+            {showButton && (
+                <div className="lg:w-1/3 flex flex-col items-center justify-center gap-2">
                     <Button
                         className="w-full lg:w-[60%]"
                         variant="outline"
@@ -67,8 +67,8 @@ function CardIntern({
                     >
                         {buttonLabel}
                     </Button>
-                )}
-            </div>
+                </div>
+            )}
         </Container>
     );
 }

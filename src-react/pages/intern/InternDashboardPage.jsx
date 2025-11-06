@@ -27,7 +27,6 @@ function InternDashboardPage() {
     const navigate = useNavigate();
 
     const role = userData.roles[1];
-    console.log(role);
     useEffect(() => {
         const getCompanyData = async () => {
             const res = await fetchData(
@@ -95,7 +94,7 @@ function InternDashboardPage() {
         // const res = await fetchData("POST", "intern/infoForm", {
         //     internId: userData?.internId,
         // });
-        // navigate(`/paeApplication/${res.data.infoFormId}`);
+        navigate(`/informationSheet/${infoFormId}`);
     }
 
     return (
@@ -119,7 +118,7 @@ function InternDashboardPage() {
                             Inciter une demande de PEA
                         </Button>
                     )}
-                    {!infoFormId && role === "company" && (
+                    {infoFormId && role === "company" && (
                         <Button onClick={handleCompletePAE}>
                             Compléter la demande de PAE
                         </Button>
@@ -150,8 +149,8 @@ function InternDashboardPage() {
                         />
                     </>
                 )}
-                <div className="col-span-2">
-                    {infoFormId && role === "intern" && (
+                {infoFormId && role === "intern" && (
+                    <div className="col-span-2">
                         <Container>
                             <TimeLine
                                 content={[
@@ -169,9 +168,11 @@ function InternDashboardPage() {
                                 ]}
                             ></TimeLine>
                         </Container>
-                    )}
-                </div>
-                {infoFormId && <CalendarSimpleGET dates={currentFormation} />}
+                    </div>
+                )}
+                {infoFormId && role === "intern" && (
+                    <CalendarSimpleGET dates={currentFormation} />
+                )}
 
                 {infoFormId && role === "company" && (
                     <>
@@ -189,14 +190,16 @@ function InternDashboardPage() {
                                 " " +
                                 internDetails.offerNumber
                             }
-                            startDateInternship={
+                            startDateInternship={new Date(
                                 internDetails.internshipStartDate
-                            }
-                            endDateInternship={internDetails.internshipEndDate}
+                            ).toLocaleDateString()}
+                            endDateInternship={new Date(
+                                internDetails.internshipEndDate
+                            ).toLocaleDateString()}
                             trainerName={
-                                internDetails.organizationUserFirstName +
+                                internDetails.internFirstName +
                                 " " +
-                                internDetails.organizationUserLastName
+                                internDetails.internLastName
                             }
                         />
                         <div className="col-span-2">

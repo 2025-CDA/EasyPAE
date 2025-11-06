@@ -20,8 +20,9 @@ export default function PAECompanyListPage() {
     const columns = [
         { key: "internFirstName", label: "PRENOM STAGIAIRE" },
         { key: "internLastName", label: "NOM STAGIAIRE" },
+        { key: "internEmail", label: "EMAIL" },
         { key: "infoFormId", label: "FILE N" },
-        { key: "infoFormCompanyStatus", label: "FILE STATUS" },
+        { key: "companyStatus", label: "FILE STATUS" },
     ];
 
     useEffect(() => {
