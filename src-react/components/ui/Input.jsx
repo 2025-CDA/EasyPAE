@@ -27,6 +27,7 @@ export default function Input({
             </label>
             <div className="relative">
                 <input
+                    {...props}
                     type={
                         type == "password"
                             ? showPassword == false
@@ -42,8 +43,7 @@ export default function Input({
                     onChange={onChange}
                     required={required}
                     disabled={disabled}
-                    value={value}
-                    {...props}
+                    value={value ?? ""}
                 />
                 <div className="absolute inset-y-0 start-0 flex items-center ps-4 peer-disabled:opacity-50 peer-disabled:pointer-events-none">
                     <div className="text-gray-600">{icon && icon}</div>

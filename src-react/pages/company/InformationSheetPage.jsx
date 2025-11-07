@@ -9,6 +9,7 @@ import CompanyForm from "./information_sheet/CompanyForm";
 import useAxios from "../../hooks/useAxios";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
+import CompanyDetails from "./information_sheet/CompanyDetails";
 
 export default function InformationSheetPage() {
     const { fetchData } = useAxios();
@@ -50,36 +51,6 @@ export default function InformationSheetPage() {
         });
     }
 
-    function CompanyDetails() {
-        return (
-            <form
-                className={"flex flex-col md:flex-row border-0 gap-5"}
-                action=""
-            >
-                <CompanyForm
-                    companyDetails={formState.company}
-                    handleCompanyDetailsChange={(key, value) =>
-                        updateSection("company", key, value)
-                    }
-                />
-                <div className="flex flex-col gap-5 md:w-[35%]">
-                    <LegalRepresentativeForm
-                        legalRep={formState.legalRep}
-                        handleLegalRepChange={(key, value) =>
-                            updateSection("legalRep", key, value)
-                        }
-                    />
-                    <TrainerForm
-                        trainerDetails={formState.trainer}
-                        handleTrainerDetailsChange={(key, value) =>
-                            updateSection("trainer", key, value)
-                        }
-                    />
-                </div>
-            </form>
-        );
-    }
-
     async function submitCompanyDetails() {
         try {
             const res = await fetchData(
@@ -104,8 +75,9 @@ export default function InformationSheetPage() {
                     tutorPhoneNumber: formState.trainer.trainerPhone,
                 }
             );
-            navigate("/");
+            console.log(res);
             toast.success("Fiche de renseignement mise à jour");
+            navigate("/");
         } catch (error) {
             toast.error(error.message);
         }
@@ -141,7 +113,12 @@ export default function InformationSheetPage() {
                                 title: "Entreprise",
                                 description:
                                     "Informations sur l’entreprise,  l’identité du responsable légale et du tuteur de stage.",
-                                stepContent: <CompanyDetails></CompanyDetails>,
+                                stepContent: (
+                                    <CompanyDetails
+                                        formState={formState}
+                                        updateSection={updateSection}
+                                    />
+                                ),
                             },
                         ]}
                         withBack
